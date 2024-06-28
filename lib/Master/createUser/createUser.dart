@@ -1,9 +1,9 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ticket_management_system/Master/createUser/userDetails.dart';
 import 'package:ticket_management_system/providers/userProvider.dart';
+import 'package:ticket_management_system/utils/colors.dart';
 
 class CreateUser extends StatefulWidget {
   const CreateUser({super.key});
@@ -110,7 +110,7 @@ class _CreateUserState extends State<CreateUser> {
                             onPressed: () {
                               addUser();
                             },
-                            child: const Icon(Icons.add),
+                            child: const Icon(Icons.add, color: white),
                           ),
                         ),
                       )
@@ -155,7 +155,7 @@ class _CreateUserState extends State<CreateUser> {
                       padding: const EdgeInsets.all(10),
                       child: Container(
                         color: Colors.white,
-                        height: 30,
+                        height: 40,
                         width: MediaQuery.of(context).size.width * 0.30,
                         child: TextFormField(
                           textInputAction: TextInputAction.next,
@@ -185,7 +185,7 @@ class _CreateUserState extends State<CreateUser> {
                       padding: const EdgeInsets.all(10),
                       child: Container(
                         color: Colors.white,
-                        height: 30,
+                        height: 40,
                         width: MediaQuery.of(context).size.width * 0.30,
                         child: TextFormField(
                           textInputAction: TextInputAction.next,
@@ -247,7 +247,7 @@ class _CreateUserState extends State<CreateUser> {
                       padding: const EdgeInsets.all(10),
                       child: Container(
                         color: Colors.white,
-                        height: 30,
+                        height: 40,
                         width: MediaQuery.of(context).size.width * 0.30,
                         child: TextFormField(
                           textInputAction: TextInputAction.next,

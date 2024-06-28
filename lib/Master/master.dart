@@ -4,6 +4,7 @@ import 'package:ticket_management_system/Master/createUser/createUser.dart';
 import 'package:ticket_management_system/Master/designation/listOfDesignation.dart';
 import 'package:ticket_management_system/Master/itemMaster/itemMaster.dart';
 import 'package:ticket_management_system/Master/work/listOfWork.dart';
+import 'package:ticket_management_system/utils/colors.dart';
 
 class MasterHomeScreen extends StatefulWidget {
   const MasterHomeScreen({Key? key}) : super(key: key);
@@ -35,7 +36,7 @@ class _MasterHomeScreenState extends State<MasterHomeScreen> {
                 onPressed: () {},
                 icon: const Icon(
                   Icons.power_settings_new_outlined,
-                  size: 30,
+                  size: 30,color: white,
                 )),
           )
         ],

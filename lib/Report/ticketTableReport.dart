@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:ticket_management_system/utils/colors.dart';
 
 class TicketTableReport extends StatefulWidget {
   const TicketTableReport({super.key});
@@ -112,7 +113,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
                 onPressed: () {},
                 icon: const Icon(
                   Icons.power_settings_new_outlined,
-                  size: 30,
+                  size: 30,color: white,
                 )),
           )
         ],
@@ -182,8 +183,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
           // selectedServiceProvider = '';
           updateServiceProvider();
         },
-        child: const Icon(Icons.add),
         backgroundColor: Colors.deepPurple,
+        child: const Icon(Icons.add, color: white),
       ),
     );
   }

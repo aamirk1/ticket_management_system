@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ticket_management_system/providers/designationProvider.dart';
+import 'package:ticket_management_system/utils/colors.dart';
 
 class ListOfDesignation extends StatefulWidget {
   const ListOfDesignation({super.key});
@@ -107,7 +108,7 @@ class _ListOfDesignationState extends State<ListOfDesignation> {
                             onPressed: () {
                               addDesignation();
                             },
-                            child: const Icon(Icons.add),
+                            child: const Icon(Icons.add, color: white),
                           ),
                         ),
                       )

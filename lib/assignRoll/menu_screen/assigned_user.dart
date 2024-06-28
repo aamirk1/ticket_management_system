@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:ticket_management_system/providers/filteration_provider.dart';
 import 'package:ticket_management_system/providers/image_upload_provider.dart';
+import 'package:ticket_management_system/utils/colors.dart';
 
 import 'LoadingForMenuUser.dart';
 
@@ -226,7 +227,7 @@ class _AssignedUserState extends State<AssignedUser> {
               onPressed: () {
                 //   uploadFile();
               },
-              child: const Icon(Icons.add),
+              child: const Icon(Icons.add, color: white),
             ),
           );
   }

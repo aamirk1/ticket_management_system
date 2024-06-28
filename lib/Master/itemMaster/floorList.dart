@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ticket_management_system/Master/itemMaster/roomList.dart';
 import 'package:ticket_management_system/providers/floorProvider.dart';
+import 'package:ticket_management_system/utils/colors.dart';
 
 class FloorList extends StatefulWidget {
   const FloorList({super.key, required this.buildingNumber});
@@ -112,7 +113,7 @@ class _FloorListState extends State<FloorList> {
                             onPressed: () {
                               addfloorNumber();
                             },
-                            child: const Icon(Icons.add),
+                            child: const Icon(Icons.add, color: white),
                           ),
                         ),
                       )

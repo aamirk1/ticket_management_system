@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ticket_management_system/Master/itemMaster/listOfAsset.dart';
 import 'package:ticket_management_system/providers/roomProvider.dart';
+import 'package:ticket_management_system/utils/colors.dart';
 
 class RoomList extends StatefulWidget {
   const RoomList(
@@ -119,7 +120,7 @@ class _RoomListState extends State<RoomList> {
                             onPressed: () {
                               addroomNumber();
                             },
-                            child: const Icon(Icons.add),
+                            child: const Icon(Icons.add, color: white),
                           ),
                         ),
                       )

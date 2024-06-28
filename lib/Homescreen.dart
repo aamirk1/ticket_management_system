@@ -4,6 +4,7 @@ import 'package:ticket_management_system/Master/master.dart';
 import 'package:ticket_management_system/Report/ticketTableReport.dart';
 import 'package:ticket_management_system/changePassword/changePassword.dart';
 import 'package:ticket_management_system/profile/profile.dart';
+import 'package:ticket_management_system/utils/colors.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key, required this.adminId}) : super(key: key);
@@ -34,7 +35,7 @@ class Home extends StatelessWidget {
                 onPressed: () {},
                 icon: const Icon(
                   Icons.power_settings_new_outlined,
-                  size: 30,
+                  size: 30,color: white,
                 )),
           )
         ],
