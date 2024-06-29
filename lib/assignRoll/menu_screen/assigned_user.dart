@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -17,7 +16,10 @@ import 'LoadingForMenuUser.dart';
 class AssignedUser extends StatefulWidget {
   const AssignedUser({
     super.key,
+    required this.adminId,
   });
+
+  final String adminId;
 
   @override
   State<AssignedUser> createState() => _AssignedUserState();
@@ -147,7 +149,7 @@ class _AssignedUserState extends State<AssignedUser> {
                     stream: showAll
                         ? FirebaseFirestore.instance
                             .collection('AssignedRole')
-                            .where('societyname', isEqualTo:' widget.society')
+                            .where('societyname', isEqualTo: ' widget.society')
                             .snapshots()
                         : FirebaseFirestore.instance
                             .collection('AssignedRole')
@@ -241,7 +243,7 @@ class _AssignedUserState extends State<AssignedUser> {
         : await FirebaseFirestore.instance
             .collection('AssignedRole')
             .where('alphabet', isEqualTo: selectedAlphabet)
-            .where('societyname', isEqualTo:' widget.society')
+            .where('societyname', isEqualTo: ' widget.society')
             .get();
 
     List<dynamic> mapData = snapshot.docs.map((e) => e.id).toList();
@@ -490,7 +492,7 @@ class _AssignedUserState extends State<AssignedUser> {
                     width: 8,
                   ),
                   Text(
-                    'Society Name',
+                    'Admin Id',
                     style: TextStyle(
                         decoration: TextDecoration.underline,
                         decorationThickness: 2.0,
@@ -852,7 +854,7 @@ class _AssignedUserState extends State<AssignedUser> {
       'roles': roles,
       // 'depots': depots,
       // 'cities': cities,
-      'societyname': societynameName
+      'adminId': widget.adminId
     }).whenComplete(() {
       // ignore: avoid_print
       print('Operation Complete');

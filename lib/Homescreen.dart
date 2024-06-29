@@ -81,7 +81,7 @@ class Home extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const MasterHomeScreen()),
+                                       MasterHomeScreen(adminId: adminId)),
                             );
                           },
                         ),
@@ -95,7 +95,7 @@ class Home extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MasterHomeScreen()),
+                              builder: (context) =>  MasterHomeScreen(adminId: adminId)),
                         );
                       },
                       child: Container(

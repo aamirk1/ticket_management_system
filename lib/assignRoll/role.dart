@@ -1,16 +1,17 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ticket_management_system/assignRoll/menu_screen/assigned_user.dart';
+import 'package:ticket_management_system/providers/designationProvider.dart';
 import 'package:ticket_management_system/providers/menuUserPageProvider.dart';
 import 'package:ticket_management_system/providers/role_page_totalNum_provider.dart';
 
 // ignore: must_be_immutable
 class RoleScreen extends StatefulWidget {
   // String society;
-  RoleScreen({super.key});
+  RoleScreen({super.key, required this.adminId});
+  final String adminId;
 
   @override
   State<RoleScreen> createState() => _RoleScreenState();
@@ -28,7 +29,7 @@ class _RoleScreenState extends State<RoleScreen> {
   List<String> unAssignedUsersList = [];
   List<String> memberList = [];
   String selectedUserName = '';
-  List<dynamic> role = [];
+  List<String> role = [];
 
   final TextEditingController citiesController = TextEditingController();
   final TextEditingController reportingManagerController =
@@ -42,7 +43,7 @@ class _RoleScreenState extends State<RoleScreen> {
     'Assigned',
   ];
 
-  List<String> designationList = ['Admin', 'Secretary', 'Treasurer'];
+  List<String> designationList = [];
 
   String? selectedUser;
   String? selectedCity;
@@ -64,6 +65,7 @@ class _RoleScreenState extends State<RoleScreen> {
     fetchCompleteUserList().whenComplete(() async {
       await getMemberList();
       await getTotalUsers();
+      await fetchData();
       setState(() {
         isLoading = false;
       });
@@ -84,7 +86,7 @@ class _RoleScreenState extends State<RoleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // String selectedSocietyName = widget.society;
+    String selectedAdmin = widget.adminId;
     final provider = Provider.of<MenuUserPageProvider>(context, listen: true);
 
     return Scaffold(
@@ -124,7 +126,7 @@ class _RoleScreenState extends State<RoleScreen> {
                           Container(
                             margin: const EdgeInsets.only(top: 8.0),
                             child: const Text(
-                              "Society Users",
+                              "TMS Users",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Color.fromARGB(
@@ -140,7 +142,7 @@ class _RoleScreenState extends State<RoleScreen> {
                             alignment: Alignment.centerLeft,
                             margin: const EdgeInsets.all(5.0),
                             width: MediaQuery.of(context).size.width * 0.7,
-                            height: 80,
+                            height: 120,
                             child: GridView.builder(
                                 itemCount: 3,
                                 shrinkWrap: true,
@@ -163,8 +165,8 @@ class _RoleScreenState extends State<RoleScreen> {
                                         ),
                                         assignedUsers,
                                         AssignedUser(
-                                            // society: widget.society,
-                                            ),
+                                          adminId: widget.adminId,
+                                        ),
                                       );
                                     },
                                   );
@@ -176,7 +178,7 @@ class _RoleScreenState extends State<RoleScreen> {
                   ],
                 ),
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.65,
+                  height: MediaQuery.of(context).size.height * 0.55,
                   margin: const EdgeInsets.symmetric(
                     horizontal: 30.0,
                   ),
@@ -209,7 +211,7 @@ class _RoleScreenState extends State<RoleScreen> {
                               height: 35,
                               width: 180,
                               child: const Text(
-                                "Select Member:",
+                                "Select Service Provider:",
                                 style: TextStyle(
                                   fontSize: 11,
                                   color: Colors.blue,
@@ -224,8 +226,8 @@ class _RoleScreenState extends State<RoleScreen> {
                             margin: const EdgeInsets.only(top: 10.0),
                             child: Column(
                               children: [
-                                customDropDown('Select Member', false,
-                                    memberList, "Search Reporting Manager", 0),
+                                customDropDown('Select Service Provider', false,
+                                    memberList, "Search user", 0),
                                 Container(
                                   alignment: Alignment.topLeft,
                                   child: Text(
@@ -277,7 +279,7 @@ class _RoleScreenState extends State<RoleScreen> {
                             alignment: Alignment.center,
                             child: ElevatedButton(
                               style: const ButtonStyle(
-                                backgroundColor: MaterialStatePropertyAll(
+                                backgroundColor: WidgetStatePropertyAll(
                                   Color.fromARGB(
                                     255,
                                     47,
@@ -293,12 +295,11 @@ class _RoleScreenState extends State<RoleScreen> {
                                   }
                                 }
 
-                                if (selectedUserName !=
-                                    selectedDesignationList) {
-                                  role.isEmpty
+                                if (selectedUserName != selectedAdmin) {
+                                  selectedDesignationList.isEmpty
                                       ? customAlertBox(
                                           'Please Select Designation')
-                                      : storeAssignData();
+                                      : storeAssignData(selectedUserName);
                                   getTotalUsers().whenComplete(() async {
                                     DocumentReference documentReference =
                                         FirebaseFirestore.instance
@@ -309,9 +310,6 @@ class _RoleScreenState extends State<RoleScreen> {
 
                                     provider.setLoadWidget(true);
                                   });
-                                } else if (selectedUserName.isEmpty) {
-                                  customAlertBox(
-                                      'Please Select Member and User');
                                 } else {
                                   customAlertBox(
                                       'Reporting Manager and User cannot be same');
@@ -342,16 +340,10 @@ class _RoleScreenState extends State<RoleScreen> {
     // List<String> adminList = adminQuery.docs.map((e) => e.id).toList();
 
     QuerySnapshot userQuery =
-        await FirebaseFirestore.instance.collection('User').get();
+        await FirebaseFirestore.instance.collection('members').get();
     List<String> userList = userQuery.docs.map((e) => e.id).toList();
 
     allUserList = userList;
-
-    QuerySnapshot cityQuery =
-        await FirebaseFirestore.instance.collection('DepoName').get();
-    List<String> cityList = cityQuery.docs.map((e) => e.id).toList();
-
-    allCityList = cityList;
   }
 
   Widget gridTabs(int index, Color cardColor, int headerNum, Widget screen) {
@@ -452,14 +444,12 @@ class _RoleScreenState extends State<RoleScreen> {
                 child: DropdownButton2(
                   dropdownSearchData: DropdownSearchData(
                     searchController: index == 0
-                        ? reportingManagerController
-                        : index == 1
-                            ? selectedUserController
-                            : index == 2
-                                ? designationController
-                                : index == 3
-                                    ? citiesController
-                                    : depotController,
+                        ? selectedUserController
+                        : index == 2
+                            ? designationController
+                            : index == 3
+                                ? citiesController
+                                : depotController,
                     searchInnerWidgetHeight: 50,
                     searchInnerWidget: SizedBox(
                       height: index == 4 ? 90 : 42,
@@ -473,14 +463,12 @@ class _RoleScreenState extends State<RoleScreen> {
                               expands: true,
                               maxLines: null,
                               controller: index == 0
-                                  ? reportingManagerController
-                                  : index == 1
-                                      ? selectedUserController
-                                      : index == 2
-                                          ? designationController
-                                          : index == 3
-                                              ? citiesController
-                                              : depotController,
+                                  ? selectedUserController
+                                  : index == 2
+                                      ? designationController
+                                      : index == 3
+                                          ? citiesController
+                                          : depotController,
                               decoration: InputDecoration(
                                 isDense: true,
                                 contentPadding: const EdgeInsets.symmetric(
@@ -499,52 +487,15 @@ class _RoleScreenState extends State<RoleScreen> {
                               ),
                             ),
                           ),
-                          if (index == 4)
-                            InkWell(
-                              onTap: () {
-                                isSelectAllDepots = !isSelectAllDepots;
-
-                                if (isSelectAllDepots) {
-                                  selectedDepotList.clear();
-                                  for (var element in customDropDownList) {
-                                    selectedDepotList.add(element);
-                                  }
-                                } else {
-                                  selectedDepotList.clear();
-                                }
-                                setState(() {});
-                                Navigator.pop(context);
-                              },
-                              child: Row(
-                                children: [
-                                  Checkbox(
-                                    materialTapTargetSize:
-                                        MaterialTapTargetSize.padded,
-                                    value: isSelectAllDepots,
-                                    onChanged: (value) {},
-                                  ),
-                                  const Text(
-                                    "All Depots",
-                                    style: TextStyle(
-                                        fontSize: 11, color: Colors.black),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ],
-                              ),
-                            )
                         ],
                       ),
                     ),
                   ),
                   value: index == 0
-                      ? selectedReportingManager
-                      : index == 1
-                          ? selectedUser
-                          : index == 2
-                              ? selectedDesignation
-                              : index == 3
-                                  ? selectedCity
-                                  : selectedDepot,
+                      ? selectedUser
+                      : index == 2
+                          ? selectedDesignation
+                          : Container(),
                   isExpanded: true,
                   onMenuStateChange: (isOpen) {
                     if (index == 0) messageForSocietyMember = "";
@@ -614,12 +565,7 @@ class _RoleScreenState extends State<RoleScreen> {
                                                 : selectedDepotList.add(item);
                                         break;
                                     }
-                                    index == 3 ? allDepotList.clear() : () {};
-                                    index == 3
-                                        ? await fetchDepotList(
-                                            selectedCitiesList.length,
-                                          )
-                                        : () {};
+
                                     setState(() {});
                                     menuSetState(() {});
                                   },
@@ -676,15 +622,13 @@ class _RoleScreenState extends State<RoleScreen> {
                   ),
                   onChanged: (value) {
                     index == 0
-                        ? selectedReportingManager = value
-                        : index == 1
-                            ? selectedUser = value
-                            : index == 2
-                                ? selectedDesignation = value
-                                : selectedCity = value;
+                        ? selectedUser = value
+                        : index == 2
+                            ? selectedDesignation = value
+                            : selectedCity = value;
                     if (index == 1) {
                     } else if (index == 0) {
-                      messageForSocietyMember = 'Society Manager Selected ✔';
+                      messageForSocietyMember = 'Service Provider Selected ✔';
                     }
                   },
                   iconStyleData: const IconStyleData(
@@ -724,21 +668,6 @@ class _RoleScreenState extends State<RoleScreen> {
         });
   }
 
-  Future<void> fetchDepotList(int cityListLen) async {
-    if (cityListLen != 0) {
-      for (int i = 0; i < cityListLen; i++) {
-        QuerySnapshot depotQuery = await FirebaseFirestore.instance
-            .collection('DepoName')
-            .doc(selectedCitiesList[i])
-            .collection('AllDepots')
-            .get();
-
-        List<String> depotList = depotQuery.docs.map((e) => e.id).toList();
-        allDepotList = allDepotList + depotList;
-      }
-    }
-  }
-
   Future customAlert() async {
     await showDialog(
         context: context,
@@ -765,7 +694,7 @@ class _RoleScreenState extends State<RoleScreen> {
                     BoxDecoration(border: Border.all(color: Colors.blue)),
                 child: ElevatedButton(
                   style: const ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(Colors.white)),
+                      backgroundColor: WidgetStatePropertyAll(Colors.white)),
                   onPressed: () {
                     Navigator.pop(context);
                   },
@@ -836,19 +765,17 @@ class _RoleScreenState extends State<RoleScreen> {
     );
   }
 
-  Future<void> storeAssignData() async {
-    String phoneNum = await getPhoneNumber(selectedUserName);
+  Future<void> storeAssignData(String userName) async {
     await FirebaseFirestore.instance
         .collection('AssignedRole')
-        .doc(selectedUserName)
+        .doc(userName)
         .set({
-      "fullName": selectedUserName,
-      "phoneNum": phoneNum,
-      'alphabet': selectedUserName[0][0].toUpperCase(),
+      "fullName": 'shashank',
+      'alphabet': userName[0][0].toUpperCase(),
       'position': 'Assigned',
-      'roles': role,
+      'roles': selectedDesignationList,
       // 'depots': selectedDepo,
-      // 'societyname': widget.society,
+      'adminId': widget.adminId, // 'societyname': widget.society,
       // 'cities': selectedCity,
     }).whenComplete(() {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -866,40 +793,27 @@ class _RoleScreenState extends State<RoleScreen> {
       'position': 'Assigned',
       'roles': role,
       // 'depots': selectedDepo,
-      // 'societyname': widget.society,
+      'adminId': widget.adminId, // 'societyname': widget.society,
       // 'cities': selectedCity,
     });
   }
 
   Future getPhoneNumber(String selectedUser) async {
     String phoneNum = '';
-    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
-        .collection("members")
-        .doc('widget.society')
-        .get();
+    QuerySnapshot documentSnapshot =
+        await FirebaseFirestore.instance.collection("members").get();
 
-    if (documentSnapshot.exists) {
+    if (documentSnapshot.docs.isNotEmpty) {
       Map<String, dynamic> allUserMapData =
-          documentSnapshot.data() as Map<String, dynamic>;
-      List<dynamic> allUserData = allUserMapData["data"];
+          documentSnapshot.docs.first.data() as Map<String, dynamic>;
+      List<dynamic> allUserData = allUserMapData["fName"];
 
       for (int i = 0; i < allUserData.length; i++) {
-        if (allUserData[i]['Member Name'] == selectedUser) {
-          phoneNum = allUserData[i]['Mobile No.'];
+        if (allUserData[i]['fName'] == selectedUser) {
+          phoneNum = allUserData[i]['fName'];
         }
       }
     }
-    if (phoneNum.isEmpty) {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection("societyAdmin")
-          .where("fullName", isEqualTo: selectedUser)
-          .get();
-      List<dynamic> adminData =
-          querySnapshot.docs.map((e) => e.data()).toList();
-
-      phoneNum = adminData[0]['mobile'];
-    }
-    return phoneNum;
   }
 
   //Calculating Total users for additional screen
@@ -924,9 +838,8 @@ class _RoleScreenState extends State<RoleScreen> {
     assignedUserList.clear();
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('AssignedRole')
-        .where('societyname', isEqualTo: 'widget.society')
+        .where('adminId', isEqualTo: widget.adminId)
         .get();
-
     assignedUserList = querySnapshot.docs.map((e) => e.id).toList();
     assignedUsers = querySnapshot.docs.length;
     // print("assignedUser - $assignedUsers");
@@ -936,7 +849,21 @@ class _RoleScreenState extends State<RoleScreen> {
 
   Future<void> getMemberList() async {
     QuerySnapshot documentSnapshot =
-        await FirebaseFirestore.instance.collection('ServiceProviders').get();
+        await FirebaseFirestore.instance.collection('members').get();
     memberList = documentSnapshot.docs.map((e) => e.id).toList();
+  }
+
+  Future<void> fetchData() async {
+    final provider =
+        Provider.of<AllDesignationProvider>(context, listen: false);
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('designations').get();
+    if (querySnapshot.docs.isNotEmpty) {
+      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+      designationList = tempData;
+      print(designationList);
+    }
+
+    provider.setBuilderList(designationList);
   }
 }

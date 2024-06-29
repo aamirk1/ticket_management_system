@@ -27,7 +27,7 @@ class _DashboardState extends State<Dashboard> {
 
   List<String> ticketList = [];
   String todayTicket = '';
-  String oneToSevenTicket = '';
+  List<String> oneToSevenTicket = [];
   String eightToFourteenTicket = '';
   String fifteenToTwentyOneTicket = '';
   String twentyTwoToTwentyEightTicket = '';
@@ -48,6 +48,7 @@ class _DashboardState extends State<Dashboard> {
   String building = '';
   String room = '';
   String date = '';
+  String convertedDate = '';
   String work = '';
   String serviceProvider = '';
   // String remark = '';
@@ -298,7 +299,7 @@ class _DashboardState extends State<Dashboard> {
                                   color: purple,
                                   child: Center(
                                     child: Text(
-                                      eightToFourteenTicket.length.toString(),
+                                      eightToFourteenTicket,
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
@@ -340,8 +341,7 @@ class _DashboardState extends State<Dashboard> {
                                   color: purple,
                                   child: Center(
                                     child: Text(
-                                      fifteenToTwentyOneTicket.length
-                                          .toString(),
+                                      fifteenToTwentyOneTicket,
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
@@ -383,8 +383,7 @@ class _DashboardState extends State<Dashboard> {
                                   color: purple,
                                   child: Center(
                                     child: Text(
-                                      twentyTwoToTwentyEightTicket.length
-                                          .toString(),
+                                      twentyTwoToTwentyEightTicket,
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
@@ -426,8 +425,7 @@ class _DashboardState extends State<Dashboard> {
                                   color: purple,
                                   child: Center(
                                     child: Text(
-                                      moreThanTwentyEightTicket.length
-                                          .toString(),
+                                      moreThanTwentyEightTicket,
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
@@ -500,6 +498,8 @@ class _DashboardState extends State<Dashboard> {
         data = documentSnapshot.data() as Map<String, dynamic>;
       }
       date = data['date'] ?? 'N/A';
+      convertedDate = date.split('-').reversed.join('-');
+      print('convertedDate $convertedDate');
 
       // Index = 2
       if (currentDate == date) {
@@ -510,90 +510,74 @@ class _DashboardState extends State<Dashboard> {
 
       // Index = 3
 
-      for (int i = 0; i < 7; i++) {
+      for (int i = 1; i < 7; i++) {
         DateTime newdate = today.add(Duration(days: i));
         DateFormat formatter = DateFormat('dd-MM-yyyy');
 
-        if (newdate.isAfter(DateTime.parse(date))) {
+        if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
           datelist.add(formatter.format(newdate));
-          oneToSevenTicket = ticketList.length.toString();
+          oneToSevenTicket.add(ticketList.length.toString());
+        } else {
+          oneToSevenTicket.add('0');
         }
       }
+      print('oneToSevenTicket $oneToSevenTicket');
 
       // Index = 4
       for (int i = 7; i < 15; i++) {
         DateTime newdate = today.add(Duration(days: i));
         DateFormat formatter = DateFormat('dd-MM-yyyy');
-        if (newdate.isAfter(DateTime.parse(date))) {
+        if (newdate.isAfter(DateTime.parse(convertedDate))) {
           datelist.add(formatter.format(newdate));
           eightToFourteenTicket = ticketList.length.toString();
+        } else {
+          eightToFourteenTicket = '0';
         }
       }
+
+      print('eightToFourteenTicket $eightToFourteenTicket');
 
       // Index = 5
       for (int i = 15; i < 22; i++) {
         DateTime newdate = today.add(Duration(days: i));
         DateFormat formatter = DateFormat('dd-MM-yyyy');
-        if (newdate.isAfter(DateTime.parse(date))) {
+        if (newdate.isAfter(DateTime.parse(convertedDate))) {
           datelist.add(formatter.format(newdate));
           fifteenToTwentyOneTicket = ticketList.length.toString();
+        } else {
+          fifteenToTwentyOneTicket = '0';
         }
       }
+
+      print('fifteenToTwentyOneTicket $fifteenToTwentyOneTicket');
 
       // Index = 6
       for (int i = 22; i < 29; i++) {
         DateTime newdate = today.add(Duration(days: i));
         DateFormat formatter = DateFormat('dd-MM-yyyy');
-        if (newdate.isAfter(DateTime.parse(date))) {
+        if (newdate.isAfter(DateTime.parse(convertedDate))) {
           datelist.add(formatter.format(newdate));
           twentyTwoToTwentyEightTicket = ticketList.length.toString();
+        } else {
+          twentyTwoToTwentyEightTicket = '0';
         }
       }
+
+      print('twentyTwoToTwentyEightTicket $twentyTwoToTwentyEightTicket');
 
       // Index = 7
       for (int i = 29; i <= 31; i++) {
         DateTime newdate = today.add(Duration(days: i));
         DateFormat formatter = DateFormat('dd-MM-yyyy');
-        if (newdate.isAfter(DateTime.parse(date))) {
+        if (newdate.isAfter(DateTime.parse(convertedDate))) {
           datelist.add(formatter.format(newdate));
           moreThanTwentyEightTicket = ticketList.length.toString();
+        } else {
+          moreThanTwentyEightTicket = '0';
         }
       }
+
+      print('moreThanTwentyEightTicket $moreThanTwentyEightTicket');
     }
-
-    // Future<void> getdata() async {
-    //   Map<String, dynamic> data = Map();
-
-    //   for (var i = 0; i < ticketList.length; i++) {
-    //     List<dynamic> allData = [];
-    //     print('lll${ticketList[i]}');
-    //     DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
-    //         .collection('raisedTickets')
-    //         .doc(ticketList[i])
-    //         .get();
-
-    //     if (documentSnapshot.data() != null) {
-    //       data = documentSnapshot.data() as Map<String, dynamic>;
-
-    //       asset = data['asset'] ?? '';
-    //       building = data['building'] ?? '';
-    //       date = data['date'] ?? '';
-    //       floor = data['floor'] ?? '';
-    //       // remark = data['remark'] ?? '';
-    //       room = data['room'] ?? '';
-    //       serviceProvider = data['serviceProvider'] ?? '';
-    //       work = data['work'] ?? '';
-    //     }
-    //     allData.add(asset);
-    //     allData.add(building);
-    //     allData.add(date);
-    //     // allData.add(remark);
-    //     allData.add(floor);
-    //     allData.add(room);
-    //     allData.add(serviceProvider);
-    //     allData.add(work);
-    //     rowData.add(allData);
-    //   }
-    // }
   }
 }

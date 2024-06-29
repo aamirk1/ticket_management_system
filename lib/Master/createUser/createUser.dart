@@ -6,7 +6,8 @@ import 'package:ticket_management_system/providers/userProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
 class CreateUser extends StatefulWidget {
-  const CreateUser({super.key});
+  const CreateUser({super.key, required this.adminId});
+  final String adminId;
 
   @override
   State<CreateUser> createState() => _CreateUserState();
@@ -19,11 +20,14 @@ class _CreateUserState extends State<CreateUser> {
   TextEditingController passwordController = TextEditingController();
   bool isLoading = true;
   List<String> userList = [];
+  List<String> designationList = [];
+  String? selectedServiceProvider;
   @override
   void initState() {
     fetchData().whenComplete(() => setState(() {
           isLoading = false;
         }));
+    getDesignations();
     super.initState();
   }
 
@@ -70,6 +74,7 @@ class _CreateUserState extends State<CreateUser> {
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => UserDetails(
+                                                adminId: widget.adminId,
                                                 userId: value.userList[index],
                                               ),
                                             ),
@@ -148,154 +153,194 @@ class _CreateUserState extends State<CreateUser> {
           return AlertDialog(
             actions: [
               Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Container(
-                        color: Colors.white,
-                        height: 40,
-                        width: MediaQuery.of(context).size.width * 0.30,
-                        child: TextFormField(
-                          textInputAction: TextInputAction.next,
-                          expands: true,
-                          maxLines: null,
-                          controller: fnameController,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            label: const Text('First Name'),
-                            hintText: 'Enter First Name',
-                            hintStyle: const TextStyle(fontSize: 12),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 2,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Container(
-                        color: Colors.white,
-                        height: 40,
-                        width: MediaQuery.of(context).size.width * 0.30,
-                        child: TextFormField(
-                          textInputAction: TextInputAction.next,
-                          expands: true,
-                          maxLines: null,
-                          controller: lnameController,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            label: const Text('Last Name'),
-                            hintText: 'Enter Last Name',
-                            hintStyle: const TextStyle(fontSize: 12),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Container(
+                          color: Colors.white,
+                          height: 45,
+                          width: MediaQuery.of(context).size.width * 0.30,
+                          child: TextFormField(
+                            textInputAction: TextInputAction.next,
+                            expands: true,
+                            maxLines: null,
+                            controller: fnameController,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              label: const Text('First Name'),
+                              hintText: 'Enter First Name',
+                              hintStyle: const TextStyle(fontSize: 12),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 2,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Container(
-                        color: Colors.white,
-                        height: 50,
-                        width: MediaQuery.of(context).size.width * 0.30,
-                        child: TextFormField(
-                          maxLength: 10,
-                          keyboardType: TextInputType.number,
-                          textInputAction: TextInputAction.next,
-                          expands: true,
-                          maxLines: null,
-                          controller: mobileController,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            label: const Text('Mobile Number'),
-                            hintText: 'Enter Mobile Number',
-                            hintStyle: const TextStyle(fontSize: 12),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                      const SizedBox(
+                        height: 1,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Container(
+                          color: Colors.white,
+                          height: 45,
+                          width: MediaQuery.of(context).size.width * 0.30,
+                          child: TextFormField(
+                            textInputAction: TextInputAction.next,
+                            expands: true,
+                            maxLines: null,
+                            controller: lnameController,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              label: const Text('Last Name'),
+                              hintText: 'Enter Last Name',
+                              hintStyle: const TextStyle(fontSize: 12),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 2,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Container(
-                        color: Colors.white,
-                        height: 40,
-                        width: MediaQuery.of(context).size.width * 0.30,
-                        child: TextFormField(
-                          textInputAction: TextInputAction.next,
-                          expands: true,
-                          maxLines: null,
-                          controller: passwordController,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            label: const Text('Password'),
-                            hintText: 'Enter Password',
-                            hintStyle: const TextStyle(fontSize: 12),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                      const SizedBox(
+                        height: 1,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Container(
+                          color: Colors.white,
+                          height: 55,
+                          width: MediaQuery.of(context).size.width * 0.30,
+                          child: TextFormField(
+                            maxLength: 10,
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
+                            expands: true,
+                            maxLines: null,
+                            controller: mobileController,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              label: const Text('Mobile Number'),
+                              hintText: 'Enter Mobile Number',
+                              hintStyle: const TextStyle(fontSize: 12),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 2,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Cancel')),
-                        ElevatedButton(
-                            onPressed: () {
-                              storeData(
-                                      fnameController.text,
-                                      lnameController.text,
-                                      mobileController.text,
-                                      passwordController.text)
-                                  .whenComplete(() {
-                                popupmessage('User created successfully!!');
+                      const SizedBox(
+                        height: 1,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Container(
+                          color: Colors.white,
+                          height: 45,
+                          width: MediaQuery.of(context).size.width * 0.30,
+                          child: TextFormField(
+                            textInputAction: TextInputAction.next,
+                            expands: true,
+                            maxLines: null,
+                            controller: passwordController,
+                            decoration: InputDecoration(
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              label: const Text('Password'),
+                              hintText: 'Enter Password',
+                              hintStyle: const TextStyle(fontSize: 12),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 2,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Container(
+                          height: 55,
+                          width: MediaQuery.of(context).size.width * 0.30,
+                          child: DropdownButtonFormField(
+                            value: selectedServiceProvider,
+                            items: designationList.map((String option) {
+                              return DropdownMenuItem(
+                                value: option,
+                                child: Text(option),
+                              );
+                            }).toList(),
+                            onChanged: (value) async {
+                              // serviceProviders.clear();
+                              setState(() {
+                                selectedServiceProvider = value;
+                                // selectedServiceProvider = value;
                               });
                             },
-                            child: const Text('Save'))
-                      ],
-                    )
-                  ],
+                            decoration: InputDecoration(
+                                labelText: 'Service Provider',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5.0))),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'This field is required';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 2,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Cancel')),
+                          ElevatedButton(
+                              onPressed: () {
+                                storeData(
+                                        fnameController.text,
+                                        lnameController.text,
+                                        mobileController.text,
+                                        passwordController.text,
+                                        selectedServiceProvider!)
+                                    .whenComplete(() {
+                                  popupmessage('User created successfully!!');
+                                });
+                              },
+                              child: const Text('Save'))
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               )
             ],
@@ -303,8 +348,8 @@ class _CreateUserState extends State<CreateUser> {
         });
   }
 
-  Future<void> storeData(
-      String fname, String lname, String mobile, String password) async {
+  Future<void> storeData(String fname, String lname, String mobile,
+      String password, String role) async {
     String firstInitial = fname[0][0].trim().toUpperCase();
     String lastInitial = lname[0][0].trim().toUpperCase();
     String mobileLastFour = mobile.substring(mobile.length - 4);
@@ -314,17 +359,21 @@ class _CreateUserState extends State<CreateUser> {
     final provider = Provider.of<AllUserProvider>(context, listen: false);
     await FirebaseFirestore.instance.collection('members').doc(userId).set({
       'userId': userId,
+      'fullName': fullName,
       'fName': fname,
       'lName': lname,
       'mobile': mobile,
       'password': password,
+      'role': role,
     });
     provider.addSingleList({
       'userId': userId,
+      'fullName': fullName,
       'fName': fname,
       'lName': lname,
       'mobile': mobile,
       'password': password,
+      'role': role,
     });
   }
 
@@ -360,5 +409,16 @@ class _CreateUserState extends State<CreateUser> {
             ),
           );
         });
+  }
+
+  Future<void> getDesignations() async {
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('designations').get();
+    if (querySnapshot.docs.isNotEmpty) {
+      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+      setState(() {
+        designationList = tempData;
+      });
+    }
   }
 }
