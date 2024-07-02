@@ -138,7 +138,7 @@ class _MasterHomeScreenState extends State<MasterHomeScreen> {
                       child: const Padding(
                         padding: EdgeInsets.all(5.0),
                         child: Text(
-                          'Designation List',
+                          'Work List',
                           style: TextStyle(color: Colors.white, fontSize: 20),
                         ),
                       ),

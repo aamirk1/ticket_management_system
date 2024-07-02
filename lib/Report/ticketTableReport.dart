@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:ticket_management_system/Report/upDateServiceProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
 class TicketTableReport extends StatefulWidget {
@@ -12,9 +13,40 @@ class TicketTableReport extends StatefulWidget {
 }
 
 class _TicketTableReportState extends State<TicketTableReport> {
+  TextEditingController assetController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
+  TextEditingController workController = TextEditingController();
+  TextEditingController floorController = TextEditingController();
+  TextEditingController roomController = TextEditingController();
+  TextEditingController buildingController = TextEditingController();
+  TextEditingController ticketController = TextEditingController();
+  TextEditingController userController = TextEditingController();
+  List<String> buildingList = [];
+  List<String> floorList = [];
+  List<String> roomList = [];
+  List<String> assetList = [];
+  List<String> userList = [];
+  List<String> allTicketList = [];
+  List<String> workList = [];
+  String? selectedAsset;
+  String? selectedFloor;
+  String? selectedRoom;
+  String? selectedDate;
+  String? selectedUser;
+  String? selectedTicket;
+  String? selectedbuilding;
+
   List<dynamic> allData = [];
   List<dynamic> serviceProviderList = [];
   String? selectedTicketNumber;
+  List<String> allDateData = [];
+  List<String> allTicketData = [];
+  List<String> allAssetData = [];
+  List<String> allUserData = [];
+  List<String> allBuildingData = [];
+  List<String> allFloorData = [];
+  List<String> allWorkData = [];
+  List<String> allRoomData = [];
   List<String> columnName = [
     'Date',
     'TAT',
@@ -49,30 +81,10 @@ class _TicketTableReportState extends State<TicketTableReport> {
   String revive = '';
 
   List<String> ticketList = [];
-  // List<List<String>> rowData = [
-  //   [
-  //     '02/03/2024',
-  //     '90 min',
-  //     '1234',
-  //     'Open',
-  //     'Cleaning',
-  //     'C',
-  //     '6',
-  //     '601',
-  //     'coridor',
-  //     'John',
-  //     'Jack',
-  //     'Remark',
-  //     'Picture',
-  //     'Re-Assign',
-  //     'Revive'
-  //   ],
-  // ];
 
   List<String> serviceProvider = [];
 
   String? selectedServiceProvider;
-  bool isServiceProviderSelected = true;
 
   List<String> ticketNumberList = [];
   @override
@@ -84,7 +96,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
         setState(() {});
       });
     });
-    print(columnName.length);
+    getBuilding();
+
     super.initState();
   }
 
@@ -113,7 +126,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
                 onPressed: () {},
                 icon: const Icon(
                   Icons.power_settings_new_outlined,
-                  size: 30,color: white,
+                  size: 30,
+                  color: white,
                 )),
           )
         ],
@@ -123,11 +137,59 @@ class _TicketTableReportState extends State<TicketTableReport> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: customDropDown(
+                      'Select Date',
+                      allDateData,
+                      "Search Date",
+                      0,
+                    )),
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: customDropDown(
+                      'Select Ticket Number',
+                      allTicketData,
+                      "Search Ticket Number",
+                      1,
+                    )),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: customDropDown('Select Building', buildingList,
+                      "Search Building Number", 2),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: customDropDown(
+                      'Select Floor', floorList, "Search Floor Number", 3),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: customDropDown(
+                      'Select Room', roomList, "Search Room Number", 4),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:
+                      customDropDown('Select User', userList, "Search User", 5),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: customDropDown(
+                      'Select Asset', assetList, "Search Asset", 6),
+                )
+              ],
+            ),
+            SizedBox(
+              height: 5,
+            ),
             Padding(
               padding: const EdgeInsets.all(4),
               child: Container(
                 padding: const EdgeInsets.all(2.0),
-                height: MediaQuery.of(context).size.height * 0.85,
+                height: MediaQuery.of(context).size.height * 0.75,
                 width: MediaQuery.of(context).size.width * 0.99,
                 child: DataTable2(
                   minWidth: 5500,
@@ -179,301 +241,14 @@ class _TicketTableReportState extends State<TicketTableReport> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // selectedTicketNumber = '';
-          // selectedServiceProvider = '';
-          updateServiceProvider();
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return UpdateServiceProvider();
+          }));
         },
         backgroundColor: Colors.deepPurple,
         child: const Icon(Icons.add, color: white),
       ),
     );
-  }
-
-  void updateServiceProvider() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            actions: [
-              Center(
-                child: Column(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Container(
-                            color: Colors.white,
-                            height: 40,
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton2<String>(
-                                isExpanded: true,
-                                hint: const Text(
-                                  'Select Ticket Number',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                items: ticketNumberList
-                                    .map((item) => DropdownMenuItem(
-                                          value: item,
-                                          child: Text(
-                                            item,
-                                            style: const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black),
-                                          ),
-                                        ))
-                                    .toList(),
-                                value: selectedTicketNumber,
-                                onChanged: (value) async {
-                                  serviceProviderList.clear();
-                                  serviceProviderController.clear();
-                                  selectedServiceProvider = '';
-                                  selectedTicketNumber = value;
-                                  // await getflatno(selectedSocietyName!);
-                                  setState(() {
-                                    selectedTicketNumber = value;
-                                  });
-                                },
-                                buttonStyleData: const ButtonStyleData(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                      border: Border(
-                                          right: BorderSide(
-                                            color: Colors.grey,
-                                          ),
-                                          left: BorderSide(color: Colors.grey),
-                                          top: BorderSide(color: Colors.grey),
-                                          bottom: BorderSide(
-                                            color: Colors.grey,
-                                          ))),
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  height: 40,
-                                  width: 200,
-                                ),
-                                dropdownStyleData: const DropdownStyleData(
-                                  maxHeight: 200,
-                                ),
-                                menuItemStyleData: const MenuItemStyleData(
-                                  height: 40,
-                                ),
-                                dropdownSearchData: DropdownSearchData(
-                                  searchController: ticketnumberController,
-                                  searchInnerWidgetHeight: 50,
-                                  searchInnerWidget: Container(
-                                    height: 50,
-                                    padding: const EdgeInsets.only(
-                                      top: 8,
-                                      bottom: 4,
-                                      right: 8,
-                                      left: 8,
-                                    ),
-                                    child: TextFormField(
-                                      expands: true,
-                                      maxLines: null,
-                                      controller: ticketnumberController,
-                                      decoration: InputDecoration(
-                                        isDense: true,
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 8,
-                                        ),
-                                        hintText: 'Search Ticket Number',
-                                        hintStyle:
-                                            const TextStyle(fontSize: 12),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  searchMatchFn: (item, searchValue) {
-                                    return item.value
-                                        .toString()
-                                        .contains(searchValue);
-                                  },
-                                ),
-                                //This to clear the search value when you close the menu
-                                onMenuStateChange: (isOpen) {
-                                  if (!isOpen) {
-                                    ticketnumberController.clear();
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Container(
-                            color: Colors.white,
-                            height: 40,
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton2<String>(
-                                isExpanded: true,
-                                hint: const Text(
-                                  'Select Service provider.',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                                items: serviceProvider
-                                    .map((item) => DropdownMenuItem(
-                                          value: item,
-                                          child: Text(
-                                            item,
-                                            style: const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.black),
-                                          ),
-                                        ))
-                                    .toList(),
-                                value: selectedTicketNumber,
-                                onChanged: (value) {
-                                  isServiceProviderSelected = false;
-                                  selectedServiceProvider = value;
-                                  setState(() {
-                                    selectedServiceProvider = value;
-                                  });
-                                },
-                                buttonStyleData: const ButtonStyleData(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                      border: Border(
-                                          right: BorderSide(
-                                            color: Colors.grey,
-                                          ),
-                                          left: BorderSide(color: Colors.grey),
-                                          top: BorderSide(color: Colors.grey),
-                                          bottom: BorderSide(
-                                            color: Colors.grey,
-                                          ))),
-                                  padding: EdgeInsets.symmetric(horizontal: 20),
-                                  height: 40,
-                                  width: 200,
-                                ),
-                                dropdownStyleData: const DropdownStyleData(
-                                  maxHeight: 200,
-                                ),
-                                menuItemStyleData: const MenuItemStyleData(
-                                  height: 40,
-                                ),
-                                dropdownSearchData: DropdownSearchData(
-                                  searchController: serviceProviderController,
-                                  searchInnerWidgetHeight: 50,
-                                  searchInnerWidget: Container(
-                                    height: 50,
-                                    padding: const EdgeInsets.only(
-                                      top: 8,
-                                      bottom: 4,
-                                      right: 8,
-                                      left: 8,
-                                    ),
-                                    child: TextFormField(
-                                      expands: true,
-                                      maxLines: null,
-                                      controller: serviceProviderController,
-                                      decoration: InputDecoration(
-                                        isDense: true,
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 8,
-                                        ),
-                                        hintText: 'Search service provider',
-                                        hintStyle:
-                                            const TextStyle(fontSize: 12),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  searchMatchFn: (item, searchValue) {
-                                    return item.value
-                                        .toString()
-                                        .contains(searchValue);
-                                  },
-                                ),
-                                //This to clear the search value when you close the menu
-                                onMenuStateChange: (isOpen) {
-                                  if (!isOpen) {
-                                    serviceProvider.clear();
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('Cancel')),
-                            ElevatedButton(
-                                onPressed: () {
-                                  updateData()
-                                      .whenComplete(() => popupmessage());
-                                },
-                                child: const Text('Save'))
-                          ],
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              )
-            ],
-          );
-        });
-  }
-
-  void popupmessage() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Center(
-            child: AlertDialog(
-              content: const Text(
-                'Changes saved successfully!!',
-                style: TextStyle(fontSize: 14, color: Colors.green),
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'OK',
-                      style: TextStyle(color: Colors.green),
-                    ))
-              ],
-            ),
-          );
-        });
   }
 
   Future<void> getTicketNumberList() async {
@@ -570,6 +345,174 @@ class _TicketTableReportState extends State<TicketTableReport> {
       allData.add(assign);
       allData.add(revive);
       rowData.add(allData);
+    }
+  }
+
+  Widget customDropDown(String title, List<String> customDropDownList,
+      String hintText, int index) {
+    return Card(
+      elevation: 5.0,
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton2<String>(
+          isExpanded: true,
+          hint: Text(
+            hintText,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 14,
+            ),
+          ),
+          items: customDropDownList
+              .map((item) => DropdownMenuItem(
+                    value: item,
+                    child: Text(
+                      item,
+                      style: const TextStyle(fontSize: 14, color: Colors.black),
+                    ),
+                  ))
+              .toList(),
+          value: index == 0
+              ? selectedDate
+              : index == 1
+                  ? selectedTicket
+                  : index == 2
+                      ? selectedbuilding
+                      : index == 3
+                          ? selectedFloor
+                          : index == 4
+                              ? selectedRoom
+                              : index == 5
+                                  ? selectedUser
+                                  : selectedAsset,
+          onChanged: (value) {
+            setState(() {
+              index == 0
+                  ? selectedDate = value
+                  : index == 1
+                      ? selectedTicket = value
+                      : index == 2
+                          ? selectedbuilding = value
+                          : index == 3
+                              ? selectedFloor = value
+                              : index == 4
+                                  ? selectedRoom = value
+                                  : index == 5
+                                      ? selectedUser = value
+                                      : selectedAsset = value;
+            });
+            // fetchMemberName(selectedFlatNo!);
+          },
+          buttonStyleData: const ButtonStyleData(
+            decoration: BoxDecoration(),
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            height: 40,
+            width: 150,
+          ),
+          dropdownStyleData: const DropdownStyleData(
+            maxHeight: 200,
+          ),
+          menuItemStyleData: const MenuItemStyleData(
+            height: 40,
+          ),
+          dropdownSearchData: DropdownSearchData(
+            searchController: index == 0
+                ? dateController
+                : index == 1
+                    ? ticketController
+                    : index == 2
+                        ? buildingController
+                        : index == 3
+                            ? floorController
+                            : index == 4
+                                ? roomController
+                                : index == 5
+                                    ? userController
+                                    : assetController,
+            searchInnerWidgetHeight: 50,
+            searchInnerWidget: Container(
+              height: 50,
+              padding: const EdgeInsets.only(
+                top: 8,
+                bottom: 4,
+                right: 8,
+                left: 8,
+              ),
+              child: TextFormField(
+                expands: true,
+                maxLines: null,
+                controller: index == 0
+                    ? dateController
+                    : index == 1
+                        ? ticketController
+                        : index == 2
+                            ? buildingController
+                            : index == 3
+                                ? floorController
+                                : index == 4
+                                    ? roomController
+                                    : index == 5
+                                        ? userController
+                                        : assetController,
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
+                  ),
+                  hintText: hintText,
+                  hintStyle: const TextStyle(fontSize: 12),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+            searchMatchFn: (item, searchValue) {
+              return item.value.toString().contains(searchValue);
+            },
+          ),
+          //This to clear the search value when you close the menu
+          onMenuStateChange: (isOpen) {
+            if (!isOpen) {
+              // textEditingController.clear();
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<void> getBuilding() async {
+    Map<String, dynamic> data = Map();
+
+    for (var i = 0; i < ticketList.length; i++) {
+      print('lll${ticketList[i]}');
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('raisedTickets')
+          .doc(ticketList[i])
+          .get();
+
+      if (documentSnapshot.data() != null) {
+        data = documentSnapshot.data() as Map<String, dynamic>;
+
+        asset = data['asset'] ?? '';
+        building = data['building'] ?? '';
+        date = data['date'] ?? '';
+        floor = data['floor'] ?? '';
+        room = data['room'] ?? '';
+        work = data['work'] ?? '';
+        user = data['user'] ?? 'user11';
+      }
+      allDateData.add(date);
+      allTicketData.add(ticketList[i]);
+
+      allRoomData.add(work);
+      allBuildingData.add(building);
+      allFloorData.add(floor);
+      allRoomData.add(room);
+      allAssetData.add(asset);
+      allUserData.add(user);
+      allWorkData.add(work);
     }
   }
 }

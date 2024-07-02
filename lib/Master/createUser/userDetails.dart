@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ticket_management_system/utils/colors.dart';
 
 class UserDetails extends StatefulWidget {
   const UserDetails({super.key, required this.adminId, required this.userId});
@@ -16,7 +17,8 @@ class _UserDetailsState extends State<UserDetails> {
   String mobile = '';
   String userId = '';
   String password = '';
-  String role = '';
+  List<dynamic> role = [];
+  List<dynamic> roleList = [];
   bool isLoading = true;
   @override
   void initState() {
@@ -29,6 +31,17 @@ class _UserDetailsState extends State<UserDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          title: const Center(
+              child: Text(
+            'User Details',
+            style: TextStyle(color: Colors.white),
+          )),
+          flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+            colors: [Colors.purple, Colors.deepPurple],
+          )))),
       body: isLoading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -50,16 +63,6 @@ class _UserDetailsState extends State<UserDetails> {
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                               children: [
-                                const Center(
-                                  child: Text(
-                                    'User Details',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
                                 const SizedBox(
                                   height: 30,
                                 ),
@@ -115,11 +118,33 @@ class _UserDetailsState extends State<UserDetails> {
                                         const SizedBox(
                                           height: 20,
                                         ),
-                                        Text(
-                                          'Designation: $role',
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black),
+                                        Container(
+                                          height: 50,
+                                          width: 170,
+                                          color: Colors.purple,
+                                          // ignore: unnecessary_null_comparison
+                                          child: role != null
+                                              ? ListView.builder(
+                                                  itemCount: roleList.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return ListTile(
+                                                      title: Text(
+                                                        role[index],
+                                                        style: const TextStyle(
+                                                            color: black),
+                                                      ),
+                                                    );
+                                                  },
+                                                )
+                                              : const Text(
+                                                  'No Roles',
+                                                  style:
+                                                      TextStyle(color: black),
+                                                ),
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
                                         ),
                                       ]),
                                 )

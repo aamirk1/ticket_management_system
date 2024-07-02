@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ticket_management_system/Master/createUser/userDetails.dart';
+import 'package:ticket_management_system/Master/createUser/userForm.dart';
 import 'package:ticket_management_system/providers/userProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
@@ -14,14 +15,10 @@ class CreateUser extends StatefulWidget {
 }
 
 class _CreateUserState extends State<CreateUser> {
-  TextEditingController fnameController = TextEditingController();
-  TextEditingController lnameController = TextEditingController();
-  TextEditingController mobileController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   bool isLoading = true;
+  String messageForSocietyMember = '';
   List<String> userList = [];
   List<String> designationList = [];
-  String? selectedServiceProvider;
   @override
   void initState() {
     fetchData().whenComplete(() => setState(() {
@@ -40,9 +37,11 @@ class _CreateUserState extends State<CreateUser> {
               gradient:
                   LinearGradient(colors: [Colors.purple, Colors.deepPurple])),
         ),
-        title: const Text(
-          'Create User',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        title: const Center(
+          child:  Text(
+            'Create User',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
       body: isLoading
@@ -113,7 +112,10 @@ class _CreateUserState extends State<CreateUser> {
                           child: FloatingActionButton(
                             backgroundColor: Colors.deepPurple,
                             onPressed: () {
-                              addUser();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const UserForm()));
                             },
                             child: const Icon(Icons.add, color: white),
                           ),
@@ -146,207 +148,197 @@ class _CreateUserState extends State<CreateUser> {
     provider.removeData(userList.indexOf(userId));
   }
 
-  void addUser() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            actions: [
-              Center(
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.75,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Container(
-                          color: Colors.white,
-                          height: 45,
-                          width: MediaQuery.of(context).size.width * 0.30,
-                          child: TextFormField(
-                            textInputAction: TextInputAction.next,
-                            expands: true,
-                            maxLines: null,
-                            controller: fnameController,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              label: const Text('First Name'),
-                              hintText: 'Enter First Name',
-                              hintStyle: const TextStyle(fontSize: 12),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 1,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Container(
-                          color: Colors.white,
-                          height: 45,
-                          width: MediaQuery.of(context).size.width * 0.30,
-                          child: TextFormField(
-                            textInputAction: TextInputAction.next,
-                            expands: true,
-                            maxLines: null,
-                            controller: lnameController,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              label: const Text('Last Name'),
-                              hintText: 'Enter Last Name',
-                              hintStyle: const TextStyle(fontSize: 12),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 1,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Container(
-                          color: Colors.white,
-                          height: 55,
-                          width: MediaQuery.of(context).size.width * 0.30,
-                          child: TextFormField(
-                            maxLength: 10,
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
-                            expands: true,
-                            maxLines: null,
-                            controller: mobileController,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              label: const Text('Mobile Number'),
-                              hintText: 'Enter Mobile Number',
-                              hintStyle: const TextStyle(fontSize: 12),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 1,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Container(
-                          color: Colors.white,
-                          height: 45,
-                          width: MediaQuery.of(context).size.width * 0.30,
-                          child: TextFormField(
-                            textInputAction: TextInputAction.next,
-                            expands: true,
-                            maxLines: null,
-                            controller: passwordController,
-                            decoration: InputDecoration(
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              label: const Text('Password'),
-                              hintText: 'Enter Password',
-                              hintStyle: const TextStyle(fontSize: 12),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Container(
-                          height: 55,
-                          width: MediaQuery.of(context).size.width * 0.30,
-                          child: DropdownButtonFormField(
-                            value: selectedServiceProvider,
-                            items: designationList.map((String option) {
-                              return DropdownMenuItem(
-                                value: option,
-                                child: Text(option),
-                              );
-                            }).toList(),
-                            onChanged: (value) async {
-                              // serviceProviders.clear();
-                              setState(() {
-                                selectedServiceProvider = value;
-                                // selectedServiceProvider = value;
-                              });
-                            },
-                            decoration: InputDecoration(
-                                labelText: 'Service Provider',
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(5.0))),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'This field is required';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Cancel')),
-                          ElevatedButton(
-                              onPressed: () {
-                                storeData(
-                                        fnameController.text,
-                                        lnameController.text,
-                                        mobileController.text,
-                                        passwordController.text,
-                                        selectedServiceProvider!)
-                                    .whenComplete(() {
-                                  popupmessage('User created successfully!!');
-                                });
-                              },
-                              child: const Text('Save'))
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ],
-          );
-        });
-  }
+  // void addUser() {
+  //   showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           actions: [
+  //             Center(
+  //               child: Container(
+  //                 margin: const EdgeInsets.only(top: 20),
+  //                 height: MediaQuery.of(context).size.height * 0.80,
+  //                 child: Column(
+  //                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //                   children: [
+  //                     Padding(
+  //                       padding: const EdgeInsets.symmetric(
+  //                           horizontal: 10, vertical: 2),
+  //                       child: Container(
+  //                         color: Colors.white,
+  //                         height: 45,
+  //                         width: MediaQuery.of(context).size.width * 0.30,
+  //                         child: TextFormField(
+  //                           textInputAction: TextInputAction.next,
+  //                           expands: true,
+  //                           maxLines: null,
+  //                           controller: fnameController,
+  //                           decoration: InputDecoration(
+  //                             isDense: true,
+  //                             contentPadding: const EdgeInsets.symmetric(
+  //                               horizontal: 10,
+  //                               vertical: 8,
+  //                             ),
+  //                             label: const Text('First Name'),
+  //                             hintText: 'Enter First Name',
+  //                             hintStyle: const TextStyle(fontSize: 12),
+  //                             border: OutlineInputBorder(
+  //                               borderRadius: BorderRadius.circular(8),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(
+  //                       height: 4,
+  //                     ),
+  //                     Padding(
+  //                       padding: const EdgeInsets.symmetric(
+  //                           horizontal: 10, vertical: 2),
+  //                       child: Container(
+  //                         color: Colors.white,
+  //                         height: 45,
+  //                         width: MediaQuery.of(context).size.width * 0.30,
+  //                         child: TextFormField(
+  //                           textInputAction: TextInputAction.next,
+  //                           expands: true,
+  //                           maxLines: null,
+  //                           controller: lnameController,
+  //                           decoration: InputDecoration(
+  //                             isDense: true,
+  //                             contentPadding: const EdgeInsets.symmetric(
+  //                               horizontal: 10,
+  //                               vertical: 8,
+  //                             ),
+  //                             label: const Text('Last Name'),
+  //                             hintText: 'Enter Last Name',
+  //                             hintStyle: const TextStyle(fontSize: 12),
+  //                             border: OutlineInputBorder(
+  //                               borderRadius: BorderRadius.circular(8),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(
+  //                       height: 4,
+  //                     ),
+  //                     Padding(
+  //                       padding: const EdgeInsets.symmetric(
+  //                           horizontal: 10, vertical: 2),
+  //                       child: Container(
+  //                         color: Colors.white,
+  //                         height: 55,
+  //                         width: MediaQuery.of(context).size.width * 0.30,
+  //                         child: TextFormField(
+  //                           maxLength: 10,
+  //                           keyboardType: TextInputType.number,
+  //                           textInputAction: TextInputAction.next,
+  //                           expands: true,
+  //                           maxLines: null,
+  //                           controller: mobileController,
+  //                           decoration: InputDecoration(
+  //                             isDense: true,
+  //                             contentPadding: const EdgeInsets.symmetric(
+  //                               horizontal: 10,
+  //                               vertical: 8,
+  //                             ),
+  //                             label: const Text('Mobile Number'),
+  //                             hintText: 'Enter Mobile Number',
+  //                             hintStyle: const TextStyle(fontSize: 12),
+  //                             border: OutlineInputBorder(
+  //                               borderRadius: BorderRadius.circular(8),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(
+  //                       height: 4,
+  //                     ),
+  //                     Padding(
+  //                       padding: const EdgeInsets.symmetric(
+  //                           horizontal: 10, vertical: 2),
+  //                       child: Container(
+  //                         color: Colors.white,
+  //                         height: 45,
+  //                         width: MediaQuery.of(context).size.width * 0.30,
+  //                         child: TextFormField(
+  //                           textInputAction: TextInputAction.next,
+  //                           expands: true,
+  //                           maxLines: null,
+  //                           controller: passwordController,
+  //                           decoration: InputDecoration(
+  //                             isDense: true,
+  //                             contentPadding: const EdgeInsets.symmetric(
+  //                               horizontal: 10,
+  //                               vertical: 8,
+  //                             ),
+  //                             label: const Text('Password'),
+  //                             hintText: 'Enter Password',
+  //                             hintStyle: const TextStyle(fontSize: 12),
+  //                             border: OutlineInputBorder(
+  //                               borderRadius: BorderRadius.circular(8),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(
+  //                       height: 6,
+  //                     ),
+  //                     Row(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Column(
+  //                           mainAxisAlignment: MainAxisAlignment.center,
+  //                           children: [
+  //                             customDropDown(
+  //                               'Select Designation',
+  //                               true,
+  //                               designationList,
+  //                               "Search Designation",
+  //                             ),
+  //                             Container(),
+  //                           ],
+  //                         ),
+  //                         customShowBox(
+  //                           selectedDesignationList,
+  //                           0.35,
+  //                         ),
+  //                       ],
+  //                     ),
+  //                     Row(
+  //                       mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //                       children: [
+  //                         TextButton(
+  //                             onPressed: () {
+  //                               Navigator.pop(context);
+  //                             },
+  //                             child: const Text('Cancel')),
+  //                         ElevatedButton(
+  //                             onPressed: () {
+  //                               storeData(
+  //                                       fnameController.text,
+  //                                       lnameController.text,
+  //                                       mobileController.text,
+  //                                       passwordController.text,
+  //                                       selectedServiceProvider!)
+  //                                   .whenComplete(() {
+  //                                 popupmessage('User created successfully!!');
+  //                               });
+  //                             },
+  //                             child: const Text('Save'))
+  //                       ],
+  //                     )
+  //                   ],
+  //                 ),
+  //               ),
+  //             )
+  //           ],
+  //         );
+  //       });
+  // }
 
   Future<void> storeData(String fname, String lname, String mobile,
       String password, String role) async {
@@ -375,40 +367,6 @@ class _CreateUserState extends State<CreateUser> {
       'password': password,
       'role': role,
     });
-  }
-
-  void popupmessage(String msg) {
-    final provider = Provider.of<AllUserProvider>(context, listen: false);
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Center(
-            child: AlertDialog(
-              content: Text(
-                msg,
-                style: const TextStyle(fontSize: 14, color: Colors.green),
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      fetchData().whenComplete(() {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                        fnameController.clear();
-                        lnameController.clear();
-                        mobileController.clear();
-                        passwordController.clear();
-                        provider.setLoadWidget(false);
-                      });
-                    },
-                    child: const Text(
-                      'OK',
-                      style: TextStyle(color: Colors.green),
-                    ))
-              ],
-            ),
-          );
-        });
   }
 
   Future<void> getDesignations() async {

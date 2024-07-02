@@ -1,6 +1,6 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ticket_management_system/utils/colors.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key, required this.adminId});
@@ -92,7 +92,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                                               );
                                             }
                                           },
-                                          child: const Text('Change Password'),
+                                          child: const Text(
+                                            'Change Password',
+                                            style: TextStyle(color: white),
+                                          ),
                                         ),
                                       )
                                     ]),

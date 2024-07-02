@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:ticket_management_system/Master/master.dart';
 import 'package:ticket_management_system/Report/ticketTableReport.dart';
@@ -35,7 +34,8 @@ class Home extends StatelessWidget {
                 onPressed: () {},
                 icon: const Icon(
                   Icons.power_settings_new_outlined,
-                  size: 30,color: white,
+                  size: 30,
+                  color: white,
                 )),
           )
         ],
@@ -46,7 +46,7 @@ class Home extends StatelessWidget {
             image: const AssetImage('assets/images/clg.jpeg'),
             fit: BoxFit.fill,
             colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5), // Adjust the opacity here
+              Colors.black.withOpacity(0.8), // Adjust the opacity here
               BlendMode.dstATop,
             ),
           ),
@@ -81,7 +81,7 @@ class Home extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                       MasterHomeScreen(adminId: adminId)),
+                                      MasterHomeScreen(adminId: adminId)),
                             );
                           },
                         ),
@@ -95,7 +95,8 @@ class Home extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>  MasterHomeScreen(adminId: adminId)),
+                              builder: (context) =>
+                                  MasterHomeScreen(adminId: adminId)),
                         );
                       },
                       child: Container(
@@ -374,8 +375,10 @@ class MasterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Master Screen',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        title: const Text(
+          'Master Screen',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
       body: const Center(
         child: Text('This is the Master Screen'),
@@ -403,8 +406,10 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile Screen',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        title: const Text(
+          'Profile Screen',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
       body: const Center(
         child: Text('This is the Profile Screen'),
