@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ticket_management_system/Master/itemMaster/editFloorForm.dart';
 import 'package:ticket_management_system/Master/itemMaster/roomList.dart';
 import 'package:ticket_management_system/providers/floorProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
@@ -56,7 +57,7 @@ class _FloorListState extends State<FloorList> {
                       SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
+                          child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.7,
                             child: ListView.builder(
                                 shrinkWrap: true,
@@ -83,16 +84,44 @@ class _FloorListState extends State<FloorList> {
                                           style: const TextStyle(
                                               color: Colors.black),
                                         ),
-                                        trailing: IconButton(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            deletefloorNumber(
-                                                value.floorList[index],
-                                                widget.buildingNumber);
-                                          },
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color: black,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditFloorForm(
+                                                      floorId:
+                                                          value.floorList[index],
+                                                    ),
+                                                  ),
+                                                ).whenComplete(() {
+                                                  setState(() {
+                                                    // fetchData();
+                                                    // isLoading = false;
+                                                  });
+                                                });
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                deletefloorNumber(
+                                                    value.floorList[index],
+                                                    widget.buildingNumber);
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       const Divider(
@@ -149,11 +178,9 @@ class _FloorListState extends State<FloorList> {
     if (querySnapshot.docs.isNotEmpty) {
       List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
       floorNumberList = tempData;
-      print(floorNumberList);
       provider.setBuilderList(floorNumberList);
     }
   }
-
   Future<void> deletefloorNumber(
       String floorNumber, String buildingNumber) async {
     final provider = Provider.of<AllFloorProvider>(context, listen: false);

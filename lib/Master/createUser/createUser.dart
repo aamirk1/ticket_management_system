@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ticket_management_system/Master/createUser/editUserForm.dart';
 import 'package:ticket_management_system/Master/createUser/userDetails.dart';
 import 'package:ticket_management_system/Master/createUser/userForm.dart';
 import 'package:ticket_management_system/providers/userProvider.dart';
@@ -18,13 +20,13 @@ class _CreateUserState extends State<CreateUser> {
   bool isLoading = true;
   String messageForSocietyMember = '';
   List<String> userList = [];
-  List<String> designationList = [];
+  List<String> workList = [];
   @override
   void initState() {
     fetchData().whenComplete(() => setState(() {
           isLoading = false;
         }));
-    getDesignations();
+    getWorks();
     super.initState();
   }
 
@@ -38,7 +40,7 @@ class _CreateUserState extends State<CreateUser> {
                   LinearGradient(colors: [Colors.purple, Colors.deepPurple])),
         ),
         title: const Center(
-          child:  Text(
+          child: Text(
             'Create User',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
@@ -59,7 +61,7 @@ class _CreateUserState extends State<CreateUser> {
                       SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
+                          child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.7,
                             child: ListView.builder(
                                 shrinkWrap: true,
@@ -84,16 +86,39 @@ class _CreateUserState extends State<CreateUser> {
                                           style: const TextStyle(
                                               color: Colors.black),
                                         ),
-                                        trailing: IconButton(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            deleteUser(
-                                              value.userList[index],
-                                            );
-                                          },
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color: black,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditUserForm(
+                                                      userId:
+                                                          value.userList[index],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                deleteUser(
+                                                  value.userList[index],
+                                                );
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       const Divider(
@@ -136,7 +161,9 @@ class _CreateUserState extends State<CreateUser> {
     if (querySnapshot.docs.isNotEmpty) {
       List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
       userList = tempData;
-      print(userList);
+      if (kDebugMode) {
+        print(userList);
+      }
     }
 
     provider.setBuilderList(userList);
@@ -148,197 +175,11 @@ class _CreateUserState extends State<CreateUser> {
     provider.removeData(userList.indexOf(userId));
   }
 
-  // void addUser() {
-  //   showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           actions: [
-  //             Center(
-  //               child: Container(
-  //                 margin: const EdgeInsets.only(top: 20),
-  //                 height: MediaQuery.of(context).size.height * 0.80,
-  //                 child: Column(
-  //                   // mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //                   children: [
-  //                     Padding(
-  //                       padding: const EdgeInsets.symmetric(
-  //                           horizontal: 10, vertical: 2),
-  //                       child: Container(
-  //                         color: Colors.white,
-  //                         height: 45,
-  //                         width: MediaQuery.of(context).size.width * 0.30,
-  //                         child: TextFormField(
-  //                           textInputAction: TextInputAction.next,
-  //                           expands: true,
-  //                           maxLines: null,
-  //                           controller: fnameController,
-  //                           decoration: InputDecoration(
-  //                             isDense: true,
-  //                             contentPadding: const EdgeInsets.symmetric(
-  //                               horizontal: 10,
-  //                               vertical: 8,
-  //                             ),
-  //                             label: const Text('First Name'),
-  //                             hintText: 'Enter First Name',
-  //                             hintStyle: const TextStyle(fontSize: 12),
-  //                             border: OutlineInputBorder(
-  //                               borderRadius: BorderRadius.circular(8),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     const SizedBox(
-  //                       height: 4,
-  //                     ),
-  //                     Padding(
-  //                       padding: const EdgeInsets.symmetric(
-  //                           horizontal: 10, vertical: 2),
-  //                       child: Container(
-  //                         color: Colors.white,
-  //                         height: 45,
-  //                         width: MediaQuery.of(context).size.width * 0.30,
-  //                         child: TextFormField(
-  //                           textInputAction: TextInputAction.next,
-  //                           expands: true,
-  //                           maxLines: null,
-  //                           controller: lnameController,
-  //                           decoration: InputDecoration(
-  //                             isDense: true,
-  //                             contentPadding: const EdgeInsets.symmetric(
-  //                               horizontal: 10,
-  //                               vertical: 8,
-  //                             ),
-  //                             label: const Text('Last Name'),
-  //                             hintText: 'Enter Last Name',
-  //                             hintStyle: const TextStyle(fontSize: 12),
-  //                             border: OutlineInputBorder(
-  //                               borderRadius: BorderRadius.circular(8),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     const SizedBox(
-  //                       height: 4,
-  //                     ),
-  //                     Padding(
-  //                       padding: const EdgeInsets.symmetric(
-  //                           horizontal: 10, vertical: 2),
-  //                       child: Container(
-  //                         color: Colors.white,
-  //                         height: 55,
-  //                         width: MediaQuery.of(context).size.width * 0.30,
-  //                         child: TextFormField(
-  //                           maxLength: 10,
-  //                           keyboardType: TextInputType.number,
-  //                           textInputAction: TextInputAction.next,
-  //                           expands: true,
-  //                           maxLines: null,
-  //                           controller: mobileController,
-  //                           decoration: InputDecoration(
-  //                             isDense: true,
-  //                             contentPadding: const EdgeInsets.symmetric(
-  //                               horizontal: 10,
-  //                               vertical: 8,
-  //                             ),
-  //                             label: const Text('Mobile Number'),
-  //                             hintText: 'Enter Mobile Number',
-  //                             hintStyle: const TextStyle(fontSize: 12),
-  //                             border: OutlineInputBorder(
-  //                               borderRadius: BorderRadius.circular(8),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     const SizedBox(
-  //                       height: 4,
-  //                     ),
-  //                     Padding(
-  //                       padding: const EdgeInsets.symmetric(
-  //                           horizontal: 10, vertical: 2),
-  //                       child: Container(
-  //                         color: Colors.white,
-  //                         height: 45,
-  //                         width: MediaQuery.of(context).size.width * 0.30,
-  //                         child: TextFormField(
-  //                           textInputAction: TextInputAction.next,
-  //                           expands: true,
-  //                           maxLines: null,
-  //                           controller: passwordController,
-  //                           decoration: InputDecoration(
-  //                             isDense: true,
-  //                             contentPadding: const EdgeInsets.symmetric(
-  //                               horizontal: 10,
-  //                               vertical: 8,
-  //                             ),
-  //                             label: const Text('Password'),
-  //                             hintText: 'Enter Password',
-  //                             hintStyle: const TextStyle(fontSize: 12),
-  //                             border: OutlineInputBorder(
-  //                               borderRadius: BorderRadius.circular(8),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     const SizedBox(
-  //                       height: 6,
-  //                     ),
-  //                     Row(
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: [
-  //                         Column(
-  //                           mainAxisAlignment: MainAxisAlignment.center,
-  //                           children: [
-  //                             customDropDown(
-  //                               'Select Designation',
-  //                               true,
-  //                               designationList,
-  //                               "Search Designation",
-  //                             ),
-  //                             Container(),
-  //                           ],
-  //                         ),
-  //                         customShowBox(
-  //                           selectedDesignationList,
-  //                           0.35,
-  //                         ),
-  //                       ],
-  //                     ),
-  //                     Row(
-  //                       mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //                       children: [
-  //                         TextButton(
-  //                             onPressed: () {
-  //                               Navigator.pop(context);
-  //                             },
-  //                             child: const Text('Cancel')),
-  //                         ElevatedButton(
-  //                             onPressed: () {
-  //                               storeData(
-  //                                       fnameController.text,
-  //                                       lnameController.text,
-  //                                       mobileController.text,
-  //                                       passwordController.text,
-  //                                       selectedServiceProvider!)
-  //                                   .whenComplete(() {
-  //                                 popupmessage('User created successfully!!');
-  //                               });
-  //                             },
-  //                             child: const Text('Save'))
-  //                       ],
-  //                     )
-  //                   ],
-  //                 ),
-  //               ),
-  //             )
-  //           ],
-  //         );
-  //       });
-  // }
+  Future<void> editUser(String userId) async {
+    final provider = Provider.of<AllUserProvider>(context, listen: false);
+    await FirebaseFirestore.instance.collection('members').doc(userId).delete();
+    provider.removeData(userList.indexOf(userId));
+  }
 
   Future<void> storeData(String fname, String lname, String mobile,
       String password, String role) async {
@@ -369,13 +210,13 @@ class _CreateUserState extends State<CreateUser> {
     });
   }
 
-  Future<void> getDesignations() async {
+  Future<void> getWorks() async {
     QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('designations').get();
+        await FirebaseFirestore.instance.collection('works').get();
     if (querySnapshot.docs.isNotEmpty) {
       List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
       setState(() {
-        designationList = tempData;
+        workList = tempData;
       });
     }
   }

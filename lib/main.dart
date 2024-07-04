@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
         title: 'TMS Admin',
         theme: ThemeData(
           scrollbarTheme: const ScrollbarThemeData(
-            thumbColor: MaterialStatePropertyAll(
+            thumbColor: WidgetStatePropertyAll(
               Colors.deepPurple,
             ),
           ),

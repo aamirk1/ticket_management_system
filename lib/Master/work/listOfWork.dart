@@ -1,7 +1,7 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ticket_management_system/Master/work/editWorkForm.dart';
 import 'package:ticket_management_system/providers/workProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
@@ -28,8 +28,10 @@ class _ListOfWorkState extends State<ListOfWork> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('List of Work',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        title: const Text(
+          'List of Work',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
               gradient:
@@ -51,7 +53,7 @@ class _ListOfWorkState extends State<ListOfWork> {
                       SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
+                          child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.7,
                             child: ListView.builder(
                                 shrinkWrap: true,
@@ -78,16 +80,44 @@ class _ListOfWorkState extends State<ListOfWork> {
                                           style: const TextStyle(
                                               color: Colors.black),
                                         ),
-                                        trailing: IconButton(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            deleteWork(
-                                              value.workList[index],
-                                            );
-                                          },
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color: black,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditWorkForm(
+                                                      workId:
+                                                          value.workList[index],
+                                                    ),
+                                                  ),
+                                                ).whenComplete(() {
+                                                  setState(() {
+                                                    fetchData();
+                                                    isLoading = false;
+                                                  });
+                                                });
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                deleteWork(
+                                                  value.workList[index],
+                                                );
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       const Divider(
@@ -127,7 +157,6 @@ class _ListOfWorkState extends State<ListOfWork> {
     if (querySnapshot.docs.isNotEmpty) {
       List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
       workList = tempData;
-      print(workList);
     }
 
     provider.setBuilderList(workList);
@@ -136,7 +165,8 @@ class _ListOfWorkState extends State<ListOfWork> {
   Future<void> deleteWork(String work) async {
     final provider = Provider.of<AllWorkProvider>(context, listen: false);
     await FirebaseFirestore.instance.collection('works').doc(work).delete();
-    provider.removeData(workList.indexOf(work));
+
+    provider.removeData(provider.workList.indexOf(work));
   }
 
   void addWork() {
@@ -177,6 +207,8 @@ class _ListOfWorkState extends State<ListOfWork> {
                             ),
                           ),
                         ),
+
+                        // ),
                         const SizedBox(
                           height: 10,
                         ),
@@ -209,6 +241,16 @@ class _ListOfWorkState extends State<ListOfWork> {
   }
 
   Future storeData(String work) async {
+    final provider = Provider.of<AllWorkProvider>(context, listen: false);
+    await FirebaseFirestore.instance.collection('works').doc(work).set({
+      'work': work,
+    });
+    provider.addSingleList({
+      'work': work,
+    });
+  }
+
+  Future updateData(String work) async {
     final provider = Provider.of<AllWorkProvider>(context, listen: false);
     await FirebaseFirestore.instance.collection('works').doc(work).set({
       'work': work,

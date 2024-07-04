@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class UpdateServiceProvider extends StatefulWidget {
@@ -21,20 +22,18 @@ class _UpdateServiceProviderState extends State<UpdateServiceProvider> {
   TextEditingController ticketnumberController = TextEditingController();
   @override
   void initState() {
-    getTicketList().whenComplete(() => setState(() {
-          fetchData();
-        }));
+    getTicketList().whenComplete(() => setState(() {}));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: Center(
-          child: Container(
+          child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.4,
             height: MediaQuery.of(context).size.height * 0.5,
             child: Card(
@@ -71,6 +70,7 @@ class _UpdateServiceProviderState extends State<UpdateServiceProvider> {
                           onChanged: (value) {
                             setState(() {
                               selectedTicketNumber = value;
+                              fetchServiceProvider();
                             });
                           },
                           buttonStyleData: const ButtonStyleData(
@@ -363,10 +363,14 @@ class _UpdateServiceProviderState extends State<UpdateServiceProvider> {
 
         // Update your ticketNumberList
         ticketNumberList = tempData;
-        print(ticketNumberList);
+        if (kDebugMode) {
+          print(ticketNumberList);
+        }
       }
     } catch (e) {
-      print("Error getting ticket numbers: $e");
+      if (kDebugMode) {
+        print("Error getting ticket numbers: $e");
+      }
     }
   }
 
@@ -378,17 +382,27 @@ class _UpdateServiceProviderState extends State<UpdateServiceProvider> {
     if (querySnapshot.docs.isNotEmpty) {
       List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
       ticketList = tempData;
-      print(ticketList);
     }
   }
 
-  Future<void> fetchData() async {
+  Future<void> fetchServiceProvider() async {
+    List<String> tempData = [];
     QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('designations').get();
+        await FirebaseFirestore.instance.collection('members').get();
+
     if (querySnapshot.docs.isNotEmpty) {
-      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-      serviceProvider = tempData;
-      print(serviceProvider);
+      tempData = querySnapshot.docs.map((e) => e.id).toList();
+    }
+    for (var i = 0; i < tempData.length; i++) {
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('members')
+          .doc(tempData[i])
+          .get();
+      if (documentSnapshot.data() != null) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+        serviceProvider.add(data['fullName']);
+      }
     }
   }
 

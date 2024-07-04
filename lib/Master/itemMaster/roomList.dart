@@ -1,7 +1,7 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ticket_management_system/Master/itemMaster/editRoomForm.dart';
 import 'package:ticket_management_system/Master/itemMaster/listOfAsset.dart';
 import 'package:ticket_management_system/providers/roomProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
@@ -38,8 +38,10 @@ class _RoomListState extends State<RoomList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Room List',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        title: const Text(
+          'Room List',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
               gradient:
@@ -61,7 +63,7 @@ class _RoomListState extends State<RoomList> {
                       SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
+                          child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.7,
                             child: ListView.builder(
                                 shrinkWrap: true,
@@ -89,17 +91,45 @@ class _RoomListState extends State<RoomList> {
                                           style: const TextStyle(
                                               color: Colors.black),
                                         ),
-                                        trailing: IconButton(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            deleteroomNumber(
-                                                value.roomList[index],
-                                                widget.buildingNumber,
-                                                widget.floorNumber);
-                                          },
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color: black,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditRoomForm(
+                                                      roomId:
+                                                          value.roomList[index],
+                                                    ),
+                                                  ),
+                                                ).whenComplete(() {
+                                                  setState(() {
+                                                    // fetchData();
+                                                    // isLoading = false;
+                                                  });
+                                                });
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                deleteroomNumber(
+                                                    value.roomList[index],
+                                                    widget.buildingNumber,
+                                                    widget.floorNumber);
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       const Divider(
@@ -161,7 +191,6 @@ class _RoomListState extends State<RoomList> {
     if (querySnapshot.docs.isNotEmpty) {
       List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
       roomNumberList = tempData;
-      print(roomNumberList);
       provider.setBuilderList(roomNumberList);
     }
   }

@@ -5,14 +5,15 @@ import 'package:provider/provider.dart';
 import 'package:ticket_management_system/providers/userProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
-class UserForm extends StatefulWidget {
-  const UserForm({super.key});
+class EditUserForm extends StatefulWidget {
+  const EditUserForm({super.key, required this.userId});
+  final String userId;
 
   @override
-  State<UserForm> createState() => _UserFormState();
+  State<EditUserForm> createState() => _EditUserFormState();
 }
 
-class _UserFormState extends State<UserForm> {
+class _EditUserFormState extends State<EditUserForm> {
   TextEditingController workController = TextEditingController();
   TextEditingController fnameController = TextEditingController();
   TextEditingController lnameController = TextEditingController();
@@ -31,7 +32,7 @@ class _UserFormState extends State<UserForm> {
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    fetchData().whenComplete(() => setState(() {
+    fetchData(widget.userId).whenComplete(() => setState(() {
           isLoading = false;
         }));
     getWorks();
@@ -69,12 +70,6 @@ class _UserFormState extends State<UserForm> {
                         height: 60,
                         width: MediaQuery.of(context).size.width * 0.30,
                         child: TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter First Name';
-                            }
-                            return null;
-                          },
                           textInputAction: TextInputAction.next,
                           controller: fnameController,
                           decoration: InputDecoration(
@@ -104,12 +99,6 @@ class _UserFormState extends State<UserForm> {
                         height: 60,
                         width: MediaQuery.of(context).size.width * 0.30,
                         child: TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter Last Name';
-                            }
-                            return null;
-                          },
                           textInputAction: TextInputAction.next,
                           controller: lnameController,
                           decoration: InputDecoration(
@@ -139,12 +128,6 @@ class _UserFormState extends State<UserForm> {
                         height: 60,
                         width: MediaQuery.of(context).size.width * 0.30,
                         child: TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter Mobile Number';
-                            }
-                            return null;
-                          },
                           maxLength: 10,
                           keyboardType: TextInputType.number,
                           textInputAction: TextInputAction.next,
@@ -176,12 +159,6 @@ class _UserFormState extends State<UserForm> {
                         height: 60,
                         width: MediaQuery.of(context).size.width * 0.30,
                         child: TextFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter Password';
-                            }
-                            return null;
-                          },
                           textInputAction: TextInputAction.next,
                           controller: passwordController,
                           decoration: InputDecoration(
@@ -226,20 +203,20 @@ class _UserFormState extends State<UserForm> {
                           )),
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
-                          storeData(
+                          updateData(
                                   fnameController.text,
                                   lnameController.text,
                                   mobileController.text,
                                   passwordController.text,
                                   selectedWorkList)
                               .whenComplete(() async {
-                            await popupmessage('User created successfully!!');
+                            await popupmessage('User Updated successfully!!');
                           });
                         }
                       },
                       child: const Center(
                         child: Text(
-                          'Save',
+                          'Update User',
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
@@ -254,7 +231,7 @@ class _UserFormState extends State<UserForm> {
     );
   }
 
-  Future<void> storeData(String fname, String lname, String mobile,
+  Future<void> updateData(String fname, String lname, String mobile,
       String password, List<String> role) async {
     String firstInitial = fname[0][0].trim().toUpperCase();
     String lastInitial = lname[0][0].trim().toUpperCase();
@@ -263,23 +240,26 @@ class _UserFormState extends State<UserForm> {
 
     String userId = '$firstInitial$lastInitial$mobileLastFour';
     final provider = Provider.of<AllUserProvider>(context, listen: false);
-    await FirebaseFirestore.instance.collection('members').doc(userId).set({
-      'userId': userId,
+    await FirebaseFirestore.instance
+        .collection('members')
+        .doc(widget.userId)
+        .update({
+      // 'userId': userId,
       'fullName': fullName,
       'fName': fname,
       'lName': lname,
       'mobile': mobile,
       'password': password,
-      'role': role,
+      // 'role': role,
     });
     provider.addSingleList({
-      'userId': userId,
+      // 'userId': userId,
       'fullName': fullName,
       'fName': fname,
       'lName': lname,
       'mobile': mobile,
       'password': password,
-      'role': role,
+      // 'role': role,
     });
   }
 
@@ -297,8 +277,7 @@ class _UserFormState extends State<UserForm> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      fetchData().whenComplete(() {
-                        Navigator.pop(context);
+                      fetchData(widget.userId).whenComplete(() {
                         Navigator.pop(context);
                         Navigator.pop(context);
                         fnameController.clear();
@@ -330,16 +309,21 @@ class _UserFormState extends State<UserForm> {
     }
   }
 
-  Future<void> fetchData() async {
-    final provider = Provider.of<AllUserProvider>(context, listen: false);
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('members').get();
-    if (querySnapshot.docs.isNotEmpty) {
-      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-      userList = tempData;
+  Future<void> fetchData(String userId) async {
+    DocumentSnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('members')
+        .doc(userId)
+        .get();
+    if (querySnapshot.exists && querySnapshot.data() != null) {
+      Map<String, dynamic> data = querySnapshot.data() as Map<String, dynamic>;
+      fnameController.text = data['fName'] ?? '';
+      lnameController.text = data['lName'] ?? '';
+      mobileController.text = data['mobile'] ?? '';
+      passwordController.text = data['password'] ?? '';
+      // selectedServiceProviderController.text = data['role'] ?? '';
     }
 
-    provider.setBuilderList(userList);
+    setState(() {});
   }
 
   Widget customDropDown(String title, bool isMultiCheckbox,
@@ -414,7 +398,7 @@ class _UserFormState extends State<UserForm> {
                                     )),
                                 onPressed: () {
                                   if (formKey.currentState!.validate()) {
-                                    storeData(
+                                    updateData(
                                             fnameController.text,
                                             lnameController.text,
                                             mobileController.text,
@@ -422,12 +406,12 @@ class _UserFormState extends State<UserForm> {
                                             selectedWorkList)
                                         .whenComplete(() async {
                                       await popupmessage(
-                                          'User created successfully!!');
+                                          'User updated successfully!!');
                                     });
                                   }
                                 },
                                 child: const Text(
-                                  'Save',
+                                  'Update',
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: white,

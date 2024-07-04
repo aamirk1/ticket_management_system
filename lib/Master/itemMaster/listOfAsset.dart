@@ -1,7 +1,7 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ticket_management_system/Master/itemMaster/editAssetForm.dart';
 import 'package:ticket_management_system/providers/assetsProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
@@ -35,8 +35,10 @@ class _ListOfAssetState extends State<ListOfAsset> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('List of Asset',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        title: const Text(
+          'List of Asset',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
               gradient:
@@ -85,19 +87,47 @@ class _ListOfAssetState extends State<ListOfAsset> {
                                           style: const TextStyle(
                                               color: Colors.black),
                                         ),
-                                        trailing: IconButton(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            deleteAsset(
-                                              widget.buildingNumber,
-                                              widget.floorNumber,
-                                              widget.roomNumber,
-                                              assetList[index],
-                                            );
-                                          },
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color: black,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditAssetForm(
+                                                      assetId: value
+                                                          .assetList[index],
+                                                    ),
+                                                  ),
+                                                ).whenComplete(() {
+                                                  setState(() {
+                                                    fetchData();
+                                                    isLoading = false;
+                                                  });
+                                                });
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                deleteAsset(
+                                                  widget.buildingNumber,
+                                                  widget.floorNumber,
+                                                  widget.roomNumber,
+                                                  assetList[index],
+                                                );
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       const Divider(

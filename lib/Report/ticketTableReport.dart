@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:data_table_2/data_table_2.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:ticket_management_system/Report/upDateServiceProvider.dart';
+import 'package:provider/provider.dart';
+import 'package:ticket_management_system/Report/reportDetails.dart';
+import 'package:ticket_management_system/providers/buildingProvider.dart';
+import 'package:ticket_management_system/providers/workProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
 class TicketTableReport extends StatefulWidget {
@@ -21,6 +25,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
   TextEditingController buildingController = TextEditingController();
   TextEditingController ticketController = TextEditingController();
   TextEditingController userController = TextEditingController();
+  TextEditingController statusController = TextEditingController();
   List<String> buildingList = [];
   List<String> floorList = [];
   List<String> roomList = [];
@@ -35,6 +40,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
   String? selectedUser;
   String? selectedTicket;
   String? selectedbuilding;
+  String? selectedWork;
+  String? selectedStatus;
 
   List<dynamic> allData = [];
   List<dynamic> serviceProviderList = [];
@@ -43,42 +50,11 @@ class _TicketTableReportState extends State<TicketTableReport> {
   List<String> allTicketData = [];
   List<String> allAssetData = [];
   List<String> allUserData = [];
-  List<String> allBuildingData = [];
+  List<String> buildingNumberList = [];
   List<String> allFloorData = [];
   List<String> allWorkData = [];
   List<String> allRoomData = [];
-  List<String> columnName = [
-    'Date',
-    'TAT',
-    'Ticket No',
-    'Status',
-    'Work',
-    'Building',
-    'Floor',
-    'Room',
-    'Asset',
-    'User',
-    'Service Provider',
-    'Remarks',
-    // 'Picture',
-    'Re-Assign (From/To)',
-    'Revive',
-  ];
-  List<List<String>> rowData = [];
-  String asset = '';
-  String floor = '';
-  String building = '';
-  String room = '';
-  String date = '';
-  String work = '';
-  String service = '';
-  String tat = '';
-  String status = '';
-  String user = '';
-  String remark = '';
-  String picture = '';
-  String assign = '';
-  String revive = '';
+  List<String> allStatusData = ['All', 'Open', 'Closed'];
 
   List<String> ticketList = [];
 
@@ -89,14 +65,13 @@ class _TicketTableReportState extends State<TicketTableReport> {
   List<String> ticketNumberList = [];
   @override
   void initState() {
-    getTicketNumberList();
-    fetchData();
-    getTicketList().whenComplete(() {
-      getdata().whenComplete(() {
-        setState(() {});
-      });
-    });
+    getWorkList();
     getBuilding();
+    getTicketNumberList();
+    fetchServiceProvider();
+    getTicketList().whenComplete(() {
+      setState(() {});
+    });
 
     super.initState();
   }
@@ -138,115 +113,91 @@ class _TicketTableReportState extends State<TicketTableReport> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: customDropDown(
-                      'Select Date',
-                      allDateData,
-                      "Search Date",
-                      0,
-                    )),
-                Padding(
+                Column(children: [
+                  Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: customDropDown(
+                        'Select Date',
+                        allDateData,
+                        "Search Date",
+                        0,
+                      )),
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: customDropDown(
                       'Select Ticket Number',
                       allTicketData,
                       "Search Ticket Number",
                       1,
-                    )),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: customDropDown('Select Building', buildingList,
-                      "Search Building Number", 2),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: customDropDown(
-                      'Select Floor', floorList, "Search Floor Number", 3),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: customDropDown(
-                      'Select Room', roomList, "Search Room Number", 4),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child:
-                      customDropDown('Select User', userList, "Search User", 5),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: customDropDown(
-                      'Select Asset', assetList, "Search Asset", 6),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(4),
-              child: Container(
-                padding: const EdgeInsets.all(2.0),
-                height: MediaQuery.of(context).size.height * 0.75,
-                width: MediaQuery.of(context).size.width * 0.99,
-                child: DataTable2(
-                  minWidth: 5500,
-                  border: TableBorder.all(color: Colors.black),
-                  headingRowColor:
-                      const MaterialStatePropertyAll(Colors.purple),
-                  headingTextStyle:
-                      const TextStyle(color: Colors.white, fontSize: 50.0),
-                  columnSpacing: 3.0,
-                  columns: List.generate(columnName.length, (index) {
-                    return DataColumn2(
-                      fixedWidth: 150,
-                      // fixedWidth: index == 10 ? 300 : 110,
-                      label: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          columnName[index],
-                          style: const TextStyle(
-                              // overflow: TextOverflow.ellipsis,
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    );
-                  }),
-                  rows: List.generate(
-                    growable: true,
-                    rowData.length, //change column name to row data
-                    (index1) => DataRow2(
-                      cells: List.generate(columnName.length, (index2) {
-                        return DataCell(Padding(
-                          padding: const EdgeInsets.only(bottom: 2.0),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              rowData[index1][index2].toString(),
-                              style: const TextStyle(color: Colors.black),
-                            ),
-                          ),
-                        ));
-                      }),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: customDropDown('Select Building', buildingNumberList,
+                        "Search Building Number", 2),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: customDropDown(
+                        'Select Floor', floorList, "Search Floor Number", 3),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: customDropDown(
+                        'Select Room', roomList, "Search Room Number", 4),
+                  ),
+                ]),
+                Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: customDropDown(
+                        'Select User', userList, "Search User", 5),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: customDropDown(
+                        'Select Asset', assetList, "Search Asset", 6),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: customDropDown('Select Service Provider',
+                        serviceProvider, "Search Service Provider", 7),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: customDropDown(
+                        'Select Status', allStatusData, "Search Status", 8),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: customDropDown(
+                      'Select Work',
+                      allWorkData,
+                      "Search Work",
+                      9,
+                    ),
+                  ),
+                ]),
+              ],
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ReportDetails()));
+                  },
+                  child: const Text('Get Report'),
                 ),
               ),
             )
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return UpdateServiceProvider();
-          }));
-        },
-        backgroundColor: Colors.deepPurple,
-        child: const Icon(Icons.add, color: white),
       ),
     );
   }
@@ -262,6 +213,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
 
         // Update your ticketNumberList
         ticketNumberList = tempData;
+        allTicketData = tempData;
         print(ticketNumberList);
       }
     } catch (e) {
@@ -269,23 +221,26 @@ class _TicketTableReportState extends State<TicketTableReport> {
     }
   }
 
-  Future<void> fetchData() async {
+  Future<void> fetchServiceProvider() async {
+    List<String> tempData = [];
     QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('designations').get();
-    if (querySnapshot.docs.isNotEmpty) {
-      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-      serviceProvider = tempData;
-      print(serviceProvider);
-    }
-  }
+        await FirebaseFirestore.instance.collection('members').get();
 
-  Future updateData() async {
-    await FirebaseFirestore.instance
-        .collection('raisedTickets')
-        .doc(selectedTicketNumber)
-        .update({
-      'designation': selectedServiceProvider,
-    });
+    if (querySnapshot.docs.isNotEmpty) {
+      tempData = querySnapshot.docs.map((e) => e.id).toList();
+    }
+    for (var i = 0; i < tempData.length; i++) {
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('members')
+          .doc(tempData[i])
+          .get();
+      if (documentSnapshot.data() != null) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+        serviceProvider.add(data['fullName']);
+        userList.add(data['fullName']);
+      }
+    }
   }
 
   Future<void> getTicketList() async {
@@ -300,53 +255,45 @@ class _TicketTableReportState extends State<TicketTableReport> {
     }
   }
 
-  Future<void> getdata() async {
-    Map<String, dynamic> data = Map();
-
-    for (var i = 0; i < ticketList.length; i++) {
-      List<String> allData = [];
-      print('lll${ticketList[i]}');
-      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
-          .collection('raisedTickets')
-          .doc(ticketList[i])
-          .get();
-
-      if (documentSnapshot.data() != null) {
-        data = documentSnapshot.data() as Map<String, dynamic>;
-
-        asset = data['asset'] ?? '';
-        building = data['building'] ?? '';
-        date = data['date'] ?? '';
-        floor = data['floor'] ?? '';
-        room = data['room'] ?? '';
-        service = data['serviceProvider'] ?? '';
-        work = data['work'] ?? '';
-        tat = data['tat'] ?? 'tat';
-        status = data['open'] ?? 'open';
-        user = data['user'] ?? 'user11';
-        remark = data['remark'] ?? 'remark';
-        // picture = data['picture'] ?? 'picture';
-        assign = data['assign'] ?? 'assign';
-        revive = data['revive'] ?? 'revive';
-      }
-      allData.add(date);
-      allData.add(tat);
-      allData.add(ticketList[i]);
-      allData.add(status);
-      allData.add(work);
-      allData.add(building);
-      allData.add(floor);
-      allData.add(room);
-      allData.add(asset);
-      allData.add(user);
-      allData.add(service);
-      allData.add(remark);
-      // allData.add(picture);
-      allData.add(assign);
-      allData.add(revive);
-      rowData.add(allData);
+  Future<void> getBuilding() async {
+    final provider = Provider.of<AllBuildingProvider>(context, listen: false);
+    provider.setBuilderList([]);
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('buildingNumbers').get();
+    if (querySnapshot.docs.isNotEmpty) {
+      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+      buildingNumberList = tempData;
+      provider.setBuilderList(buildingNumberList);
     }
   }
+
+  Future<void> getWorkList() async {
+    final provider = Provider.of<AllWorkProvider>(context, listen: false);
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection('works').get();
+    if (querySnapshot.docs.isNotEmpty) {
+      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+      allWorkData = tempData;
+    }
+
+    provider.setBuilderList(allWorkData);
+  }
+
+  // Future<void> getFloor() async {
+  //    final provider = Provider.of<AllFloorProvider>(context, listen: false);
+  //   provider.setBuilderList([]);
+  //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  //       .collection('buildingNumbers')
+  //       .doc(buildingNumber)
+  //       .collection('floorNumbers')
+  //       .get();
+  //   if (querySnapshot.docs.isNotEmpty) {
+  //     List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+  //     floorNumberList = tempData;
+  //     print(floorNumberList);
+  //     provider.setBuilderList(floorNumberList);
+  //   }
+  // }
 
   Widget customDropDown(String title, List<String> customDropDownList,
       String hintText, int index) {
@@ -383,7 +330,13 @@ class _TicketTableReportState extends State<TicketTableReport> {
                               ? selectedRoom
                               : index == 5
                                   ? selectedUser
-                                  : selectedAsset,
+                                  : index == 6
+                                      ? selectedAsset
+                                      : index == 7
+                                          ? selectedServiceProvider
+                                          : index == 8
+                                              ? selectedStatus
+                                              : selectedWork,
           onChanged: (value) {
             setState(() {
               index == 0
@@ -398,15 +351,21 @@ class _TicketTableReportState extends State<TicketTableReport> {
                                   ? selectedRoom = value
                                   : index == 5
                                       ? selectedUser = value
-                                      : selectedAsset = value;
+                                      : index == 6
+                                          ? selectedAsset = value
+                                          : index == 7
+                                              ? selectedServiceProvider = value
+                                              : index == 8
+                                                  ? selectedStatus = value
+                                                  : selectedWork = value;
             });
             // fetchMemberName(selectedFlatNo!);
           },
           buttonStyleData: const ButtonStyleData(
             decoration: BoxDecoration(),
             padding: EdgeInsets.symmetric(horizontal: 16),
-            height: 40,
-            width: 150,
+            height: 50,
+            width: 250,
           ),
           dropdownStyleData: const DropdownStyleData(
             maxHeight: 200,
@@ -427,7 +386,13 @@ class _TicketTableReportState extends State<TicketTableReport> {
                                 ? roomController
                                 : index == 5
                                     ? userController
-                                    : assetController,
+                                    : index == 6
+                                        ? assetController
+                                        : index == 7
+                                            ? serviceProviderController
+                                            : index == 8
+                                                ? statusController
+                                                : workController,
             searchInnerWidgetHeight: 50,
             searchInnerWidget: Container(
               height: 50,
@@ -452,7 +417,9 @@ class _TicketTableReportState extends State<TicketTableReport> {
                                     ? roomController
                                     : index == 5
                                         ? userController
-                                        : assetController,
+                                        : index == 6
+                                            ? assetController
+                                            : serviceProviderController,
                 decoration: InputDecoration(
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
@@ -480,39 +447,5 @@ class _TicketTableReportState extends State<TicketTableReport> {
         ),
       ),
     );
-  }
-
-  Future<void> getBuilding() async {
-    Map<String, dynamic> data = Map();
-
-    for (var i = 0; i < ticketList.length; i++) {
-      print('lll${ticketList[i]}');
-      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
-          .collection('raisedTickets')
-          .doc(ticketList[i])
-          .get();
-
-      if (documentSnapshot.data() != null) {
-        data = documentSnapshot.data() as Map<String, dynamic>;
-
-        asset = data['asset'] ?? '';
-        building = data['building'] ?? '';
-        date = data['date'] ?? '';
-        floor = data['floor'] ?? '';
-        room = data['room'] ?? '';
-        work = data['work'] ?? '';
-        user = data['user'] ?? 'user11';
-      }
-      allDateData.add(date);
-      allTicketData.add(ticketList[i]);
-
-      allRoomData.add(work);
-      allBuildingData.add(building);
-      allFloorData.add(floor);
-      allRoomData.add(room);
-      allAssetData.add(asset);
-      allUserData.add(user);
-      allWorkData.add(work);
-    }
   }
 }

@@ -1,8 +1,6 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_management_system/Homescreen.dart';
-import 'package:ticket_management_system/auth/signup.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -141,16 +139,16 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(
                         width: 110,
                       ),
-                      TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const SignupPage()));
-                          },
-                          child: const Text(
-                            'SIGN UP',
-                          ))
+                      // TextButton(
+                      //     onPressed: () {
+                      //       Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //               builder: (context) => const SignupPage()));
+                      //     },
+                      //     child: const Text(
+                      //       'SIGN UP',
+                      //     ))
                     ],
                   ),
                 ],

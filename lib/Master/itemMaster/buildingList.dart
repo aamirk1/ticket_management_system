@@ -1,35 +1,41 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ticket_management_system/providers/designationProvider.dart';
+import 'package:ticket_management_system/Master/itemMaster/editBuildingForm.dart';
+import 'package:ticket_management_system/Master/itemMaster/floorList.dart';
+import 'package:ticket_management_system/providers/buildingProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
-class ListOfDesignation extends StatefulWidget {
-  const ListOfDesignation({super.key});
+class ItemMaster extends StatefulWidget {
+  const ItemMaster({super.key});
 
   @override
-  State<ListOfDesignation> createState() => _ListOfDesignationState();
+  State<ItemMaster> createState() => _ItemMasterState();
 }
 
-class _ListOfDesignationState extends State<ListOfDesignation> {
-  TextEditingController designationController = TextEditingController();
+class _ItemMasterState extends State<ItemMaster> {
+  TextEditingController buildingNumberController = TextEditingController();
+  List<String> buildingNumberList = [];
+
   bool isLoading = true;
-  List<String> designationList = [];
+
   @override
   void initState() {
+    super.initState();
     fetchData().whenComplete(() => setState(() {
           isLoading = false;
         }));
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('List of Designation',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        title: const Text(
+          'Building Number List',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
               gradient:
@@ -38,8 +44,8 @@ class _ListOfDesignationState extends State<ListOfDesignation> {
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Center(child: Consumer<AllDesignationProvider>(
-              builder: (context, value, child) {
+          : Center(child:
+              Consumer<AllBuildingProvider>(builder: (context, value, child) {
               return SizedBox(
                 height: MediaQuery.of(context).size.height * 0.9,
                 width: MediaQuery.of(context).size.width * 0.6,
@@ -51,43 +57,68 @@ class _ListOfDesignationState extends State<ListOfDesignation> {
                       SingleChildScrollView(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
+                          child: SizedBox(
                             height: MediaQuery.of(context).size.height * 0.7,
                             child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: value.designationList.length,
+                                itemCount: value.buildingList.length,
                                 itemBuilder: (item, index) {
                                   return Column(
                                     children: [
                                       ListTile(
-                                        // onTap: () {
-                                        //   Navigator.push(
-                                        //     context,
-                                        //     MaterialPageRoute(
-                                        //       builder: (context) => RoomList(
-                                        //         floorNumber:
-                                        //             value.roomList[index],
-                                        //         buildingNumber:
-                                        //             widget.buildingNumber,
-                                        //       ),
-                                        //     ),
-                                        //   );
-                                        // },
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => FloorList(
+                                                buildingNumber:
+                                                    value.buildingList[index],
+                                              ),
+                                            ),
+                                          );
+                                        },
                                         title: Text(
-                                          value.designationList[index],
+                                          value.buildingList[index],
                                           style: const TextStyle(
                                               color: Colors.black),
                                         ),
-                                        trailing: IconButton(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            deleteDesignation(
-                                              value.designationList[index],
-                                            );
-                                          },
+                                        trailing: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color: black,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        EditBuildingForm(
+                                                      buildingId: value
+                                                          .buildingList[index],
+                                                    ),
+                                                  ),
+                                                ).whenComplete(() {
+                                                  setState(() {
+                                                    // fetchData();
+                                                    // isLoading = false;
+                                                  });
+                                                });
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                deletebuildingNumber(
+                                                    value.buildingList[index]);
+                                              },
+                                            ),
+                                          ],
                                         ),
                                       ),
                                       const Divider(
@@ -106,7 +137,7 @@ class _ListOfDesignationState extends State<ListOfDesignation> {
                           child: FloatingActionButton(
                             backgroundColor: Colors.deepPurple,
                             onPressed: () {
-                              addDesignation();
+                              addbuildingNumber();
                             },
                             child: const Icon(Icons.add, color: white),
                           ),
@@ -121,31 +152,27 @@ class _ListOfDesignationState extends State<ListOfDesignation> {
   }
 
   Future<void> fetchData() async {
-    final provider =
-        Provider.of<AllDesignationProvider>(context, listen: false);
+    final provider = Provider.of<AllBuildingProvider>(context, listen: false);
+    provider.setBuilderList([]);
     QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('designations').get();
+        await FirebaseFirestore.instance.collection('buildingNumbers').get();
     if (querySnapshot.docs.isNotEmpty) {
       List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-      designationList = tempData;
-      print(designationList);
+      buildingNumberList = tempData;
+      provider.setBuilderList(buildingNumberList);
     }
-
-    provider.setBuilderList(designationList);
   }
 
-  Future<void> deleteDesignation(String designation) async {
-    final provider =
-        Provider.of<AllDesignationProvider>(context, listen: false);
+  Future<void> deletebuildingNumber(String buildingNumber) async {
+    final provider = Provider.of<AllBuildingProvider>(context, listen: false);
     await FirebaseFirestore.instance
-        .collection('designations')
-        .doc(designation)
+        .collection('buildingNumbers')
+        .doc(buildingNumber)
         .delete();
-
-    provider.removeData(provider.designationList.indexOf(designation));
+    provider.removeData(buildingNumberList.indexOf(buildingNumber));
   }
 
-  void addDesignation() {
+  void addbuildingNumber() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -167,14 +194,14 @@ class _ListOfDesignationState extends State<ListOfDesignation> {
                               textInputAction: TextInputAction.done,
                               expands: true,
                               maxLines: null,
-                              controller: designationController,
+                              controller: buildingNumberController,
                               decoration: InputDecoration(
                                 isDense: true,
                                 contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 10,
                                   vertical: 8,
                                 ),
-                                hintText: 'Add Designation',
+                                hintText: 'Add Building No',
                                 hintStyle: const TextStyle(fontSize: 12),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -183,35 +210,6 @@ class _ListOfDesignationState extends State<ListOfDesignation> {
                             ),
                           ),
                         ),
-                        // const SizedBox(
-                        //   height: 10,
-                        // ),
-                        // Padding(
-                        //   padding: const EdgeInsets.all(10),
-                        //   child: Container(
-                        //       color: Colors.white,
-                        //       height: 40,
-                        //       width: MediaQuery.of(context).size.width * 0.25,
-                        //       child: Column(children: [
-                        //         TextFormField(
-                        //           expands: true,
-                        //           maxLines: null,
-                        //           controller: serviceProviderController,
-                        //           decoration: InputDecoration(
-                        //             isDense: true,
-                        //             contentPadding: const EdgeInsets.symmetric(
-                        //               horizontal: 10,
-                        //               vertical: 8,
-                        //             ),
-                        //             hintText: 'Search flat no...',
-                        //             hintStyle: const TextStyle(fontSize: 12),
-                        //             border: OutlineInputBorder(
-                        //               borderRadius: BorderRadius.circular(8),
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ])),
-                        // ),
                         const SizedBox(
                           height: 10,
                         ),
@@ -224,14 +222,15 @@ class _ListOfDesignationState extends State<ListOfDesignation> {
                                 },
                                 child: const Text('Cancel')),
                             ElevatedButton(
-                                onPressed: () {
-                                  storeData(designationController.text)
-                                      .whenComplete(() {
-                                    popupmessage(
-                                        'Designation added successfully!!');
-                                  });
-                                },
-                                child: const Text('Save'))
+                              onPressed: () {
+                                storeData(buildingNumberController.text)
+                                    .whenComplete(() {
+                                  popupmessage(
+                                      'Building No. added successfully!!');
+                                });
+                              },
+                              child: const Text('Save'),
+                            )
                           ],
                         )
                       ],
@@ -244,23 +243,26 @@ class _ListOfDesignationState extends State<ListOfDesignation> {
         });
   }
 
-  Future storeData(String designation) async {
-    final provider =
-        Provider.of<AllDesignationProvider>(context, listen: false);
-    await FirebaseFirestore.instance
-        .collection('designations')
-        .doc(designation)
-        .set({
-      'designation': designation,
-    });
-    provider.addSingleList({
-      'designation': designation,
-    });
+  Future storeData(String buildingNumber) async {
+    final provider = Provider.of<AllBuildingProvider>(context, listen: false);
+    try {
+      await FirebaseFirestore.instance
+          .collection('buildingNumbers')
+          .doc(buildingNumber)
+          .set({
+        'buildingNumber': buildingNumber,
+      });
+      provider.addSingleList({'buildingNumber': buildingNumber});
+      // ignore: nullable_type_in_catch_clause
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error storing data: $e');
+      }
+    }
   }
 
   void popupmessage(String msg) {
-    final provider =
-        Provider.of<AllDesignationProvider>(context, listen: false);
+    final provider = Provider.of<AllBuildingProvider>(context, listen: false);
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -276,7 +278,7 @@ class _ListOfDesignationState extends State<ListOfDesignation> {
                       fetchData().whenComplete(() {
                         Navigator.pop(context);
                         Navigator.pop(context);
-                        designationController.clear();
+                        buildingNumberController.clear();
                         provider.setLoadWidget(false);
                       });
                     },

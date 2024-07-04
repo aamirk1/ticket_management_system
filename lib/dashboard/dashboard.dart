@@ -16,6 +16,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
+    getdate();
     getTicketList().whenComplete(() {
       getdata().whenComplete(() {
         setState(() {
@@ -91,16 +92,14 @@ class _DashboardState extends State<Dashboard> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Container(
-                                  height: 50,
-                                  width: 170,
+                                  height: 45,
+                                  width: 100,
                                   color: purple,
                                   child: const Center(
                                     child: Text(
                                       'Tickets \nRaised On',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
+                                      style:
+                                          TextStyle(fontSize: 16, color: white),
                                     ),
                                   ),
                                 ),
@@ -108,16 +107,14 @@ class _DashboardState extends State<Dashboard> {
                                   height: 10,
                                 ),
                                 Container(
-                                  height: 50,
-                                  width: 170,
+                                  height: 45,
+                                  width: 100,
                                   color: purple,
                                   child: Center(
                                     child: Text(
                                       currentDate,
                                       style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
+                                          fontSize: 16, color: white),
                                     ),
                                   ),
                                 ),
@@ -133,16 +130,17 @@ class _DashboardState extends State<Dashboard> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Container(
-                                  height: 50,
-                                  width: 170,
+                                  height: 45,
+                                  width: 100,
                                   color: purple,
                                   child: const Center(
-                                    child: Text(
-                                      'Pending For',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 5.0),
+                                      child: Text(
+                                        'Total Pending',
+                                        style: TextStyle(
+                                            fontSize: 16, color: white),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -150,16 +148,14 @@ class _DashboardState extends State<Dashboard> {
                                   height: 10,
                                 ),
                                 Container(
-                                  height: 50,
-                                  width: 170,
+                                  height: 45,
+                                  width: 100,
                                   color: purple,
                                   child: Center(
                                     child: Text(
                                       ticketList.length.toString(),
                                       style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
+                                          fontSize: 16, color: white),
                                     ),
                                   ),
                                 ),
@@ -175,16 +171,14 @@ class _DashboardState extends State<Dashboard> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Container(
-                                  height: 50,
-                                  width: 170,
+                                  height: 45,
+                                  width: 100,
                                   color: purple,
                                   child: const Center(
                                     child: Text(
                                       'For Less\nThan 01 Day',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
+                                      style:
+                                          TextStyle(fontSize: 16, color: white),
                                     ),
                                   ),
                                 ),
@@ -192,16 +186,207 @@ class _DashboardState extends State<Dashboard> {
                                   height: 10,
                                 ),
                                 Container(
-                                  height: 50,
-                                  width: 170,
+                                  height: 45,
+                                  width: 100,
                                   color: purple,
                                   child: Center(
                                     child: Text(
                                       todayTicket.toString(),
                                       style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
+                                          fontSize: 16, color: white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Card(
+                          elevation: 20,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 45,
+                                  width: 100,
+                                  color: purple,
+                                  child: const Center(
+                                    child: Text(
+                                      '1 - 7 Days',
+                                      style:
+                                          TextStyle(fontSize: 16, color: white),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  height: 45,
+                                  width: 100,
+                                  color: purple,
+                                  child: Center(
+                                    child: Text(
+                                      oneToSevenTicket.length.toString(),
+                                      style: const TextStyle(
+                                          fontSize: 16, color: white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Card(
+                          elevation: 20,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 45,
+                                  width: 100,
+                                  color: purple,
+                                  child: const Center(
+                                    child: Text(
+                                      '8 - 14 Days',
+                                      style:
+                                          TextStyle(fontSize: 16, color: white),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  height: 45,
+                                  width: 100,
+                                  color: purple,
+                                  child: Center(
+                                    child: Text(
+                                      eightToFourteenTicket,
+                                      style: const TextStyle(
+                                          fontSize: 16, color: white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Card(
+                          elevation: 20,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 45,
+                                  width: 100,
+                                  color: purple,
+                                  child: const Center(
+                                    child: Text(
+                                      '15 - 21',
+                                      style:
+                                          TextStyle(fontSize: 16, color: white),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  height: 45,
+                                  width: 100,
+                                  color: purple,
+                                  child: Center(
+                                    child: Text(
+                                      fifteenToTwentyOneTicket,
+                                      style: const TextStyle(
+                                          fontSize: 16, color: white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Card(
+                          elevation: 20,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 45,
+                                  width: 100,
+                                  color: purple,
+                                  child: const Center(
+                                    child: Text(
+                                      '22 - 28 Days',
+                                      style:
+                                          TextStyle(fontSize: 16, color: white),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  height: 45,
+                                  width: 100,
+                                  color: purple,
+                                  child: Center(
+                                    child: Text(
+                                      twentyTwoToTwentyEightTicket,
+                                      style: const TextStyle(
+                                          fontSize: 16, color: white),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Card(
+                          elevation: 20,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: 45,
+                                  width: 100,
+                                  color: purple,
+                                  child: const Center(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 5.0),
+                                      child: Text(
+                                        'More Than 28 Days',
+                                        style: TextStyle(
+                                            fontSize: 16, color: white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  height: 45,
+                                  width: 100,
+                                  color: purple,
+                                  child: Center(
+                                    child: Text(
+                                      moreThanTwentyEightTicket,
+                                      style: const TextStyle(
+                                          fontSize: 16, color: white),
                                     ),
                                   ),
                                 ),
@@ -226,218 +411,7 @@ class _DashboardState extends State<Dashboard> {
                     width: MediaQuery.of(context).size.width * 0.99,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 50,
-                                  width: 170,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Text(
-                                      '1 - 7 Days',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 50,
-                                  width: 170,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      oneToSevenTicket.length.toString(),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 50,
-                                  width: 170,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Text(
-                                      '8 - 14 Days',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 50,
-                                  width: 170,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      eightToFourteenTicket,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 50,
-                                  width: 170,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Text(
-                                      '15 - 21',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 50,
-                                  width: 170,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      fifteenToTwentyOneTicket,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 50,
-                                  width: 170,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Text(
-                                      '22 - 28 Days',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 50,
-                                  width: 170,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      twentyTwoToTwentyEightTicket,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 50,
-                                  width: 170,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Text(
-                                      'More Than 28 Days',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 50,
-                                  width: 170,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      moreThanTwentyEightTicket,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                          color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
+                      children: [],
                     ),
                   ),
                 ),
@@ -499,7 +473,6 @@ class _DashboardState extends State<Dashboard> {
       }
       date = data['date'] ?? 'N/A';
       convertedDate = date.split('-').reversed.join('-');
-      print('convertedDate $convertedDate');
 
       // Index = 2
       if (currentDate == date) {
@@ -512,16 +485,24 @@ class _DashboardState extends State<Dashboard> {
 
       for (int i = 1; i < 7; i++) {
         DateTime newdate = today.add(Duration(days: i));
+        DateTime sevendays = newdate.add(Duration(days: 6));
         DateFormat formatter = DateFormat('dd-MM-yyyy');
 
         if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
           datelist.add(formatter.format(newdate));
-          oneToSevenTicket.add(ticketList.length.toString());
+          for (int j = 0; j < datelist.length; j++) {
+            print('sevenday - ${newdate.isBefore(sevendays)}');
+            print(datelist[j]);
+            var a = newdate.add(Duration(days: 1));
+            if (newdate.isBefore(sevendays) == datelist[j]) {
+              oneToSevenTicket.add(ticketList[j].toString());
+            }
+          }
         } else {
           oneToSevenTicket.add('0');
         }
+        oneToSevenTicket.add(ticketList.length.toString());
       }
-      print('oneToSevenTicket $oneToSevenTicket');
 
       // Index = 4
       for (int i = 7; i < 15; i++) {
@@ -535,8 +516,6 @@ class _DashboardState extends State<Dashboard> {
         }
       }
 
-      print('eightToFourteenTicket $eightToFourteenTicket');
-
       // Index = 5
       for (int i = 15; i < 22; i++) {
         DateTime newdate = today.add(Duration(days: i));
@@ -548,9 +527,6 @@ class _DashboardState extends State<Dashboard> {
           fifteenToTwentyOneTicket = '0';
         }
       }
-
-      print('fifteenToTwentyOneTicket $fifteenToTwentyOneTicket');
-
       // Index = 6
       for (int i = 22; i < 29; i++) {
         DateTime newdate = today.add(Duration(days: i));
@@ -563,8 +539,6 @@ class _DashboardState extends State<Dashboard> {
         }
       }
 
-      print('twentyTwoToTwentyEightTicket $twentyTwoToTwentyEightTicket');
-
       // Index = 7
       for (int i = 29; i <= 31; i++) {
         DateTime newdate = today.add(Duration(days: i));
@@ -576,8 +550,69 @@ class _DashboardState extends State<Dashboard> {
           moreThanTwentyEightTicket = '0';
         }
       }
+    }
+  }
 
-      print('moreThanTwentyEightTicket $moreThanTwentyEightTicket');
+  void getdate() async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    Map<String, dynamic> date = Map();
+
+    try {
+      // Fetch all documents from 'raisedTickets' collection
+
+      QuerySnapshot querySnapshot =
+          await _firestore.collection('raisedTickets').get();
+
+      // Categorize documents based on date ranges
+      List<String> list1to7 = [];
+      List<String> list8to15 = [];
+
+      DateTime now = DateTime.now();
+      DateTime today = DateTime(now.year, now.month, now.day);
+
+      if (querySnapshot.docs.isNotEmpty) {
+        List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+        ticketList = tempData;
+      }
+
+      for (var i = 0; i < ticketList.length; i++) {
+        DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+            .collection('raisedTickets')
+            .doc(ticketList[i])
+            .get();
+
+        if (documentSnapshot.data() != null) {
+          Timestamp timestamp =
+              documentSnapshot['date']; // Assuming 'date' is the field name
+          DateTime docDate = timestamp.toDate();
+
+          if (docDate.isAfter(today) &&
+              docDate.isBefore(today.add(Duration(days: 8)))) {
+            list1to7.add(timestamp.toString());
+          } else if (docDate.isAfter(today.add(Duration(days: 7))) &&
+              docDate.isBefore(today.add(Duration(days: 16)))) {
+            list8to15.add(timestamp.toString());
+          }
+        }
+
+        // querySnapshot.docs.forEach((doc) {
+
+        // });
+
+        // Print or use the categorized lists as needed
+        print('Documents from 1 to 7 days: ${list1to7.length}');
+        print('Documents from 8 to 15 days: ${list8to15.length}');
+
+        // Example of using the lists:
+        // list1to7.forEach((doc) {
+        //   print('Document ID: ${doc.id}, Date: ${doc['date'].toDate()}');
+        // });
+        // list8to15.forEach((doc) {
+        //   print('Document ID: ${doc.id}, Date: ${doc['date'].toDate()}');
+        // });
+      }
+    } catch (e) {
+      print('Error fetching documents: $e');
     }
   }
 }
