@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_management_system/Report/upDateServiceProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
@@ -67,7 +68,7 @@ class _ReportDetailsState extends State<ReportDetails> {
       body: Center(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             Padding(
@@ -80,7 +81,7 @@ class _ReportDetailsState extends State<ReportDetails> {
                   minWidth: 5500,
                   border: TableBorder.all(color: Colors.black),
                   headingRowColor:
-                      const MaterialStatePropertyAll(Colors.purple),
+                      const WidgetStatePropertyAll(Colors.purple),
                   headingTextStyle:
                       const TextStyle(color: Colors.white, fontSize: 50.0),
                   columnSpacing: 3.0,
@@ -141,7 +142,9 @@ class _ReportDetailsState extends State<ReportDetails> {
 
     for (var i = 0; i < ticketList.length; i++) {
       List<String> allData = [];
-      print('lll${ticketList[i]}');
+      if (kDebugMode) {
+        print('lll${ticketList[i]}');
+      }
       DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
           .collection('raisedTickets')
           .doc(ticketList[i])
@@ -184,3 +187,22 @@ class _ReportDetailsState extends State<ReportDetails> {
     }
   }
 }
+
+// create mode 100644 hello.py
+//  delete mode 100644 lib/Master/assign.dart
+//  create mode 100644 lib/Master/createUser/editUserForm.dart
+//  delete mode 100644 lib/Master/designation/listOfDesignation.dart
+//  rename lib/Master/itemMaster/{itemMaster.dart => buildingList.dart} (79%)
+//  create mode 100644 lib/Master/itemMaster/editAssetForm.dart
+//  create mode 100644 lib/Master/itemMaster/editBuildingForm.dart
+//  create mode 100644 lib/Master/itemMaster/editFloorForm.dart
+//  create mode 100644 lib/Master/itemMaster/editRoomForm.dart
+//  create mode 100644 lib/Master/work/editWorkForm.dart
+//  create mode 100644 lib/Report/reportDetails copy.dart
+//  create mode 100644 lib/Report/reportDetails.dart
+//  delete mode 100644 lib/assignRoll/menu_screen/LoadingForMenuUser.dart
+//  delete mode 100644 lib/assignRoll/menu_screen/assigned_user.dart
+//  delete mode 100644 lib/assignRoll/menu_screen/totalUser.dart
+//  delete mode 100644 lib/assignRoll/menu_screen/unAssignedUserPage.dart
+//  delete mode 100644 lib/assignRoll/role.dart
+//  delete mode 100644 lib/auth/signup.dart

@@ -233,12 +233,8 @@ class _EditUserFormState extends State<EditUserForm> {
 
   Future<void> updateData(String fname, String lname, String mobile,
       String password, List<String> role) async {
-    String firstInitial = fname[0][0].trim().toUpperCase();
-    String lastInitial = lname[0][0].trim().toUpperCase();
-    String mobileLastFour = mobile.substring(mobile.length - 4);
-    String fullName = '$fname $lname';
+   String fullName = '$fname $lname';
 
-    String userId = '$firstInitial$lastInitial$mobileLastFour';
     final provider = Provider.of<AllUserProvider>(context, listen: false);
     await FirebaseFirestore.instance
         .collection('members')

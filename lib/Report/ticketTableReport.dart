@@ -5,7 +5,10 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ticket_management_system/Report/reportDetails.dart';
+import 'package:ticket_management_system/providers/assetsProvider.dart';
 import 'package:ticket_management_system/providers/buildingProvider.dart';
+import 'package:ticket_management_system/providers/floorProvider.dart';
+import 'package:ticket_management_system/providers/roomProvider.dart';
 import 'package:ticket_management_system/providers/workProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
@@ -36,13 +39,13 @@ class _TicketTableReportState extends State<TicketTableReport> {
   String? selectedAsset;
   String? selectedFloor;
   String? selectedRoom;
-  String? selectedDate;
+  String selectedDate = '';
   String? selectedUser;
   String? selectedTicket;
   String? selectedbuilding;
   String? selectedWork;
   String? selectedStatus;
-
+  List<String> floorNumberList = [];
   List<dynamic> allData = [];
   List<dynamic> serviceProviderList = [];
   String? selectedTicketNumber;
@@ -61,16 +64,25 @@ class _TicketTableReportState extends State<TicketTableReport> {
   List<String> serviceProvider = [];
 
   String? selectedServiceProvider;
-
+  List<String> roomNumberList = [];
   List<String> ticketNumberList = [];
+  bool isLoading = true;
+  DateTimeRange dateRange = DateTimeRange(
+    start: DateTime(2020, 01, 01),
+    end: DateTime(2025, 01, 01),
+  );
+
+  DateTime rangeStartDate = DateTime.now();
+  DateTime? rangeEndDate = DateTime.now();
   @override
   void initState() {
+    getTicketList();
     getWorkList();
     getBuilding();
-    getTicketNumberList();
+
     fetchServiceProvider();
-    getTicketList().whenComplete(() {
-      setState(() {});
+    setState(() {
+      isLoading = false;
     });
 
     super.initState();
@@ -107,118 +119,100 @@ class _TicketTableReportState extends State<TicketTableReport> {
           )
         ],
       ),
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(children: [
-                  Padding(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            child: Text('select Date: $selectedDate'),
+                            onPressed: () {
+                              pickDateRange();
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: customDropDown(
+                            'Select Ticket Number',
+                            ticketList,
+                            "Search Ticket Number",
+                            1,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: customDropDown('Select Building',
+                              buildingNumberList, "Search Building Number", 2),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: customDropDown('Select Floor', floorNumberList,
+                              "Search Floor Number", 3),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: customDropDown('Select Room', roomNumberList,
+                              "Search Room Number", 4),
+                        ),
+                      ]),
+                      Column(children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: customDropDown(
+                              'Select User', userList, "Search User", 5),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: customDropDown(
+                              'Select Asset', assetList, "Search Asset", 6),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: customDropDown('Select Service Provider',
+                              serviceProvider, "Search Service Provider", 7),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: customDropDown('Select Status', allStatusData,
+                              "Search Status", 8),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: customDropDown(
+                            'Select Work',
+                            allWorkData,
+                            "Search Work",
+                            9,
+                          ),
+                        ),
+                      ]),
+                    ],
+                  ),
+                  Center(
+                    child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: customDropDown(
-                        'Select Date',
-                        allDateData,
-                        "Search Date",
-                        0,
-                      )),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: customDropDown(
-                      'Select Ticket Number',
-                      allTicketData,
-                      "Search Ticket Number",
-                      1,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          allFilterData();
+                        },
+                        child: const Text('Get Report'),
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: customDropDown('Select Building', buildingNumberList,
-                        "Search Building Number", 2),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: customDropDown(
-                        'Select Floor', floorList, "Search Floor Number", 3),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: customDropDown(
-                        'Select Room', roomList, "Search Room Number", 4),
-                  ),
-                ]),
-                Column(children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: customDropDown(
-                        'Select User', userList, "Search User", 5),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: customDropDown(
-                        'Select Asset', assetList, "Search Asset", 6),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: customDropDown('Select Service Provider',
-                        serviceProvider, "Search Service Provider", 7),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: customDropDown(
-                        'Select Status', allStatusData, "Search Status", 8),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: customDropDown(
-                      'Select Work',
-                      allWorkData,
-                      "Search Work",
-                      9,
-                    ),
-                  ),
-                ]),
-              ],
-            ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ReportDetails()));
-                  },
-                  child: const Text('Get Report'),
-                ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
-      ),
+            ),
     );
-  }
-
-  Future<void> getTicketNumberList() async {
-    try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('raisedTickets').get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        // Extract document IDs from the QuerySnapshot
-        List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-
-        // Update your ticketNumberList
-        ticketNumberList = tempData;
-        allTicketData = tempData;
-        print(ticketNumberList);
-      }
-    } catch (e) {
-      print("Error getting ticket numbers: $e");
-    }
   }
 
   Future<void> fetchServiceProvider() async {
@@ -241,18 +235,22 @@ class _TicketTableReportState extends State<TicketTableReport> {
         userList.add(data['fullName']);
       }
     }
+
+    setState(() {});
   }
 
   Future<void> getTicketList() async {
-    // final provider = Provider.of<AllRoomProvider>(context, listen: false);
-    // provider.setBuilderList([]);
+    final provider = Provider.of<AllRoomProvider>(context, listen: false);
+    provider.setBuilderList([]);
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('raisedTickets').get();
     if (querySnapshot.docs.isNotEmpty) {
       List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
       ticketList = tempData;
-      print(ticketList);
+      // print('ticketList: $ticketList');
     }
+    provider.setBuilderList(ticketList);
+    setState(() {});
   }
 
   Future<void> getBuilding() async {
@@ -265,6 +263,62 @@ class _TicketTableReportState extends State<TicketTableReport> {
       buildingNumberList = tempData;
       provider.setBuilderList(buildingNumberList);
     }
+    setState(() {});
+  }
+
+  Future<void> getFloor(String buildingNumber) async {
+    final provider = Provider.of<AllFloorProvider>(context, listen: false);
+    provider.setBuilderList([]);
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('buildingNumbers')
+        .doc(buildingNumber)
+        .collection('floorNumbers')
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+      floorNumberList = tempData;
+      provider.setBuilderList(floorNumberList);
+    }
+    setState(() {});
+  }
+
+  Future<void> getRoom(String buildingNumber, String floorNumber) async {
+    final provider = Provider.of<AllRoomProvider>(context, listen: false);
+    provider.setBuilderList([]);
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('buildingNumbers')
+        .doc(buildingNumber)
+        .collection('floorNumbers')
+        .doc(floorNumber)
+        .collection('roomNumbers')
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+      roomNumberList = tempData;
+      provider.setBuilderList(roomNumberList);
+    }
+    setState(() {});
+  }
+
+  Future<void> getAsset(
+      String buildingNumber, String floorNumber, String roomNumber) async {
+    final provider = Provider.of<AllAssetProvider>(context, listen: false);
+    provider.setBuilderList([]);
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('buildingNumbers')
+        .doc(buildingNumber)
+        .collection('floorNumbers')
+        .doc(floorNumber)
+        .collection('roomNumbers')
+        .doc(roomNumber)
+        .collection('assets')
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+      assetList = tempData;
+      provider.setBuilderList(assetList);
+    }
+    setState(() {});
   }
 
   Future<void> getWorkList() async {
@@ -277,23 +331,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
     }
 
     provider.setBuilderList(allWorkData);
+    setState(() {});
   }
-
-  // Future<void> getFloor() async {
-  //    final provider = Provider.of<AllFloorProvider>(context, listen: false);
-  //   provider.setBuilderList([]);
-  //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-  //       .collection('buildingNumbers')
-  //       .doc(buildingNumber)
-  //       .collection('floorNumbers')
-  //       .get();
-  //   if (querySnapshot.docs.isNotEmpty) {
-  //     List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-  //     floorNumberList = tempData;
-  //     print(floorNumberList);
-  //     provider.setBuilderList(floorNumberList);
-  //   }
-  // }
 
   Widget customDropDown(String title, List<String> customDropDownList,
       String hintText, int index) {
@@ -337,10 +376,10 @@ class _TicketTableReportState extends State<TicketTableReport> {
                                           : index == 8
                                               ? selectedStatus
                                               : selectedWork,
-          onChanged: (value) {
+          onChanged: (value) async {
             setState(() {
               index == 0
-                  ? selectedDate = value
+                  ? selectedDate = value!
                   : index == 1
                       ? selectedTicket = value
                       : index == 2
@@ -359,6 +398,17 @@ class _TicketTableReportState extends State<TicketTableReport> {
                                                   ? selectedStatus = value
                                                   : selectedWork = value;
             });
+            await getFloor(selectedbuilding!).whenComplete(() {
+              setState(() {
+                getRoom(selectedbuilding!, selectedFloor!).whenComplete(() {
+                  setState(() {
+                    getAsset(selectedbuilding!, selectedFloor!, selectedRoom!);
+                  });
+                });
+              });
+            });
+
+            // await getAsset(selectedbuilding!, selectedFloor!, selectedRoom!);
             // fetchMemberName(selectedFlatNo!);
           },
           buttonStyleData: const ButtonStyleData(
@@ -446,6 +496,41 @@ class _TicketTableReportState extends State<TicketTableReport> {
           },
         ),
       ),
+    );
+  }
+
+  Future<void> pickDateRange() async {
+    DateTimeRange? newDateRange = await showDateRangePicker(
+        context: context, firstDate: DateTime(2000), lastDate: DateTime(2100));
+    if (newDateRange == null) return;
+    setState(() {
+      dateRange = newDateRange;
+      rangeStartDate = dateRange.start;
+      rangeEndDate = dateRange.end;
+
+      selectedDate =
+          "${rangeStartDate.day}/${rangeStartDate.month}/${rangeStartDate.year} TO ${rangeEndDate!.day}/${rangeEndDate!.month}/${rangeEndDate!.year}";
+    });
+  }
+
+  Future<void> allFilterData() async {
+    List<dynamic> allData = [];
+    allData.add(selectedDate);
+    allData.add(selectedTicket);
+    allData.add(selectedbuilding);
+    allData.add(selectedFloor);
+    allData.add(selectedRoom);
+    allData.add(selectedUser);
+    allData.add(selectedAsset);
+    allData.add(selectedServiceProvider);
+    allData.add(selectedStatus);
+    allData.add(selectedWork);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) {
+        return ReportDetails(data: allData);
+      }),
     );
   }
 }

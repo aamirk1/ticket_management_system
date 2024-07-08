@@ -4,6 +4,7 @@ import 'package:ticket_management_system/Master/itemMaster/buildingList.dart';
 import 'package:ticket_management_system/Master/work/listOfWork.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
+// ignore: must_be_immutable
 class MasterHomeScreen extends StatefulWidget {
   MasterHomeScreen({super.key, required this.adminId});
   String adminId;
