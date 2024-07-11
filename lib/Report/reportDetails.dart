@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ticket_management_system/Report/imageScreen.dart';
 import 'package:ticket_management_system/Report/upDateServiceProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
@@ -18,6 +19,7 @@ class _ReportDetailsState extends State<ReportDetails> {
   List<String> buildingList = [];
   List<String> roomList = [];
   List<String> dateList = [];
+  List<String> dateClosedList = [];
   List<String> workList = [];
   List<String> serviceList = [];
   List<String> tatList = [];
@@ -29,26 +31,50 @@ class _ReportDetailsState extends State<ReportDetails> {
   List<String> reviveList = [];
   List<String> ticketNumList = [];
 
-  List<String> ticketList = [];
+  List<dynamic> ticketList = [];
+  List<String> ticketNumberList = [];
+  List<String> yearList = [];
+  List<String> monthList = [];
+  List<String> dayList = [];
 
   List<String> serviceProvider = [];
   List<dynamic> allData = [];
   String? selectedServiceProvider;
   List<String> allTicketData = [];
   bool isLoading = true;
+
+  String asset = '';
+  String building = '';
+  String floor = '';
+  String remark = '';
+  String room = '';
+  String work = '';
+  String serviceprovider = '';
+  List<dynamic> ticketListData = [];
   @override
   void initState() {
-    getTicketList().whenComplete(() async {
-      getdata();
-      allFilterData().whenComplete(() {
-        setState(() {
+    // getYearList().whenComplete(() {
+    //   getMonthList().whenComplete(() {
+    //     getDayList().whenComplete(() {
+    //       getTicketList().whenComplete(() {
+    //         getdata().whenComplete(() {
+    //           setState(() {
+    //             isLoading = false;
+    //           });
+    //         });
+    //       });
+    //     });
+    //   });
+    // });
+    // getDayList().whenComplete(() => setState(() {
+    //       getTicketList().whenComplete(() => setState(() {
+    //             getdata();
+    //             isLoading = false;
+    //           }));
+    //     }));
+    getdata().whenComplete(() => setState(() {
           isLoading = false;
-        });
-      });
-      // ticketNumList =
-      //     ticketNumList.where((e) => widget.data.contains(e)).toList();
-    });
-
+        }));
     super.initState();
   }
 
@@ -74,244 +100,532 @@ class _ReportDetailsState extends State<ReportDetails> {
                   height: MediaQuery.of(context).size.height * 0.95,
                   width: MediaQuery.of(context).size.width * 0.99,
                   child: GridView.builder(
-                      itemCount: ticketNumList.length,
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: ticketList.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisSpacing: 5,
                               mainAxisSpacing: 5,
-                              childAspectRatio: 1.3,
+                              childAspectRatio: 0.9,
                               crossAxisCount: 3),
-                      itemBuilder: (context, index) {
-                        return Row(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(top: 10),
-                              height: 360,
-                              width: 350,
-                              child: Card(
-                                  elevation: 10,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'Ticket No.: ',
-                                              style: TextStyle(
-                                                  color: black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              ticketList[index],
-                                              style: const TextStyle(
-                                                  color: black,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'Date ',
-                                              style: TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              dateList[index],
-                                              style:
-                                                  const TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'Building ',
-                                              style: TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              buildingList[index],
-                                              style:
-                                                  const TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'Floor No. ',
-                                              style: TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              floorList[index],
-                                              style:
-                                                  const TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'Room No. ',
-                                              style: TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              roomList[index],
-                                              style:
-                                                  const TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'Work ',
-                                              style: TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              workList[index],
-                                              style:
-                                                  const TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'Service Provider ',
-                                              style: TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              serviceList[index],
-                                              style:
-                                                  const TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'TAT ',
-                                              style: TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              tatList[index],
-                                              style:
-                                                  const TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'Status ',
-                                              style: TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              statusList[index],
-                                              style:
-                                                  const TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'Remark ',
-                                              style: TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              remarkList[index],
-                                              style:
-                                                  const TextStyle(color: black),
-                                              textAlign: TextAlign.justify,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'Re-Assign ',
-                                              style: TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              assignList[index],
-                                              style:
-                                                  const TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            const Text(
-                                              'Revive ',
-                                              style: TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                            Text(
-                                              reviveList[index],
-                                              style:
-                                                  const TextStyle(color: black),
-                                              textAlign: TextAlign.left,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                      itemBuilder: (
+                        context,
+                        index,
+                      ) {
+                        List<String> imageFilePaths = List<String>.from(
+                            ticketListData[index]['imageFilePaths'] ?? []);
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            elevation: 5,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      ticketCard(
+                                          Icons.work,
+                                          "Status: ",
+                                          ticketListData[index]['status'] ??
+                                              "N/A",
+                                          index)
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ticketCard(Icons.work, "Ticket No.: ",
+                                          ticketList[index] ?? "N/A", index)
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ticketCard(
+                                          Icons.work,
+                                          "Date (Opened): ",
+                                          ticketListData[index]['date'] ??
+                                              "N/A",
+                                          index)
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ticketCard(
+                                          Icons.work,
+                                          "Date (Closed): ",
+                                          ticketListData[index]['dateClosed'] ??
+                                              "N/A",
+                                          index)
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ticketCard(
+                                          Icons.business,
+                                          'Tat: ',
+                                          ticketListData[index]['tat'] ?? "N/A",
+                                          index)
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ticketCard(
+                                          Icons.business,
+                                          'Work: ',
+                                          ticketListData[index]['work'] ??
+                                              "N/A",
+                                          index)
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ticketCard(
+                                          Icons.layers,
+                                          "Building: ",
+                                          ticketListData[index]['building']
+                                              .toString(),
+                                          index)
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ticketCard(
+                                          Icons.layers,
+                                          "Floor: ",
+                                          ticketListData[index]['floor']
+                                              .toString(),
+                                          index)
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ticketCard(
+                                          Icons.room,
+                                          'Room: ',
+                                          ticketListData[index]['room'] ??
+                                              "N/A",
+                                          index)
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Row(
+                                    children: [
+                                      ticketCard(
+                                          Icons.account_balance,
+                                          "Asset: ",
+                                          ticketListData[index]['asset'] ??
+                                              "N/A",
+                                          index)
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Row(
+                                    children: [
+                                      ticketCard(
+                                          Icons.build,
+                                          'User: ',
+                                          ticketListData[index]['user'] ??
+                                              "N/A",
+                                          index)
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Row(
+                                    children: [
+                                      ticketCard(
+                                          Icons.build,
+                                          'ServiceProvider: ',
+                                          ticketListData[index]
+                                                  ['serviceProvider'] ??
+                                              "N/A",
+                                          index)
+                                    ],
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Row(children: [
+                                    ticketCard(
+                                        Icons.comment,
+                                        'Remark: ',
+                                        ticketListData[index]['remark'] ??
+                                            "N/A",
+                                        index)
+                                  ]),
+                                  const SizedBox(height: 2),
+                                  SizedBox(
+                                    height: 50,
+                                    child: ListView.builder(
+                                      itemCount: imageFilePaths.length,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index2) =>
+                                          Container(
+                                        height: 80,
+                                        width: 60,
+                                        child: isLoading
+                                            ? const CircularProgressIndicator()
+                                            : GestureDetector(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              ImageScreen(
+                                                                pageTitle:
+                                                                    'pendingPage',
+                                                                imageFiles:
+                                                                    imageFilePaths,
+                                                                initialIndex:
+                                                                    index2,
+                                                                imageFile:
+                                                                    imageFilePaths[
+                                                                        index2],
+                                                                ticketId:
+                                                                    ticketList[
+                                                                        index],
+                                                              )));
+                                                },
+                                                // ignore: unnecessary_null_comparison
+                                                child: imageFilePaths != null
+                                                    ? Image.network(
+                                                        imageFilePaths[index2],
+                                                      )
+                                                    : const Icon(
+                                                        Icons.image,
+                                                        color: black,
+                                                        size: 50,
+                                                      ),
+                                              ),
+                                      ),
                                     ),
-                                  )),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Row(children: [
+                                    ticketCard(
+                                        Icons.comment,
+                                        'Re Assign: ',
+                                        ticketListData[index]['reAssign'] ??
+                                            "N/A",
+                                        index)
+                                  ]),
+                                  const SizedBox(height: 2),
+                                  Row(children: [
+                                    ticketCard(
+                                        Icons.comment,
+                                        'Revive: ',
+                                        ticketListData[index]['revive'] ??
+                                            "N/A",
+                                        index)
+                                  ]),
+                                ],
+                              ),
                             ),
-                          ],
+                          ),
                         );
+
+                        // Row(
+                        //   children: [
+                        //     Container(
+                        //       margin: const EdgeInsets.only(top: 10),
+                        //       height: 360,
+                        //       width: 350,
+                        //       child: Card(
+                        //           elevation: 10,
+                        //           child: Padding(
+                        //             padding: const EdgeInsets.all(8.0),
+                        //             child: Column(
+                        //               children: [
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Status ',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['status'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Ticket No.: ',
+                        //                       style: TextStyle(
+                        //                         color: black,
+                        //                       ),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index],
+                        //                       style: const TextStyle(
+                        //                         color: black,
+                        //                       ),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 const SizedBox(
+                        //                   height: 10,
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Date (Opened)',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['date'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Date (Closed)',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['closed'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'TAT ',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['tat'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Work ',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['work'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Building ',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['building'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Floor No. ',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['floor'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Room No. ',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['room'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Asset',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index][asset],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'User',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['user'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Service Provider ',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]
+                        //                           ['serviceProvider'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Remarks',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['remark'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.justify,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Re-Assign ',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['reAssign'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 Row(
+                        //                   mainAxisAlignment:
+                        //                       MainAxisAlignment.spaceAround,
+                        //                   children: [
+                        //                     const Text(
+                        //                       'Revive ',
+                        //                       style: TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                     Text(
+                        //                       ticketListData[index]['revive'],
+                        //                       style:
+                        //                           const TextStyle(color: black),
+                        //                       textAlign: TextAlign.left,
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //           )),
+                        //     ),
+                        //   ],
+                        // );
                       }))
             ]),
       floatingActionButton: FloatingActionButton(
@@ -326,110 +640,164 @@ class _ReportDetailsState extends State<ReportDetails> {
     );
   }
 
-  Future<void> getTicketList() async {
+  Future<void> getYearList() async {
     // final provider = Provider.of<AllRoomProvider>(context, listen: false);
     // provider.setBuilderList([]);
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('raisedTickets').get();
     if (querySnapshot.docs.isNotEmpty) {
       List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-      ticketList = tempData;
+      yearList = tempData;
     }
     setState(() {});
+    print('yearList: $yearList');
   }
 
-  Future<void> getdata() async {
-    String asset = '';
-    String building = '';
-    String date = '';
-    String floor = '';
-    String room = '';
-    String service = '';
-    String work = '';
-    String tat = '';
-    String status = '';
-    String user = '';
-    String remark = '';
-    String assign = '';
-    String revive = '';
-    Map<String, dynamic> data = {};
-
-    for (var i = 0; i < ticketList.length; i++) {
-      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+  Future<void> getMonthList() async {
+    // final provider = Provider.of<AllRoomProvider>(context, listen: false);
+    // provider.setBuilderList([]);
+    for (var i = 0; i < yearList.length; i++) {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('raisedTickets')
-          .doc(ticketList[i])
+          .doc(yearList[i])
+          .collection('months')
           .get();
-
-      if (documentSnapshot.data() != null) {
-        data = documentSnapshot.data() as Map<String, dynamic>;
-
-        asset = data['asset'] ?? '';
-        building = data['building'] ?? '';
-        date = data['date'] ?? '';
-        floor = data['floor'] ?? '';
-        room = data['room'] ?? '';
-        service = data['serviceProvider'] ?? '';
-        work = data['work'] ?? '';
-        tat = data['tat'] ?? 'tat';
-        status = data['status'] ?? 'open';
-        user = data['user'] ?? 'user11';
-        remark = data['remark'] ?? 'remark';
-        // picture = data['picture'] ?? 'picture';
-        assign = data['assign'] ?? 'assign';
-        revive = data['revive'] ?? 'revive';
+      if (querySnapshot.docs.isNotEmpty) {
+        List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+        monthList = tempData;
       }
       setState(() {});
-      dateList.add(date);
-      tatList.add(tat);
-      ticketNumList.add(ticketList[i]);
-      statusList.add(status);
-      workList.add(work);
-      buildingList.add(building);
-      floorList.add(floor);
-      roomList.add(room);
-      assetList.add(asset);
-      userList.add(user);
-      serviceList.add(service);
-      remarkList.add(remark);
-      // allData.add(picture);
-      assignList.add(assign);
-      reviveList.add(revive);
+      print('monthList: $monthList');
     }
-    setState(() {
-      isLoading = false;
-    });
   }
 
-  Future<void> allFilterData() async {
-    // List<dynamic> fiterTicketData = [];
-    if (widget.data[0] != null) {
-      dateList = dateList.where((e) => widget.data.contains(e)).toList();
-    } else if (widget.data[1] != null) {
-      ticketList = ticketList.where((e) => widget.data.contains(e)).toList();
-    } else if (widget.data[2] != null) {
-      buildingList =
-          buildingList.where((e) => widget.data.contains(e)).toList();
-    } else if (widget.data[3] != null) {
-      floorList = floorList.where((e) => widget.data.contains(e)).toList();
-    } else if (widget.data[4] != null) {
-      roomList = roomList.where((e) => widget.data.contains(e)).toList();
-    } else if (widget.data[5] != null) {
-      userList = userList.where((e) => widget.data.contains(e)).toList();
-    } else if (widget.data[6] != null) {
-      assetList = assetList.where((e) => widget.data.contains(e)).toList();
-    } else if (widget.data[7] != null) {
-      serviceList = serviceList.where((e) => widget.data.contains(e)).toList();
-    } else if (widget.data[8] != null) {
-      statusList = statusList.where((e) => widget.data.contains(e)).toList();
-    } else if (widget.data[9] != null) {
-      workList = workList.where((e) => widget.data.contains(e)).toList();
-    } else {
-      getdata().whenComplete(() {
-        setState(() {
-          isLoading = false;
-        });
-      });
+  Future<void> getDayList() async {
+    // final provider = Provider.of<AllRoomProvider>(context, listen: false);
+    // provider.setBuilderList([]);
+    for (var i = 0; i < yearList.length; i++) {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('raisedTickets')
+          .doc(yearList[i])
+          .collection('months')
+          .doc(monthList[i])
+          .collection('date')
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+        dayList = tempData;
+      }
+      setState(() {});
+      print('dayList: $dayList');
     }
-    print('ticketList $ticketList');
+  }
+
+  // Future<void> getTicketList() async {
+  //   // final provider = Provider.of<AllRoomProvider>(context, listen: false);
+  //   // provider.setBuilderList([]);
+  //   for (var i = 0; i < yearList.length; i++) {
+  //     for (var j = 0; j < monthList.length; j++) {
+  //       for (var k = 0; k < dayList.length; k++) {
+  //         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  //             .collection('raisedTickets')
+  //             .doc(yearList[i])
+  //             .collection('months')
+  //             .doc(monthList[j])
+  //             .collection('date')
+  //             .doc(dayList[k])
+  //             .collection('tickets')
+  //             .get();
+  //         if (querySnapshot.docs.isNotEmpty) {
+  //           List<String> tempData =
+  //               querySnapshot.docs.map((e) => e.id).toList();
+  //           ticketList = tempData;
+  //         }
+  //         ticketNumList.add(ticketList.toString());
+  //         setState(() {});
+  //         print('ticketList: $ticketList');
+  //       }
+  //     }
+  //   }
+  // }
+
+  Future<void> getdata() async {
+    try {
+      ticketList.clear();
+      int currentYear = DateTime.now().year;
+
+      QuerySnapshot monthQuery = await FirebaseFirestore.instance
+          .collection("raisedTickets")
+          .doc(currentYear.toString())
+          .collection('months')
+          .get();
+      List<dynamic> months = monthQuery.docs.map((e) => e.id).toList();
+      for (int i = 0; i < months.length; i++) {
+        QuerySnapshot dateQuery = await FirebaseFirestore.instance
+            .collection("raisedTickets")
+            .doc(currentYear.toString())
+            .collection('months')
+            .doc(months[i])
+            .collection('date')
+            .get();
+        List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
+        for (int j = 0; j < dateList.length; j++) {
+          List<dynamic> temp = [];
+          QuerySnapshot ticketQuery = await FirebaseFirestore.instance
+              .collection("raisedTickets")
+              .doc(currentYear.toString())
+              .collection('months')
+              .doc(months[i])
+              .collection('date')
+              .doc(dateList[j])
+              .collection('tickets')
+              .get();
+          temp = ticketQuery.docs.map((e) => e.id).toList();
+          ticketList = ticketList + temp;
+
+          for (int k = 0; k < temp.length; k++) {
+            DocumentSnapshot ticketDataQuery = await FirebaseFirestore.instance
+                .collection("raisedTickets")
+                .doc(currentYear.toString())
+                .collection('months')
+                .doc(months[i])
+                .collection('date')
+                .doc(dateList[j])
+                .collection('tickets')
+                .doc(temp[k])
+                .get();
+            if (ticketDataQuery.exists) {
+              Map<String, dynamic> mapData =
+                  ticketDataQuery.data() as Map<String, dynamic>;
+              asset = mapData['asset'] ?? "N/A";
+              building = mapData['building'] ?? "N/A";
+              floor = mapData['floor'] ?? "N/A";
+              remark = mapData['remark'] ?? "N/A";
+              room = mapData['room'] ?? "N/A";
+              work = mapData['work'] ?? "N/A";
+              serviceprovider = mapData['serviceProvider'] ?? "";
+              ticketListData.add(mapData);
+              print('$mapData abc');
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print("Error Fetching tickets: $e");
+    }
+  }
+
+  Widget ticketCard(
+      IconData icons, String title, String ticketListData, int index) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        // Icon(icons, color: Colors.deepPurple),
+        // const SizedBox(width: 20),
+        Text(title,
+            textAlign: TextAlign.start,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(width: 100),
+        Text(ticketListData ?? "N/A")
+      ],
+    );
   }
 }

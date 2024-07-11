@@ -133,6 +133,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                minimumSize: const Size(250, 50)),
                             child: Text('select Date: $selectedDate'),
                             onPressed: () {
                               pickDateRange();
@@ -492,6 +494,10 @@ class _TicketTableReportState extends State<TicketTableReport> {
           onMenuStateChange: (isOpen) {
             if (!isOpen) {
               // textEditingController.clear();
+              // assetController.clear();
+              // serviceProviderController.clear();
+              // statusController.clear();
+              // workController.clear();
             }
           },
         ),
@@ -531,6 +537,32 @@ class _TicketTableReportState extends State<TicketTableReport> {
       MaterialPageRoute(builder: (context) {
         return ReportDetails(data: allData);
       }),
-    );
+    ).whenComplete(() {
+      setState(() {
+        workController.clear();
+        serviceProviderController.clear();
+        assetController.clear();
+        userController.clear();
+        statusController.clear();
+        roomController.clear();
+        floorController.clear();
+        buildingController.clear();
+        ticketController.clear();
+        dateController.clear();
+
+        // selectedDate = '';
+        // selectedTicket = '';
+        // selectedbuilding = '';
+        // selectedFloor = '';
+        // selectedRoom = '';
+        // selectedUser = '';
+        // selectedAsset = '';
+        // selectedServiceProvider = '';
+        // selectedStatus = '';
+        // selectedWork = '';
+
+        
+      });
+    });
   }
 }

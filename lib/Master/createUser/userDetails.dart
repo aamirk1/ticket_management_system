@@ -63,9 +63,6 @@ class _UserDetailsState extends State<UserDetails> {
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                               children: [
-                                const SizedBox(
-                                  height: 30,
-                                ),
                                 Align(
                                   alignment: Alignment.center,
                                   child: Column(
@@ -80,7 +77,7 @@ class _UserDetailsState extends State<UserDetails> {
                                               color: Colors.black),
                                         ),
                                         const SizedBox(
-                                          height: 20,
+                                          height: 10,
                                         ),
                                         Text(
                                           'Last Name: $lastName',
@@ -89,7 +86,7 @@ class _UserDetailsState extends State<UserDetails> {
                                               color: Colors.black),
                                         ),
                                         const SizedBox(
-                                          height: 20,
+                                          height: 5,
                                         ),
                                         Text(
                                           'Mobile: $mobile',
@@ -98,7 +95,7 @@ class _UserDetailsState extends State<UserDetails> {
                                               color: Colors.black),
                                         ),
                                         const SizedBox(
-                                          height: 20,
+                                          height: 10,
                                         ),
                                         Text(
                                           'User Id: ${widget.userId}',
@@ -107,7 +104,7 @@ class _UserDetailsState extends State<UserDetails> {
                                               color: Colors.black),
                                         ),
                                         const SizedBox(
-                                          height: 20,
+                                          height: 5,
                                         ),
                                         Text(
                                           'Password: $password',
@@ -116,23 +113,36 @@ class _UserDetailsState extends State<UserDetails> {
                                               color: Colors.black),
                                         ),
                                         const SizedBox(
-                                          height: 20,
+                                          height: 5,
                                         ),
-                                        Container(
-                                          height: 50,
-                                          width: 170,
-                                          color: Colors.purple,
+                                        const Text(
+                                          'Roles',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black),
+                                        ),
+                                        SizedBox(
+                                          height: 150,
+                                          width: 250,
                                           // ignore: unnecessary_null_comparison
-                                          child: role != null
+                                          child: roleList != null
                                               ? ListView.builder(
                                                   itemCount: roleList.length,
                                                   itemBuilder:
                                                       (context, index) {
-                                                    return ListTile(
-                                                      title: Text(
-                                                        role[index],
-                                                        style: const TextStyle(
-                                                            color: black),
+                                                    return SingleChildScrollView(
+                                                      child: ListTile(
+                                                        title: RichText(
+                                                            text: TextSpan(
+                                                                children: [
+                                                              TextSpan(
+                                                                text:
+                                                                    '${index + 1}. ${roleList[index]}',
+                                                                style: const TextStyle(
+                                                                    color:
+                                                                        black),
+                                                              ),
+                                                            ])),
                                                       ),
                                                     );
                                                   },
@@ -144,7 +154,7 @@ class _UserDetailsState extends State<UserDetails> {
                                                 ),
                                         ),
                                         const SizedBox(
-                                          height: 20,
+                                          height: 5,
                                         ),
                                       ]),
                                 )
@@ -173,9 +183,9 @@ class _UserDetailsState extends State<UserDetails> {
       mobile = data['mobile'] ?? '';
       userId = data['userId'] ?? '';
       password = data['password'] ?? '';
-      role = data['role'] ?? '';
+      role = data['role'] ?? 'No Roles';
     }
-
     setState(() {});
+    roleList = role;
   }
 }
