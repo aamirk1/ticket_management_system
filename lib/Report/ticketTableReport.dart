@@ -523,11 +523,10 @@ class _TicketTableReportState extends State<TicketTableReport> {
           //This to clear the search value when you close the menu
           onMenuStateChange: (isOpen) {
             if (!isOpen) {
-              // textEditingController.clear();
-              // assetController.clear();
-              // serviceProviderController.clear();
-              // statusController.clear();
-              // workController.clear();
+              assetController.clear();
+              serviceProviderController.clear();
+              statusController.clear();
+              workController.clear();
             }
           },
         ),
@@ -567,6 +566,17 @@ class _TicketTableReportState extends State<TicketTableReport> {
       MaterialPageRoute(builder: (context) {
         return ReportDetails(data: allData);
       }),
-    ).whenComplete(() {});
+    ).whenComplete(() {
+      workController.clear();
+      serviceProviderController.clear();
+      statusController.clear();
+      assetController.clear();
+      userController.clear();
+      roomController.clear();
+      floorController.clear();
+      buildingController.clear();
+      ticketController.clear();
+      dateController.clear();
+    });
   }
 }

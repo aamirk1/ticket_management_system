@@ -344,12 +344,34 @@ class _ReportDetailsState extends State<ReportDetails> {
                                   ]),
                                   const SizedBox(height: 2),
                                   Row(children: [
-                                    ticketCard(
-                                        Icons.comment,
-                                        'Revive: ',
-                                        ticketListData[index]['revive'] ??
-                                            "N/A",
-                                        index)
+                                    const Text('Revive: ',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    const SizedBox(width: 100),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          if (ticketListData[index]['status'] ==
+                                              'Close') {
+                                            updateTicketStatus(
+                                                ticketListData[index]['year']
+                                                    .toString(),
+                                                ticketListData[index]['month'],
+                                                ticketListData[index]['date'],
+                                                ticketList[index]);
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              const SnackBar(
+                                                  backgroundColor: Colors.red,
+                                                  content: Center(
+                                                    child: Text(
+                                                        'Ticket Already Open'),
+                                                  )),
+                                            );
+                                          }
+                                        },
+                                        child: const Text('Revive'))
                                   ]),
                                 ],
                               ),
@@ -807,8 +829,30 @@ class _ReportDetailsState extends State<ReportDetails> {
             textAlign: TextAlign.start,
             style: const TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(width: 100),
-        Text(ticketListData ?? "N/A")
+        Text(ticketListData)
       ],
     );
+  }
+
+  Future<void> updateTicketStatus(
+      String year, String month, String date, String ticketId) async {
+    await FirebaseFirestore.instance
+        .collection("raisedTickets")
+        .doc(year)
+        .collection('months')
+        .doc(month)
+        .collection('date')
+        .doc(date)
+        .collection('tickets')
+        .doc(ticketId)
+        .update({'status': 'Open'}).whenComplete(() {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            backgroundColor: Colors.green,
+            content: Center(
+              child: Text('Ticket Revived'),
+            )),
+      );
+    });
   }
 }
