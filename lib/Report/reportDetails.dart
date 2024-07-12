@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_network/image_network.dart';
 import 'package:ticket_management_system/Report/imageScreen.dart';
 import 'package:ticket_management_system/Report/upDateServiceProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
@@ -53,25 +55,6 @@ class _ReportDetailsState extends State<ReportDetails> {
   List<dynamic> ticketListData = [];
   @override
   void initState() {
-    // getYearList().whenComplete(() {
-    //   getMonthList().whenComplete(() {
-    //     getDayList().whenComplete(() {
-    //       getTicketList().whenComplete(() {
-    //         getdata().whenComplete(() {
-    //           setState(() {
-    //             isLoading = false;
-    //           });
-    //         });
-    //       });
-    //     });
-    //   });
-    // });
-    // getDayList().whenComplete(() => setState(() {
-    //       getTicketList().whenComplete(() => setState(() {
-    //             getdata();
-    //             isLoading = false;
-    //           }));
-    //     }));
     getdata().whenComplete(() => setState(() {
           isLoading = false;
         }));
@@ -82,6 +65,7 @@ class _ReportDetailsState extends State<ReportDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Report Details',
           style: TextStyle(color: Colors.white),
@@ -282,43 +266,70 @@ class _ReportDetailsState extends State<ReportDetails> {
                                       itemCount: imageFilePaths.length,
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: (context, index2) =>
-                                          Container(
-                                        height: 80,
-                                        width: 60,
+                                          SizedBox(
+                                        height: 50,
+                                        width: 50,
                                         child: isLoading
                                             ? const CircularProgressIndicator()
-                                            : GestureDetector(
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              ImageScreen(
-                                                                pageTitle:
-                                                                    'pendingPage',
-                                                                imageFiles:
-                                                                    imageFilePaths,
-                                                                initialIndex:
-                                                                    index2,
-                                                                imageFile:
-                                                                    imageFilePaths[
-                                                                        index2],
-                                                                ticketId:
-                                                                    ticketList[
-                                                                        index],
-                                                              )));
-                                                },
-                                                // ignore: unnecessary_null_comparison
-                                                child: imageFilePaths != null
-                                                    ? Image.network(
-                                                        imageFilePaths[index2],
-                                                      )
-                                                    : const Icon(
-                                                        Icons.image,
-                                                        color: black,
-                                                        size: 50,
+                                            : kIsWeb
+                                                ? Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: ImageNetwork(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        ImageScreen(
+                                                                          pageTitle:
+                                                                              'Report Page',
+                                                                          imageFiles:
+                                                                              imageFilePaths,
+                                                                          initialIndex:
+                                                                              index2,
+                                                                          imageFile:
+                                                                              imageFilePaths[index2],
+                                                                          ticketId:
+                                                                              ticketList[index],
+                                                                        )));
+                                                      },
+                                                      image: imageFilePaths[
+                                                          index2],
+                                                      // put a height and width because they are required
+                                                      height: 50,
+                                                      width: 50,
+                                                      curve: Curves.easeIn,
+                                                      fitWeb: BoxFitWeb.cover,
+                                                      onLoading:
+                                                          const CircularProgressIndicator(
+                                                        color:
+                                                            Colors.indigoAccent,
                                                       ),
-                                              ),
+                                                      onError: const Icon(
+                                                        Icons.error,
+                                                        color: Colors.red,
+                                                      ),
+                                                    ),
+                                                  )
+                                                // Padding(
+                                                //     padding:
+                                                //         const EdgeInsets
+                                                //             .all(8.0),
+                                                //     child: Image.network(
+                                                //       height: 50,
+                                                //       fit: BoxFit.cover,
+                                                //       imageFilePaths[
+                                                //           index2],
+                                                //     ),
+                                                //   )
+                                                : const Icon(
+                                                    Icons.image,
+                                                    color: black,
+                                                    size: 50,
+                                                  ),
                                       ),
                                     ),
                                   ),

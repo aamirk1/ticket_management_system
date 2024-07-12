@@ -244,12 +244,42 @@ class _TicketTableReportState extends State<TicketTableReport> {
   Future<void> getTicketList() async {
     final provider = Provider.of<AllRoomProvider>(context, listen: false);
     provider.setBuilderList([]);
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('raisedTickets').get();
-    if (querySnapshot.docs.isNotEmpty) {
-      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-      ticketList = tempData;
-      // print('ticketList: $ticketList');
+    try {
+      ticketList.clear();
+      int currentYear = DateTime.now().year;
+
+      QuerySnapshot monthQuery = await FirebaseFirestore.instance
+          .collection("raisedTickets")
+          .doc(currentYear.toString())
+          .collection('months')
+          .get();
+      List<dynamic> months = monthQuery.docs.map((e) => e.id).toList();
+      for (int i = 0; i < months.length; i++) {
+        QuerySnapshot dateQuery = await FirebaseFirestore.instance
+            .collection("raisedTickets")
+            .doc(currentYear.toString())
+            .collection('months')
+            .doc(months[i])
+            .collection('date')
+            .get();
+        List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
+        for (int j = 0; j < dateList.length; j++) {
+          List<String> temp = [];
+          QuerySnapshot ticketQuery = await FirebaseFirestore.instance
+              .collection("raisedTickets")
+              .doc(currentYear.toString())
+              .collection('months')
+              .doc(months[i])
+              .collection('date')
+              .doc(dateList[j])
+              .collection('tickets')
+              .get();
+          temp = ticketQuery.docs.map((e) => e.id).toList();
+          ticketList = ticketList + temp;
+        }
+      }
+    } catch (e) {
+      print(e);
     }
     provider.setBuilderList(ticketList);
     setState(() {});
@@ -537,32 +567,6 @@ class _TicketTableReportState extends State<TicketTableReport> {
       MaterialPageRoute(builder: (context) {
         return ReportDetails(data: allData);
       }),
-    ).whenComplete(() {
-      setState(() {
-        workController.clear();
-        serviceProviderController.clear();
-        assetController.clear();
-        userController.clear();
-        statusController.clear();
-        roomController.clear();
-        floorController.clear();
-        buildingController.clear();
-        ticketController.clear();
-        dateController.clear();
-
-        // selectedDate = '';
-        // selectedTicket = '';
-        // selectedbuilding = '';
-        // selectedFloor = '';
-        // selectedRoom = '';
-        // selectedUser = '';
-        // selectedAsset = '';
-        // selectedServiceProvider = '';
-        // selectedStatus = '';
-        // selectedWork = '';
-
-        
-      });
-    });
+    ).whenComplete(() {});
   }
 }
