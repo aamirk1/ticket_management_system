@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ticket_management_system/Homescreen.dart';
@@ -26,24 +27,30 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  List<String> ticketList = [];
+  List<dynamic> ticketList = [];
   String todayTicket = '';
   List<String> oneToSevenTicket = [];
   List<String> eightToFourteenTicket = [];
   List<String> fifteenToTwentyOneTicket = [];
   List<String> twentyTwoToTwentyEightTicket = [];
   List<String> moreThanTwentyEightTicket = [];
-  // List<String> columnName = [
-  //   'Report Generated\n On Date',
-  //   'Pending For\n (Days)',
-  //   'For Less\nThan 01 Day',
-  //   'Between\n 01 to 07',
-  //   'Between\n 08 to 14',
-  //   'Between\n 15 to 21',
-  //   'Between\n 22 to 28',
-  //   'For More Than\n 28 Days',
-  // ];
-  List<dynamic> rowData = [];
+  List<String> columnName = [
+    'Name Of \nService Provider',
+    'Tickets Pending\n Total ',
+    'For Less\nThan 01 Day',
+    'Between\n 01 to 07',
+    'Between\n 08 to 14',
+    'Between\n 15 to 21',
+    'Between\n 22 to 28',
+    'For More Than\n 28 Days',
+  ];
+  List<dynamic> rowData = [
+    // ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'],
+    // ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'],
+    // ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'],
+    // ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'],
+    // ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'],
+  ];
   String asset = '';
   String floor = '';
   String building = '';
@@ -52,9 +59,9 @@ class _DashboardState extends State<Dashboard> {
   String convertedDate = '';
   String work = '';
   String serviceProvider = '';
-  // String remark = '';
+  String remark = '';
   String currentDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
-  List<String> datelist = [];
+  List<dynamic> ticketDataList = [];
   DateTime today = DateTime.now();
   //DateTime targetDate = today.add(Duration(days: 1));
   String day = '';
@@ -79,330 +86,391 @@ class _DashboardState extends State<Dashboard> {
               children: [
                 Center(
                   child: Container(
-                    margin: const EdgeInsets.only(top: 10.0),
-                    width: MediaQuery.of(context).size.width * 0.99,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Text(
-                                      'Tickets \nRaised On',
-                                      style:
-                                          TextStyle(fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      currentDate,
-                                      style: const TextStyle(
-                                          fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                      margin: const EdgeInsets.only(top: 10.0),
+                      width: MediaQuery.of(context).size.width * 0.90,
+                      height: MediaQuery.of(context).size.height * 0.70,
+                      child: DataTable2(
+                        minWidth: 5000,
+                        border: TableBorder.all(color: Colors.black),
+                        headingRowColor: const WidgetStatePropertyAll(purple),
+                        headingTextStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 50.0,
+                        ),
+                        columnSpacing: 5.0,
+                        columns: List.generate(columnName.length, (index) {
+                          return DataColumn2(
+                            fixedWidth:
+                                columnName[index] == 'Service Provider \n Name'
+                                    ? 260
+                                    : 100,
+                            label: Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                columnName[index].toString(),
+                                style: const TextStyle(
+                                    // overflow: TextOverflow.ellipsis,
+                                    fontSize: 12.0,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
+                          );
+                        }),
+                        rows: List.generate(
+                          growable: true,
+                          rowData.length,
+                          (index1) => DataRow2(
+                            cells: List.generate(
+                                growable: true, columnName.length, (index2) {
+                              return DataCell(Padding(
+                                padding: const EdgeInsets.only(bottom: 2.0),
+                                child: Text(rowData[index1][index2]),
+
+                                // child: TextFormField(
+                                //   style: const TextStyle(
+                                //       fontSize: 12, color: Colors.black),
+                                //   textAlign: TextAlign.center,
+                                //   // controller: controllers[index1][index2],
+                                //   onChanged: (value) {
+                                //     rowData[index1][index2] = value;
+                                //   },
+                                //   decoration: const InputDecoration(
+                                //     contentPadding:
+                                //         EdgeInsets.only(left: 3.0, right: 3.0),
+                                //     // border:
+                                //     //     const OutlineInputBorder(),
+                                //     // hintText: rowData[index1][index2],
+                                //     hintStyle: TextStyle(
+                                //       fontSize: 11.0,
+                                //       color: Colors.black,
+                                //     ),
+                                //   ),
+                                // ),
+                              ));
+                            }),
                           ),
                         ),
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 5.0),
-                                      child: Text(
-                                        'Total Pending',
-                                        style: TextStyle(
-                                            fontSize: 16, color: white),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      ticketList.length.toString(),
-                                      style: const TextStyle(
-                                          fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Text(
-                                      'For Less\nThan 01 Day',
-                                      style:
-                                          TextStyle(fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      todayTicket.toString(),
-                                      style: const TextStyle(
-                                          fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Text(
-                                      '1 - 7 Days',
-                                      style:
-                                          TextStyle(fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      oneToSevenTicket.length.toString(),
-                                      style: const TextStyle(
-                                          fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Text(
-                                      '8 - 14 Days',
-                                      style:
-                                          TextStyle(fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      eightToFourteenTicket.length.toString(),
-                                      style: const TextStyle(
-                                          fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Text(
-                                      '15 - 21',
-                                      style:
-                                          TextStyle(fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      fifteenToTwentyOneTicket.length
-                                          .toString(),
-                                      style: const TextStyle(
-                                          fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Text(
-                                      '22 - 28 Days',
-                                      style:
-                                          TextStyle(fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      twentyTwoToTwentyEightTicket.length
-                                          .toString(),
-                                      style: const TextStyle(
-                                          fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Card(
-                          elevation: 20,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: const Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 5.0),
-                                      child: Text(
-                                        'More Than 28 Days',
-                                        style: TextStyle(
-                                            fontSize: 16, color: white),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Container(
-                                  height: 45,
-                                  width: 100,
-                                  color: purple,
-                                  child: Center(
-                                    child: Text(
-                                      moreThanTwentyEightTicket.length
-                                          .toString(),
-                                      style: const TextStyle(
-                                          fontSize: 16, color: white),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 2,
+                      )
+
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //   children: [
+                      //     Card(
+                      //       elevation: 20,
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(20.0),
+                      //         child: Column(
+                      //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //           children: [
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: const Center(
+                      //                 child: Text(
+                      //                   'Tickets \nRaised On',
+                      //                   style:
+                      //                       TextStyle(fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             const SizedBox(
+                      //               height: 10,
+                      //             ),
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: Center(
+                      //                 child: Text(
+                      //                   currentDate,
+                      //                   style: const TextStyle(
+                      //                       fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Card(
+                      //       elevation: 20,
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(20.0),
+                      //         child: Column(
+                      //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //           children: [
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: const Center(
+                      //                 child: Padding(
+                      //                   padding: EdgeInsets.only(left: 5.0),
+                      //                   child: Text(
+                      //                     'Total Pending',
+                      //                     style: TextStyle(
+                      //                         fontSize: 16, color: white),
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             const SizedBox(
+                      //               height: 10,
+                      //             ),
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: Center(
+                      //                 child: Text(
+                      //                   ticketList.length.toString(),
+                      //                   style: const TextStyle(
+                      //                       fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Card(
+                      //       elevation: 20,
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(20.0),
+                      //         child: Column(
+                      //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //           children: [
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: const Center(
+                      //                 child: Text(
+                      //                   'For Less\nThan 01 Day',
+                      //                   style:
+                      //                       TextStyle(fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             const SizedBox(
+                      //               height: 10,
+                      //             ),
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: Center(
+                      //                 child: Text(
+                      //                   todayTicket.toString(),
+                      //                   style: const TextStyle(
+                      //                       fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Card(
+                      //       elevation: 20,
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(20.0),
+                      //         child: Column(
+                      //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //           children: [
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: const Center(
+                      //                 child: Text(
+                      //                   '1 - 7 Days',
+                      //                   style:
+                      //                       TextStyle(fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             const SizedBox(
+                      //               height: 10,
+                      //             ),
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: Center(
+                      //                 child: Text(
+                      //                   oneToSevenTicket.length.toString(),
+                      //                   style: const TextStyle(
+                      //                       fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Card(
+                      //       elevation: 20,
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(20.0),
+                      //         child: Column(
+                      //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //           children: [
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: const Center(
+                      //                 child: Text(
+                      //                   '8 - 14 Days',
+                      //                   style:
+                      //                       TextStyle(fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             const SizedBox(
+                      //               height: 10,
+                      //             ),
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: Center(
+                      //                 child: Text(
+                      //                   eightToFourteenTicket.length.toString(),
+                      //                   style: const TextStyle(
+                      //                       fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Card(
+                      //       elevation: 20,
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(20.0),
+                      //         child: Column(
+                      //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //           children: [
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: const Center(
+                      //                 child: Text(
+                      //                   '15 - 21',
+                      //                   style:
+                      //                       TextStyle(fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             const SizedBox(
+                      //               height: 10,
+                      //             ),
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: Center(
+                      //                 child: Text(
+                      //                   fifteenToTwentyOneTicket.length
+                      //                       .toString(),
+                      //                   style: const TextStyle(
+                      //                       fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Card(
+                      //       elevation: 20,
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(20.0),
+                      //         child: Column(
+                      //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //           children: [
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: const Center(
+                      //                 child: Text(
+                      //                   '22 - 28 Days',
+                      //                   style:
+                      //                       TextStyle(fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             const SizedBox(
+                      //               height: 10,
+                      //             ),
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: Center(
+                      //                 child: Text(
+                      //                   twentyTwoToTwentyEightTicket.length
+                      //                       .toString(),
+                      //                   style: const TextStyle(
+                      //                       fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Card(
+                      //       elevation: 20,
+                      //       child: Padding(
+                      //         padding: const EdgeInsets.all(20.0),
+                      //         child: Column(
+                      //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //           children: [
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: const Center(
+                      //                 child: Padding(
+                      //                   padding: EdgeInsets.only(left: 5.0),
+                      //                   child: Text(
+                      //                     'More Than 28 Days',
+                      //                     style: TextStyle(
+                      //                         fontSize: 16, color: white),
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             const SizedBox(
+                      //               height: 10,
+                      //             ),
+                      //             Container(
+                      //               height: 45,
+                      //               width: 100,
+                      //               color: purple,
+                      //               child: Center(
+                      //                 child: Text(
+                      //                   moreThanTwentyEightTicket.length
+                      //                       .toString(),
+                      //                   style: const TextStyle(
+                      //                       fontSize: 16, color: white),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -449,139 +517,183 @@ class _DashboardState extends State<Dashboard> {
   }
 
   Future<void> getdata() async {
-    Map<String, dynamic> data = {};
+    try {
+      ticketList.clear();
+      int currentYear = DateTime.now().year;
 
-    for (var i = 0; i < ticketList.length; i++) {
-      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
-          .collection('raisedTickets')
-          .doc(ticketList[i])
+      QuerySnapshot monthQuery = await FirebaseFirestore.instance
+          .collection("raisedTickets")
+          .doc(currentYear.toString())
+          .collection('months')
           .get();
+      List<dynamic> months = monthQuery.docs.map((e) => e.id).toList();
+      for (int i = 0; i < months.length; i++) {
+        QuerySnapshot dateQuery = await FirebaseFirestore.instance
+            .collection("raisedTickets")
+            .doc(currentYear.toString())
+            .collection('months')
+            .doc(months[i])
+            .collection('date')
+            .get();
+        List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
+        for (int j = 0; j < dateList.length; j++) {
+          List<dynamic> temp = [];
+          QuerySnapshot ticketQuery = await FirebaseFirestore.instance
+              .collection("raisedTickets")
+              .doc(currentYear.toString())
+              .collection('months')
+              .doc(months[i])
+              .collection('date')
+              .doc(dateList[j])
+              .collection('tickets')
+              .get();
+          temp = ticketQuery.docs.map((e) => e.id).toList();
+          ticketList = ticketList + temp;
+          // rowData.add(ticketList.length);
 
-      if (documentSnapshot.data() != null) {
-        data = documentSnapshot.data() as Map<String, dynamic>;
-      }
-      date = data['date'] ?? 'N/A';
-      convertedDate = date.split('-').reversed.join('-');
-
-      // Index = 2
-      if (currentDate == date) {
-        todayTicket = ticketList.length.toString();
-      } else {
-        todayTicket = '0';
-      }
-
-      // Index = 3
-
-      if ((i == 1) && (i < 7)) {
-        for (int i = 1; i < 7; i++) {
-          DateTime newdate = today.add(Duration(days: i));
-          DateTime sevendays = newdate.add(const Duration(days: 6));
-          DateFormat formatter = DateFormat('dd-MM-yyyy');
-
-          if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
-            datelist.add(formatter.format(newdate));
-            for (int j = 0; j < datelist.length; j++) {
-              // print('sevenday - ${newdate.isBefore(sevendays)}');
-              // print(datelist[j]);
-              newdate.add(const Duration(days: 1));
-              // ignore: unrelated_type_equality_checks
-              if (newdate.isBefore(sevendays) == datelist[j]) {
-                oneToSevenTicket.add(ticketList[j].toString());
-              }
+          for (int k = 0; k < temp.length; k++) {
+            DocumentSnapshot ticketDataQuery = await FirebaseFirestore.instance
+                .collection("raisedTickets")
+                .doc(currentYear.toString())
+                .collection('months')
+                .doc(months[i])
+                .collection('date')
+                .doc(dateList[j])
+                .collection('tickets')
+                .doc(temp[k])
+                .get();
+            if (ticketDataQuery.exists) {
+              Map<String, dynamic> mapData =
+                  ticketDataQuery.data() as Map<String, dynamic>;
+              asset = mapData['asset'] ?? "N/A";
+              building = mapData['building'] ?? "N/A";
+              floor = mapData['floor'] ?? "N/A";
+              remark = mapData['remark'] ?? "N/A";
+              room = mapData['room'] ?? "N/A";
+              work = mapData['work'] ?? "N/A";
+              serviceProvider = mapData['serviceProvider'] ?? "";
+              ticketDataList.add(mapData);
+              // print('$mapData abc');
             }
-          } else {
-            oneToSevenTicket.add('0');
           }
-          oneToSevenTicket.add(ticketList.length.toString());
-        }
-        break;
-      } else if ((i == 7) && (i < 15)) {
-        for (int i = 7; i < 15; i++) {
-          DateTime newdate = today.add(Duration(days: i));
-          DateTime fifteendays = newdate.add(const Duration(days: 15));
-          DateFormat formatter = DateFormat('dd-MM-yyyy');
-          if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
-            datelist.add(formatter.format(newdate));
-            for (int j = 0; j < datelist.length; j++) {
-              // print('sevenday - ${newdate.isBefore(sevendays)}');
-              // print(datelist[j]);
-              newdate.add(const Duration(days: 1));
-              // ignore: unrelated_type_equality_checks
-              if (newdate.isBefore(fifteendays) == datelist[j]) {
-                eightToFourteenTicket.add(ticketList[j].toString());
-              }
-            }
-          } else {
-            eightToFourteenTicket.add('0');
-          }
-          eightToFourteenTicket.add(ticketList.length.toString());
-        }
-        break;
-      } else if ((i == 15) && (i < 22)) {
-        for (int i = 15; i < 22; i++) {
-          DateTime newdate = today.add(Duration(days: i));
-          DateTime twentyOnedays = newdate.add(const Duration(days: 21));
-          DateFormat formatter = DateFormat('dd-MM-yyyy');
-          if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
-            datelist.add(formatter.format(newdate));
-            for (int j = 0; j < datelist.length; j++) {
-              // print('sevenday - ${newdate.isBefore(sevendays)}');
-              // print(datelist[j]);
-              newdate.add(const Duration(days: 1));
-              // ignore: unrelated_type_equality_checks
-              if (newdate.isBefore(twentyOnedays) == datelist[j]) {
-                fifteenToTwentyOneTicket.add(ticketList[j].toString());
-              }
-            }
-          } else {
-            fifteenToTwentyOneTicket.add('0');
-          }
-          fifteenToTwentyOneTicket.add(ticketList.length.toString());
-        }
-      } else if ((i == 22) && (i < 29)) {
-        for (int i = 22; i < 29; i++) {
-          DateTime newdate = today.add(Duration(days: i));
-          DateTime twentyEightdays = newdate.add(const Duration(days: 28));
-          DateFormat formatter = DateFormat('dd-MM-yyyy');
-          if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
-            datelist.add(formatter.format(newdate));
-            for (int j = 0; j < datelist.length; j++) {
-              // print('sevenday - ${newdate.isBefore(sevendays)}');
-              // print(datelist[j]);
-              newdate.add(const Duration(days: 1));
-              // ignore: unrelated_type_equality_checks
-              if (newdate.isBefore(twentyEightdays) == datelist[j]) {
-                twentyTwoToTwentyEightTicket.add(ticketList[j].toString());
-              }
-            }
-          } else {
-            twentyTwoToTwentyEightTicket.add('0');
-          }
-          twentyTwoToTwentyEightTicket.add(ticketList.length.toString());
-        }
-      } else if ((i == 29) && (i < 31)) {
-        for (int i = 29; i < 31; i++) {
-          DateTime newdate = today.add(Duration(days: i));
-          DateTime moretwentyEightdays = newdate.add(const Duration(days: 31));
-          DateFormat formatter = DateFormat('dd-MM-yyyy');
-          if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
-            datelist.add(formatter.format(newdate));
-            for (int j = 0; j < datelist.length; j++) {
-              // print('sevenday - ${newdate.isBefore(sevendays)}');
-              // print(datelist[j]);
-              newdate.add(const Duration(days: 1));
-              // ignore: unrelated_type_equality_checks
-              if (newdate.isBefore(moretwentyEightdays) == datelist[j]) {
-                moreThanTwentyEightTicket.add(ticketList[j].toString());
-              }
-            }
-          } else {
-            moreThanTwentyEightTicket.add('0');
-          }
-          moreThanTwentyEightTicket.add(ticketList.length.toString());
         }
       }
+    } catch (e) {
+      print("Error Fetching tickets: $e");
     }
+
+    // Index = 3
+
+    // if ((i == 1) && (i < 7)) {
+    //   for (int i = 1; i < 7; i++) {
+    //     DateTime newdate = today.add(Duration(days: i));
+    //     DateTime sevendays = newdate.add(const Duration(days: 6));
+    //     DateFormat formatter = DateFormat('dd-MM-yyyy');
+
+    //     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
+    //       datelist.add(formatter.format(newdate));
+    //       for (int j = 0; j < datelist.length; j++) {
+    //         // print('sevenday - ${newdate.isBefore(sevendays)}');
+    //         // print(datelist[j]);
+    //         newdate.add(const Duration(days: 1));
+    //         // ignore: unrelated_type_equality_checks
+    //         if (newdate.isBefore(sevendays) == datelist[j]) {
+    //           oneToSevenTicket.add(ticketList[j].toString());
+    //         }
+    //       }
+    //     } else {
+    //       oneToSevenTicket.add('0');
+    //     }
+    //     oneToSevenTicket.add(ticketList.length.toString());
+    //   }
+    //   break;
+    // } else if ((i == 7) && (i < 15)) {
+    //   for (int i = 7; i < 15; i++) {
+    //     DateTime newdate = today.add(Duration(days: i));
+    //     DateTime fifteendays = newdate.add(const Duration(days: 15));
+    //     DateFormat formatter = DateFormat('dd-MM-yyyy');
+    //     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
+    //       datelist.add(formatter.format(newdate));
+    //       for (int j = 0; j < datelist.length; j++) {
+    //         // print('sevenday - ${newdate.isBefore(sevendays)}');
+    //         // print(datelist[j]);
+    //         newdate.add(const Duration(days: 1));
+    //         // ignore: unrelated_type_equality_checks
+    //         if (newdate.isBefore(fifteendays) == datelist[j]) {
+    //           eightToFourteenTicket.add(ticketList[j].toString());
+    //         }
+    //       }
+    //     } else {
+    //       eightToFourteenTicket.add('0');
+    //     }
+    //     eightToFourteenTicket.add(ticketList.length.toString());
+    //   }
+    //   break;
+    // } else if ((i == 15) && (i < 22)) {
+    //   for (int i = 15; i < 22; i++) {
+    //     DateTime newdate = today.add(Duration(days: i));
+    //     DateTime twentyOnedays = newdate.add(const Duration(days: 21));
+    //     DateFormat formatter = DateFormat('dd-MM-yyyy');
+    //     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
+    //       datelist.add(formatter.format(newdate));
+    //       for (int j = 0; j < datelist.length; j++) {
+    //         // print('sevenday - ${newdate.isBefore(sevendays)}');
+    //         // print(datelist[j]);
+    //         newdate.add(const Duration(days: 1));
+    //         // ignore: unrelated_type_equality_checks
+    //         if (newdate.isBefore(twentyOnedays) == datelist[j]) {
+    //           fifteenToTwentyOneTicket.add(ticketList[j].toString());
+    //         }
+    //       }
+    //     } else {
+    //       fifteenToTwentyOneTicket.add('0');
+    //     }
+    //     fifteenToTwentyOneTicket.add(ticketList.length.toString());
+    //   }
+    // } else if ((i == 22) && (i < 29)) {
+    //   for (int i = 22; i < 29; i++) {
+    //     DateTime newdate = today.add(Duration(days: i));
+    //     DateTime twentyEightdays = newdate.add(const Duration(days: 28));
+    //     DateFormat formatter = DateFormat('dd-MM-yyyy');
+    //     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
+    //       datelist.add(formatter.format(newdate));
+    //       for (int j = 0; j < datelist.length; j++) {
+    //         // print('sevenday - ${newdate.isBefore(sevendays)}');
+    //         // print(datelist[j]);
+    //         newdate.add(const Duration(days: 1));
+    //         // ignore: unrelated_type_equality_checks
+    //         if (newdate.isBefore(twentyEightdays) == datelist[j]) {
+    //           twentyTwoToTwentyEightTicket.add(ticketList[j].toString());
+    //         }
+    //       }
+    //     } else {
+    //       twentyTwoToTwentyEightTicket.add('0');
+    //     }
+    //     twentyTwoToTwentyEightTicket.add(ticketList.length.toString());
+    //   }
+    // } else if ((i == 29) && (i < 31)) {
+    //   for (int i = 29; i < 31; i++) {
+    //     DateTime newdate = today.add(Duration(days: i));
+    //     DateTime moretwentyEightdays = newdate.add(const Duration(days: 31));
+    //     DateFormat formatter = DateFormat('dd-MM-yyyy');
+    //     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
+    //       datelist.add(formatter.format(newdate));
+    //       for (int j = 0; j < datelist.length; j++) {
+    //         // print('sevenday - ${newdate.isBefore(sevendays)}');
+    //         // print(datelist[j]);
+    //         newdate.add(const Duration(days: 1));
+    //         // ignore: unrelated_type_equality_checks
+    //         if (newdate.isBefore(moretwentyEightdays) == datelist[j]) {
+    //           moreThanTwentyEightTicket.add(ticketList[j].toString());
+    //         }
+    //       }
+    //     } else {
+    //       moreThanTwentyEightTicket.add('0');
+    //     }
+    //     moreThanTwentyEightTicket.add(ticketList.length.toString());
+    //   }
+    // }
+    // }
   }
 
   // void getdate() async {

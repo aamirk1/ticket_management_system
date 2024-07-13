@@ -93,6 +93,16 @@ class _TicketTableReportState extends State<TicketTableReport> {
 
   @override
   Widget build(BuildContext context) {
+    // workController.clear();
+    // serviceProviderController.clear();
+    // statusController.clear();
+    // assetController.clear();
+    // userController.clear();
+    // roomController.clear();
+    // floorController.clear();
+    // buildingController.clear();
+    // ticketController.clear();
+    // dateController.clear();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -205,7 +215,9 @@ class _TicketTableReportState extends State<TicketTableReport> {
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         onPressed: () {
-                          allFilterData();
+                          allFilterData().whenComplete(() {
+                            setState(() {});
+                          });
                         },
                         child: const Text('Get Report'),
                       ),
@@ -523,10 +535,16 @@ class _TicketTableReportState extends State<TicketTableReport> {
           //This to clear the search value when you close the menu
           onMenuStateChange: (isOpen) {
             if (!isOpen) {
-              assetController.clear();
-              serviceProviderController.clear();
-              statusController.clear();
-              workController.clear();
+              // workController.clear();
+              // serviceProviderController.clear();
+              // statusController.clear();
+              // assetController.clear();
+              // userController.clear();
+              // roomController.clear();
+              // floorController.clear();
+              // buildingController.clear();
+              // ticketController.clear();
+              // dateController.clear();
             }
           },
         ),
@@ -564,19 +582,32 @@ class _TicketTableReportState extends State<TicketTableReport> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) {
+        print(selectedWork);
+        selectedWork = null;
+        selectedServiceProvider = null;
+        selectedStatus = null;
+        selectedAsset = null;
+        selectedUser = null;
+        selectedRoom = null;
+        selectedFloor = null;
+        selectedbuilding = null;
+        selectedTicket = null;
+        selectedDate = '';
+
         return ReportDetails(data: allData);
       }),
-    ).whenComplete(() {
-      workController.clear();
-      serviceProviderController.clear();
-      statusController.clear();
-      assetController.clear();
-      userController.clear();
-      roomController.clear();
-      floorController.clear();
-      buildingController.clear();
-      ticketController.clear();
-      dateController.clear();
-    });
+    );
+    // .whenComplete(() {
+    //   workController.clear();
+    //   serviceProviderController.clear();
+    //   statusController.clear();
+    //   assetController.clear();
+    //   userController.clear();
+    //   roomController.clear();
+    //   floorController.clear();
+    //   buildingController.clear();
+    //   ticketController.clear();
+    //   dateController.clear();
+    // });
   }
 }

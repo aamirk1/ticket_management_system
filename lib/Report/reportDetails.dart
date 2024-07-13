@@ -683,7 +683,6 @@ class _ReportDetailsState extends State<ReportDetails> {
       yearList = tempData;
     }
     setState(() {});
-    print('yearList: $yearList');
   }
 
   Future<void> getMonthList() async {
@@ -700,7 +699,6 @@ class _ReportDetailsState extends State<ReportDetails> {
         monthList = tempData;
       }
       setState(() {});
-      print('monthList: $monthList');
     }
   }
 
@@ -720,7 +718,6 @@ class _ReportDetailsState extends State<ReportDetails> {
         dayList = tempData;
       }
       setState(() {});
-      print('dayList: $dayList');
     }
   }
 
@@ -808,7 +805,7 @@ class _ReportDetailsState extends State<ReportDetails> {
               work = mapData['work'] ?? "N/A";
               serviceprovider = mapData['serviceProvider'] ?? "";
               ticketListData.add(mapData);
-              print('$mapData abc');
+              // print('$mapData abc');
             }
           }
         }
