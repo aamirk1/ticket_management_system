@@ -23,12 +23,10 @@ class ImageScreen extends StatefulWidget {
 }
 
 class _ImageScreenState extends State<ImageScreen> {
-  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _currentIndex = widget.initialIndex;
   }
 
   @override
@@ -57,7 +55,6 @@ class _ImageScreenState extends State<ImageScreen> {
             enableInfiniteScroll: false,
             onPageChanged: (index, reason) {
               setState(() {
-                _currentIndex = index;
               });
             },
           ),

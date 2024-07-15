@@ -30,6 +30,7 @@ class _EditBuildingFormState extends State<EditBuildingForm> {
     buildingController.text = widget.buildingId;
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
           title: const Center(
               child:
                   Text('Building Form', style: TextStyle(color: Colors.white))),

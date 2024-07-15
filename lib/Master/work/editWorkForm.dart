@@ -30,6 +30,7 @@ class _EditWorkFormState extends State<EditWorkForm> {
     workController.text = widget.workId;
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
           title: const Center(
               child: Text('Work Form', style: TextStyle(color: Colors.white))),
           flexibleSpace: Container(

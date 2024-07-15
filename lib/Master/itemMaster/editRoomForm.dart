@@ -30,6 +30,7 @@ class _EditRoomFormState extends State<EditRoomForm> {
     roomController.text = widget.roomId;
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
           title: const Center(
               child: Text('Room Form', style: TextStyle(color: Colors.white))),
           flexibleSpace: Container(

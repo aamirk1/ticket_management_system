@@ -1,10 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class UpdateServiceProvider extends StatefulWidget {
-  const UpdateServiceProvider({super.key});
+  const UpdateServiceProvider(
+      {super.key,
+      required this.year,
+      required this.month,
+      required this.day,
+      required this.ticketId});
+  final String year;
+  final String month;
+  final String day;
+  final String ticketId;
 
   @override
   State<UpdateServiceProvider> createState() => _UpdateServiceProviderState();
@@ -40,99 +48,99 @@ class _UpdateServiceProviderState extends State<UpdateServiceProvider> {
               elevation: 10,
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Container(
-                      color: Colors.white,
-                      height: 40,
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton2<String>(
-                          isExpanded: true,
-                          hint: const Text(
-                            'Select Ticket No.',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                            ),
-                          ),
-                          items: ticketList
-                              .map((item) => DropdownMenuItem(
-                                    value: item,
-                                    child: Text(
-                                      item,
-                                      style: const TextStyle(
-                                          fontSize: 14, color: Colors.black),
-                                    ),
-                                  ))
-                              .toList(),
-                          value: selectedTicketNumber,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedTicketNumber = value;
-                              fetchServiceProvider();
-                            });
-                          },
-                          buttonStyleData: const ButtonStyleData(
-                            decoration: BoxDecoration(),
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            height: 40,
-                            width: 200,
-                          ),
-                          dropdownStyleData: const DropdownStyleData(
-                            maxHeight: 200,
-                          ),
-                          menuItemStyleData: const MenuItemStyleData(
-                            height: 40,
-                          ),
-                          dropdownSearchData: DropdownSearchData(
-                            searchController: ticketnumberController,
-                            searchInnerWidgetHeight: 50,
-                            searchInnerWidget: Container(
-                              height: 50,
-                              padding: const EdgeInsets.only(
-                                top: 8,
-                                bottom: 4,
-                                right: 8,
-                                left: 8,
-                              ),
-                              child: TextFormField(
-                                expands: true,
-                                maxLines: null,
-                                controller: ticketnumberController,
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 8,
-                                  ),
-                                  hintText: 'Search Ticket No.',
-                                  hintStyle: const TextStyle(fontSize: 12),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            searchMatchFn: (item, searchValue) {
-                              return item.value
-                                  .toString()
-                                  .contains(searchValue);
-                            },
-                          ),
-                          //This to clear the search value when you close the menu
-                          onMenuStateChange: (isOpen) {
-                            if (!isOpen) {
-                              ticketnumberController.clear();
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(10),
+                  //   child: Container(
+                  //     color: Colors.white,
+                  //     height: 40,
+                  //     width: MediaQuery.of(context).size.width * 0.25,
+                  //     child: DropdownButtonHideUnderline(
+                  //       child: DropdownButton2<String>(
+                  //         isExpanded: true,
+                  //         hint: const Text(
+                  //           'Select Ticket No.',
+                  //           style: TextStyle(
+                  //             color: Colors.black,
+                  //             fontSize: 14,
+                  //           ),
+                  //         ),
+                  //         items: ticketList
+                  //             .map((item) => DropdownMenuItem(
+                  //                   value: item,
+                  //                   child: Text(
+                  //                     item,
+                  //                     style: const TextStyle(
+                  //                         fontSize: 14, color: Colors.black),
+                  //                   ),
+                  //                 ))
+                  //             .toList(),
+                  //         value: selectedTicketNumber,
+                  //         onChanged: (value) {
+                  //           setState(() {
+                  //             selectedTicketNumber = value;
+                  //             fetchServiceProvider();
+                  //           });
+                  //         },
+                  //         buttonStyleData: const ButtonStyleData(
+                  //           decoration: BoxDecoration(),
+                  //           padding: EdgeInsets.symmetric(horizontal: 16),
+                  //           height: 40,
+                  //           width: 200,
+                  //         ),
+                  //         dropdownStyleData: const DropdownStyleData(
+                  //           maxHeight: 200,
+                  //         ),
+                  //         menuItemStyleData: const MenuItemStyleData(
+                  //           height: 40,
+                  //         ),
+                  //         dropdownSearchData: DropdownSearchData(
+                  //           searchController: ticketnumberController,
+                  //           searchInnerWidgetHeight: 50,
+                  //           searchInnerWidget: Container(
+                  //             height: 50,
+                  //             padding: const EdgeInsets.only(
+                  //               top: 8,
+                  //               bottom: 4,
+                  //               right: 8,
+                  //               left: 8,
+                  //             ),
+                  //             child: TextFormField(
+                  //               expands: true,
+                  //               maxLines: null,
+                  //               controller: ticketnumberController,
+                  //               decoration: InputDecoration(
+                  //                 isDense: true,
+                  //                 contentPadding: const EdgeInsets.symmetric(
+                  //                   horizontal: 10,
+                  //                   vertical: 8,
+                  //                 ),
+                  //                 hintText: 'Search Ticket No.',
+                  //                 hintStyle: const TextStyle(fontSize: 12),
+                  //                 border: OutlineInputBorder(
+                  //                   borderRadius: BorderRadius.circular(8),
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           searchMatchFn: (item, searchValue) {
+                  //             return item.value
+                  //                 .toString()
+                  //                 .contains(searchValue);
+                  //           },
+                  //         ),
+                  //         //This to clear the search value when you close the menu
+                  //         onMenuStateChange: (isOpen) {
+                  //           if (!isOpen) {
+                  //             ticketnumberController.clear();
+                  //           }
+                  //         },
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(
+                  //   height: 20,
+                  // ),
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Container(
@@ -338,7 +346,9 @@ class _UpdateServiceProviderState extends State<UpdateServiceProvider> {
                           child: const Text('Cancel')),
                       ElevatedButton(
                           onPressed: () {
-                            updateData().whenComplete(() => popupmessage());
+                            updateTicketStatus(widget.year, widget.month,
+                                    widget.day, widget.ticketId)
+                                .whenComplete(() => popupmessage());
                           },
                           child: const Text('Save'))
                     ],
@@ -352,37 +362,45 @@ class _UpdateServiceProviderState extends State<UpdateServiceProvider> {
     );
   }
 
-  Future<void> getTicketNumberList() async {
+  Future<void> getTicketList() async {
     try {
-      QuerySnapshot querySnapshot =
-          await FirebaseFirestore.instance.collection('raisedTickets').get();
+      ticketList.clear();
+      int currentYear = DateTime.now().year;
 
-      if (querySnapshot.docs.isNotEmpty) {
-        // Extract document IDs from the QuerySnapshot
-        List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-
-        // Update your ticketNumberList
-        ticketNumberList = tempData;
-        if (kDebugMode) {
-          print(ticketNumberList);
+      QuerySnapshot monthQuery = await FirebaseFirestore.instance
+          .collection("raisedTickets")
+          .doc(currentYear.toString())
+          .collection('months')
+          .get();
+      List<dynamic> months = monthQuery.docs.map((e) => e.id).toList();
+      for (int i = 0; i < months.length; i++) {
+        QuerySnapshot dateQuery = await FirebaseFirestore.instance
+            .collection("raisedTickets")
+            .doc(currentYear.toString())
+            .collection('months')
+            .doc(months[i])
+            .collection('date')
+            .get();
+        List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
+        for (int j = 0; j < dateList.length; j++) {
+          List<String> temp = [];
+          QuerySnapshot ticketQuery = await FirebaseFirestore.instance
+              .collection("raisedTickets")
+              .doc(currentYear.toString())
+              .collection('months')
+              .doc(months[i])
+              .collection('date')
+              .doc(dateList[j])
+              .collection('tickets')
+              .get();
+          temp = ticketQuery.docs.map((e) => e.id).toList();
+          ticketList = ticketList + temp;
         }
       }
     } catch (e) {
-      if (kDebugMode) {
-        print("Error getting ticket numbers: $e");
-      }
+      print(e);
     }
-  }
-
-  Future<void> getTicketList() async {
-    // final provider = Provider.of<AllRoomProvider>(context, listen: false);
-    // provider.setBuilderList([]);
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('raisedTickets').get();
-    if (querySnapshot.docs.isNotEmpty) {
-      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-      ticketList = tempData;
-    }
+    setState(() {});
   }
 
   Future<void> fetchServiceProvider() async {
@@ -406,12 +424,29 @@ class _UpdateServiceProviderState extends State<UpdateServiceProvider> {
     }
   }
 
-  Future updateData() async {
+  Future<void> updateTicketStatus(
+    String year,
+    String month,
+    String date,
+    String ticketId,
+  ) async {
     await FirebaseFirestore.instance
-        .collection('raisedTickets')
-        .doc(selectedTicketNumber)
-        .update({
-      'serviceProvider': selectedServiceProvider,
+        .collection("raisedTickets")
+        .doc(year)
+        .collection('months')
+        .doc(month)
+        .collection('date')
+        .doc(date)
+        .collection('tickets')
+        .doc(ticketId)
+        .update({'serviceProvider': selectedServiceProvider}).whenComplete(() {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            backgroundColor: Colors.green,
+            content: Center(
+              child: Text('Ticket Revived'),
+            )),
+      );
     });
   }
 

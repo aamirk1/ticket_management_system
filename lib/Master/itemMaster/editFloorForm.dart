@@ -30,6 +30,7 @@ class _EditFloorFormState extends State<EditFloorForm> {
     floorController.text = widget.floorId;
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
           title: const Center(
               child: Text('Floor Form', style: TextStyle(color: Colors.white))),
           flexibleSpace: Container(

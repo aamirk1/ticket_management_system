@@ -34,6 +34,7 @@ class _CreateUserState extends State<CreateUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
               gradient:

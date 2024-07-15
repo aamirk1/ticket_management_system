@@ -35,6 +35,7 @@ class _ListOfAssetState extends State<ListOfAsset> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'List of Asset',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),

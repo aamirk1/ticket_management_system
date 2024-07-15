@@ -38,6 +38,7 @@ class _RoomListState extends State<RoomList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Room List',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),

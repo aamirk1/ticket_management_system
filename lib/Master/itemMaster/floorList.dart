@@ -34,6 +34,7 @@ class _FloorListState extends State<FloorList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Floor List',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
         flexibleSpace: Container(

@@ -29,6 +29,8 @@ class _EditUserFormState extends State<EditUserForm> {
   bool isMultiCheckbox = false;
   String? selectedWork;
   List<String> selectedWorkList = [];
+  List<dynamic> role = [];
+  List<dynamic> roleList = [];
   final formKey = GlobalKey<FormState>();
   @override
   void initState() {
@@ -43,6 +45,7 @@ class _EditUserFormState extends State<EditUserForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
           title: const Center(
               child: Text('User Form', style: TextStyle(color: Colors.white))),
           flexibleSpace: Container(
@@ -233,7 +236,7 @@ class _EditUserFormState extends State<EditUserForm> {
 
   Future<void> updateData(String fname, String lname, String mobile,
       String password, List<String> role) async {
-   String fullName = '$fname $lname';
+    String fullName = '$fname $lname';
 
     final provider = Provider.of<AllUserProvider>(context, listen: false);
     await FirebaseFirestore.instance
@@ -316,10 +319,11 @@ class _EditUserFormState extends State<EditUserForm> {
       lnameController.text = data['lName'] ?? '';
       mobileController.text = data['mobile'] ?? '';
       passwordController.text = data['password'] ?? '';
-      // selectedServiceProviderController.text = data['role'] ?? '';
+      role = data['role'] ?? 'No Roles';
     }
-
     setState(() {});
+    roleList = role;
+    print('roleList : $roleList');
   }
 
   Widget customDropDown(String title, bool isMultiCheckbox,
@@ -448,6 +452,8 @@ class _EditUserFormState extends State<EditUserForm> {
                   ),
                   items: isMultiCheckbox
                       ? customDropDownList.map((item) {
+                          selectedWorkList =
+                              roleList.map((e) => e.toString()).toList();
                           return DropdownMenuItem(
                             value: item,
                             enabled: false,

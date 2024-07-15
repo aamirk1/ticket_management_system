@@ -32,6 +32,7 @@ class _ItemMasterState extends State<ItemMaster> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Building Number List',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),

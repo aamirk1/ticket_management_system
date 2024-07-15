@@ -93,18 +93,9 @@ class _TicketTableReportState extends State<TicketTableReport> {
 
   @override
   Widget build(BuildContext context) {
-    // workController.clear();
-    // serviceProviderController.clear();
-    // statusController.clear();
-    // assetController.clear();
-    // userController.clear();
-    // roomController.clear();
-    // floorController.clear();
-    // buildingController.clear();
-    // ticketController.clear();
-    // dateController.clear();
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         title: const Text(
           'All Tickets Report',
@@ -142,15 +133,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
                       Column(children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                minimumSize: const Size(250, 50)),
-                            child: Text('select Date: $selectedDate'),
-                            onPressed: () {
-                              pickDateRange();
-                              setState(() {});
-                            },
-                          ),
+                          child: customDropDown('Select Status', allStatusData,
+                              "Search Status", 8),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -163,9 +147,41 @@ class _TicketTableReportState extends State<TicketTableReport> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: const StadiumBorder(
+                                    side: BorderSide(style: BorderStyle.none)),
+                                minimumSize: const Size(250, 50)),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'select Date: $selectedDate',
+                                style: const TextStyle(
+                                    color: Colors.black, fontSize: 16),
+                              ),
+                            ),
+                            onPressed: () {
+                              pickDateRange();
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: customDropDown(
+                            'Select Work',
+                            allWorkData,
+                            "Search Work",
+                            9,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: customDropDown('Select Building',
                               buildingNumberList, "Search Building Number", 2),
                         ),
+                      ]),
+                      Column(children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: customDropDown('Select Floor', floorNumberList,
@@ -176,13 +192,6 @@ class _TicketTableReportState extends State<TicketTableReport> {
                           child: customDropDown('Select Room', roomNumberList,
                               "Search Room Number", 4),
                         ),
-                      ]),
-                      Column(children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: customDropDown(
-                              'Select User', userList, "Search User", 5),
-                        ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: customDropDown(
@@ -190,22 +199,13 @@ class _TicketTableReportState extends State<TicketTableReport> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
+                          child: customDropDown(
+                              'Select User', userList, "Search User", 5),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
                           child: customDropDown('Select Service Provider',
                               serviceProvider, "Search Service Provider", 7),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: customDropDown('Select Status', allStatusData,
-                              "Search Status", 8),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: customDropDown(
-                            'Select Work',
-                            allWorkData,
-                            "Search Work",
-                            9,
-                          ),
                         ),
                       ]),
                     ],
@@ -451,9 +451,6 @@ class _TicketTableReportState extends State<TicketTableReport> {
                 });
               });
             });
-
-            // await getAsset(selectedbuilding!, selectedFloor!, selectedRoom!);
-            // fetchMemberName(selectedFlatNo!);
           },
           buttonStyleData: const ButtonStyleData(
             decoration: BoxDecoration(),
@@ -534,18 +531,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
           ),
           //This to clear the search value when you close the menu
           onMenuStateChange: (isOpen) {
-            if (!isOpen) {
-              // workController.clear();
-              // serviceProviderController.clear();
-              // statusController.clear();
-              // assetController.clear();
-              // userController.clear();
-              // roomController.clear();
-              // floorController.clear();
-              // buildingController.clear();
-              // ticketController.clear();
-              // dateController.clear();
-            }
+            if (!isOpen) {}
           },
         ),
       ),
@@ -597,17 +583,5 @@ class _TicketTableReportState extends State<TicketTableReport> {
         return ReportDetails(data: allData);
       }),
     );
-    // .whenComplete(() {
-    //   workController.clear();
-    //   serviceProviderController.clear();
-    //   statusController.clear();
-    //   assetController.clear();
-    //   userController.clear();
-    //   roomController.clear();
-    //   floorController.clear();
-    //   buildingController.clear();
-    //   ticketController.clear();
-    //   dateController.clear();
-    // });
   }
 }

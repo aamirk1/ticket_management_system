@@ -335,12 +335,28 @@ class _ReportDetailsState extends State<ReportDetails> {
                                   ),
                                   const SizedBox(height: 2),
                                   Row(children: [
-                                    ticketCard(
-                                        Icons.comment,
-                                        'Re Assign: ',
-                                        ticketListData[index]['reAssign'] ??
-                                            "N/A",
-                                        index)
+                                    const Text('Revive: ',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    const SizedBox(width: 100),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                              return  UpdateServiceProvider(
+                                                year:   ticketListData[index]['year']
+                                                      .toString(),
+                                                month:   ticketListData[index]
+                                                      ['month'],
+                                                 day:  ticketListData[index]['date'],
+                                                ticketId:  ticketList[index]);
+                                            }),
+                                          );
+                                        },
+                                        child: const Text('Re Assign'))
                                   ]),
                                   const SizedBox(height: 2),
                                   Row(children: [
@@ -661,15 +677,15 @@ class _ReportDetailsState extends State<ReportDetails> {
                         // );
                       }))
             ]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const UpdateServiceProvider();
-          }));
-        },
-        backgroundColor: Colors.deepPurple,
-        child: const Icon(Icons.add, color: white),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //       return const UpdateServiceProvider();
+      //     }));
+      //   },
+      //   backgroundColor: Colors.deepPurple,
+      //   child: const Icon(Icons.add, color: white),
+      // ),
     );
   }
 

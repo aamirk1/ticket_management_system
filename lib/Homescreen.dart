@@ -16,6 +16,8 @@ class Home extends StatelessWidget {
       backgroundColor: Image.asset('assets/images/clg.jpeg').color,
       //mage(image: AssetImage('assets/images/clg.jpeg')).color,
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+
         centerTitle: true,
         title: const Text(
           'TICKET MANAGEMENT SYSTEM',
@@ -375,6 +377,7 @@ class MasterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Master Screen',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
@@ -406,6 +409,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           'Profile Screen',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ticket_management_system/Homescreen.dart';
@@ -17,12 +18,9 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    // getdate();
-    getTicketList().whenComplete(() {
-      getdata().whenComplete(() {
-        setState(() {
-          isLoading = false;
-        });
+    getdata().whenComplete(() {
+      setState(() {
+        isLoading = false;
       });
     });
   }
@@ -34,6 +32,7 @@ class _DashboardState extends State<Dashboard> {
   List<String> fifteenToTwentyOneTicket = [];
   List<String> twentyTwoToTwentyEightTicket = [];
   List<String> moreThanTwentyEightTicket = [];
+  List<dynamic> temp = [];
   List<String> columnName = [
     'Name Of \nService Provider',
     'Tickets Pending\n Total ',
@@ -70,9 +69,12 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Dashboard',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Center(
+          child:  Text(
+            'Dashboard',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
         ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
@@ -120,32 +122,10 @@ class _DashboardState extends State<Dashboard> {
                           growable: true,
                           rowData.length,
                           (index1) => DataRow2(
-                            cells: List.generate(
-                                growable: true, columnName.length, (index2) {
+                            cells: List.generate(growable: true, 8, (index2) {
                               return DataCell(Padding(
                                 padding: const EdgeInsets.only(bottom: 2.0),
-                                child: Text(rowData[index1][index2]),
-
-                                // child: TextFormField(
-                                //   style: const TextStyle(
-                                //       fontSize: 12, color: Colors.black),
-                                //   textAlign: TextAlign.center,
-                                //   // controller: controllers[index1][index2],
-                                //   onChanged: (value) {
-                                //     rowData[index1][index2] = value;
-                                //   },
-                                //   decoration: const InputDecoration(
-                                //     contentPadding:
-                                //         EdgeInsets.only(left: 3.0, right: 3.0),
-                                //     // border:
-                                //     //     const OutlineInputBorder(),
-                                //     // hintText: rowData[index1][index2],
-                                //     hintStyle: TextStyle(
-                                //       fontSize: 11.0,
-                                //       color: Colors.black,
-                                //     ),
-                                //   ),
-                                // ),
+                                child: Text(rowData[index1].toString()),
                               ));
                             }),
                           ),
@@ -505,17 +485,6 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Future<void> getTicketList() async {
-    // final provider = Provider.of<AllRoomProvider>(context, listen: false);
-    // provider.setBuilderList([]);
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection('raisedTickets').get();
-    if (querySnapshot.docs.isNotEmpty) {
-      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-      ticketList = tempData;
-    }
-  }
-
   Future<void> getdata() async {
     try {
       ticketList.clear();
@@ -537,7 +506,6 @@ class _DashboardState extends State<Dashboard> {
             .get();
         List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
         for (int j = 0; j < dateList.length; j++) {
-          List<dynamic> temp = [];
           QuerySnapshot ticketQuery = await FirebaseFirestore.instance
               .collection("raisedTickets")
               .doc(currentYear.toString())
@@ -576,10 +544,14 @@ class _DashboardState extends State<Dashboard> {
               // print('$mapData abc');
             }
           }
+
+          rowData.add(temp.length);
         }
       }
     } catch (e) {
-      print("Error Fetching tickets: $e");
+      if (kDebugMode) {
+        print("Error Fetching tickets: $e");
+      }
     }
 
     // Index = 3
@@ -637,8 +609,8 @@ class _DashboardState extends State<Dashboard> {
     //     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
     //       datelist.add(formatter.format(newdate));
     //       for (int j = 0; j < datelist.length; j++) {
-    //         // print('sevenday - ${newdate.isBefore(sevendays)}');
-    //         // print(datelist[j]);
+    //          print('sevenday - ${newdate.isBefore(sevendays)}');
+    //          print(datelist[j]);
     //         newdate.add(const Duration(days: 1));
     //         // ignore: unrelated_type_equality_checks
     //         if (newdate.isBefore(twentyOnedays) == datelist[j]) {

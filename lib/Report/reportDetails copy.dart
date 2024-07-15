@@ -63,6 +63,7 @@ class _ReportDetailsState extends State<ReportDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Report Details'),
       ),
       body: Center(
@@ -80,8 +81,7 @@ class _ReportDetailsState extends State<ReportDetails> {
                 child: DataTable2(
                   minWidth: 5500,
                   border: TableBorder.all(color: Colors.black),
-                  headingRowColor:
-                      const WidgetStatePropertyAll(Colors.purple),
+                  headingRowColor: const WidgetStatePropertyAll(Colors.purple),
                   headingTextStyle:
                       const TextStyle(color: Colors.white, fontSize: 50.0),
                   columnSpacing: 3.0,
@@ -125,15 +125,15 @@ class _ReportDetailsState extends State<ReportDetails> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const UpdateServiceProvider();
-          }));
-        },
-        backgroundColor: Colors.deepPurple,
-        child: const Icon(Icons.add, color: white),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //       return const UpdateServiceProvider();
+      //     }));
+      //   },
+      //   backgroundColor: Colors.deepPurple,
+      //   child: const Icon(Icons.add, color: white),
+      // ),
     );
   }
 
@@ -188,21 +188,3 @@ class _ReportDetailsState extends State<ReportDetails> {
   }
 }
 
-// create mode 100644 hello.py
-//  delete mode 100644 lib/Master/assign.dart
-//  create mode 100644 lib/Master/createUser/editUserForm.dart
-//  delete mode 100644 lib/Master/designation/listOfDesignation.dart
-//  rename lib/Master/itemMaster/{itemMaster.dart => buildingList.dart} (79%)
-//  create mode 100644 lib/Master/itemMaster/editAssetForm.dart
-//  create mode 100644 lib/Master/itemMaster/editBuildingForm.dart
-//  create mode 100644 lib/Master/itemMaster/editFloorForm.dart
-//  create mode 100644 lib/Master/itemMaster/editRoomForm.dart
-//  create mode 100644 lib/Master/work/editWorkForm.dart
-//  create mode 100644 lib/Report/reportDetails copy.dart
-//  create mode 100644 lib/Report/reportDetails.dart
-//  delete mode 100644 lib/assignRoll/menu_screen/LoadingForMenuUser.dart
-//  delete mode 100644 lib/assignRoll/menu_screen/assigned_user.dart
-//  delete mode 100644 lib/assignRoll/menu_screen/totalUser.dart
-//  delete mode 100644 lib/assignRoll/menu_screen/unAssignedUserPage.dart
-//  delete mode 100644 lib/assignRoll/role.dart
-//  delete mode 100644 lib/auth/signup.dart

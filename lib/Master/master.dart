@@ -17,6 +17,7 @@ class _MasterHomeScreenState extends State<MasterHomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         title: const Text(
           'Master',

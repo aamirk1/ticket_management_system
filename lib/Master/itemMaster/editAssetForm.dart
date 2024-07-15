@@ -30,6 +30,7 @@ class _EditAssetFormState extends State<EditAssetForm> {
     assetController.text = widget.assetId;
     return Scaffold(
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
           title: const Center(
               child: Text('Asset Form', style: TextStyle(color: Colors.white))),
           flexibleSpace: Container(
