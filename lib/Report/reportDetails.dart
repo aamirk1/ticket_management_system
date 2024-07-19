@@ -91,7 +91,7 @@ class _ReportDetailsState extends State<ReportDetails> {
                           const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisSpacing: 5,
                               mainAxisSpacing: 5,
-                              childAspectRatio: 0.9,
+                              childAspectRatio: 0.8,
                               crossAxisCount: 3),
                       itemBuilder: (
                         context,
@@ -342,19 +342,22 @@ class _ReportDetailsState extends State<ReportDetails> {
                                     const SizedBox(width: 100),
                                     ElevatedButton(
                                         onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) {
-                                              return  UpdateServiceProvider(
-                                                year:   ticketListData[index]['year']
+                                          Navigator.push(context,
+                                              MaterialPageRoute(
+                                            builder: (context) {
+                                              return UpdateServiceProvider(
+                                                  year: ticketListData[index]
+                                                          ['year']
                                                       .toString(),
-                                                month:   ticketListData[index]
-                                                      ['month'],
-                                                 day:  ticketListData[index]['date'],
-                                                ticketId:  ticketList[index]);
-                                            }),
-                                          );
+                                                  month: ticketListData[index]
+                                                          ['month']
+                                                      .toString(),
+                                                  day: ticketListData[index]
+                                                          ['date']
+                                                      .toString(),
+                                                  ticketId: ticketList[index]);
+                                            },
+                                          ));
                                         },
                                         child: const Text('Re Assign'))
                                   ]),
@@ -394,287 +397,6 @@ class _ReportDetailsState extends State<ReportDetails> {
                             ),
                           ),
                         );
-
-                        // Row(
-                        //   children: [
-                        //     Container(
-                        //       margin: const EdgeInsets.only(top: 10),
-                        //       height: 360,
-                        //       width: 350,
-                        //       child: Card(
-                        //           elevation: 10,
-                        //           child: Padding(
-                        //             padding: const EdgeInsets.all(8.0),
-                        //             child: Column(
-                        //               children: [
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Status ',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['status'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Ticket No.: ',
-                        //                       style: TextStyle(
-                        //                         color: black,
-                        //                       ),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index],
-                        //                       style: const TextStyle(
-                        //                         color: black,
-                        //                       ),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 const SizedBox(
-                        //                   height: 10,
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Date (Opened)',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['date'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Date (Closed)',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['closed'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'TAT ',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['tat'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Work ',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['work'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Building ',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['building'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Floor No. ',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['floor'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Room No. ',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['room'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Asset',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index][asset],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'User',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['user'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Service Provider ',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]
-                        //                           ['serviceProvider'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Remarks',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['remark'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.justify,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Re-Assign ',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['reAssign'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 Row(
-                        //                   mainAxisAlignment:
-                        //                       MainAxisAlignment.spaceAround,
-                        //                   children: [
-                        //                     const Text(
-                        //                       'Revive ',
-                        //                       style: TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                     Text(
-                        //                       ticketListData[index]['revive'],
-                        //                       style:
-                        //                           const TextStyle(color: black),
-                        //                       textAlign: TextAlign.left,
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //           )),
-                        //     ),
-                        //   ],
-                        // );
                       }))
             ]),
       // floatingActionButton: FloatingActionButton(
@@ -834,15 +556,29 @@ class _ReportDetailsState extends State<ReportDetails> {
   Widget ticketCard(
       IconData icons, String title, String ticketListData, int index) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         // Icon(icons, color: Colors.deepPurple),
         // const SizedBox(width: 20),
-        Text(title,
-            textAlign: TextAlign.start,
-            style: const TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(width: 100),
-        Text(ticketListData)
+        Container(
+          // height: MediaQuery.of(context).size.height,
+          width: 110,
+          child: Text(title,
+              textAlign: TextAlign.start,
+              style: const TextStyle(fontWeight: FontWeight.bold)),
+        ),
+        const SizedBox(width: 20),
+        Padding(
+          padding: const EdgeInsets.only(left: 18.0),
+          child: Container(
+            // height: MediaQuery.of(context).size.height,
+            width: 200,
+            child: Text(
+              ticketListData,
+              textAlign: TextAlign.justify,
+            ),
+          ),
+        )
       ],
     );
   }

@@ -32,7 +32,7 @@ class _UserDetailsState extends State<UserDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
+          iconTheme: const IconThemeData(color: Colors.white),
           title: const Center(
               child: Text(
             'User Details',
@@ -129,21 +129,25 @@ class _UserDetailsState extends State<UserDetails> {
                                           child: roleList != null
                                               ? ListView.builder(
                                                   itemCount: roleList.length,
+                                                  shrinkWrap: true,
                                                   itemBuilder:
                                                       (context, index) {
                                                     return SingleChildScrollView(
-                                                      child: ListTile(
-                                                        title: RichText(
-                                                            text: TextSpan(
-                                                                children: [
-                                                              TextSpan(
-                                                                text:
-                                                                    '${index + 1}. ${roleList[index]}',
-                                                                style: const TextStyle(
-                                                                    color:
-                                                                        black),
-                                                              ),
-                                                            ])),
+                                                      child: SizedBox(
+                                                        height: 25,
+                                                        child: ListTile(
+                                                          title: RichText(
+                                                              text: TextSpan(
+                                                                  children: [
+                                                                TextSpan(
+                                                                  text:
+                                                                      '${index + 1}. ${roleList[index]}',
+                                                                  style: const TextStyle(
+                                                                      color:
+                                                                          black),
+                                                                ),
+                                                              ])),
+                                                        ),
                                                       ),
                                                     );
                                                   },

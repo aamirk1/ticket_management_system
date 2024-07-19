@@ -35,6 +35,7 @@ class _EditUserFormState extends State<EditUserForm> {
   @override
   void initState() {
     fetchData(widget.userId).whenComplete(() => setState(() {
+          selectedWorkList = roleList.map((e) => e.toString()).toList();
           isLoading = false;
         }));
     getWorks();
@@ -45,7 +46,7 @@ class _EditUserFormState extends State<EditUserForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
+          iconTheme: const IconThemeData(color: Colors.white),
           title: const Center(
               child: Text('User Form', style: TextStyle(color: Colors.white))),
           flexibleSpace: Container(
@@ -249,7 +250,7 @@ class _EditUserFormState extends State<EditUserForm> {
       'lName': lname,
       'mobile': mobile,
       'password': password,
-      // 'role': role,
+      'role': role,
     });
     provider.addSingleList({
       // 'userId': userId,
@@ -258,7 +259,7 @@ class _EditUserFormState extends State<EditUserForm> {
       'lName': lname,
       'mobile': mobile,
       'password': password,
-      // 'role': role,
+      'role': role,
     });
   }
 
@@ -277,6 +278,7 @@ class _EditUserFormState extends State<EditUserForm> {
                 TextButton(
                     onPressed: () {
                       fetchData(widget.userId).whenComplete(() {
+                        Navigator.pop(context);
                         Navigator.pop(context);
                         Navigator.pop(context);
                         fnameController.clear();
@@ -452,8 +454,8 @@ class _EditUserFormState extends State<EditUserForm> {
                   ),
                   items: isMultiCheckbox
                       ? customDropDownList.map((item) {
-                          selectedWorkList =
-                              roleList.map((e) => e.toString()).toList();
+                          // selectedWorkList =
+                          //     roleList.map((e) => e.toString()).toList();
                           return DropdownMenuItem(
                             value: item,
                             enabled: false,

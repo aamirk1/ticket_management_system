@@ -30,7 +30,7 @@ class _UpdateServiceProviderState extends State<UpdateServiceProvider> {
   TextEditingController ticketnumberController = TextEditingController();
   @override
   void initState() {
-    getTicketList().whenComplete(() => setState(() {}));
+    fetchServiceProvider().whenComplete(() => setState(() {}));
     super.initState();
   }
 
@@ -43,7 +43,7 @@ class _UpdateServiceProviderState extends State<UpdateServiceProvider> {
         child: Center(
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.4,
-            height: MediaQuery.of(context).size.height * 0.5,
+            height: MediaQuery.of(context).size.height * 0.35,
             child: Card(
               elevation: 10,
               child: Column(
@@ -144,6 +144,7 @@ class _UpdateServiceProviderState extends State<UpdateServiceProvider> {
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Container(
+                      margin: const EdgeInsets.only(top: 10),
                       color: Colors.white,
                       height: 40,
                       width: MediaQuery.of(context).size.width * 0.25,

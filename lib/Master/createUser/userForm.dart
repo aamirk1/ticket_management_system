@@ -42,7 +42,7 @@ class _UserFormState extends State<UserForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
+          iconTheme: const IconThemeData(color: Colors.white),
           title: const Center(
               child: Text('User Form', style: TextStyle(color: Colors.white))),
           flexibleSpace: Container(

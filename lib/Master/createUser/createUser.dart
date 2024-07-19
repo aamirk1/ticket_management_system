@@ -182,34 +182,6 @@ class _CreateUserState extends State<CreateUser> {
     provider.removeData(userList.indexOf(userId));
   }
 
-  Future<void> storeData(String fname, String lname, String mobile,
-      String password, String role) async {
-    String firstInitial = fname[0][0].trim().toUpperCase();
-    String lastInitial = lname[0][0].trim().toUpperCase();
-    String mobileLastFour = mobile.substring(mobile.length - 4);
-    String fullName = '$fname $lname';
-
-    String userId = '$firstInitial$lastInitial$mobileLastFour';
-    final provider = Provider.of<AllUserProvider>(context, listen: false);
-    await FirebaseFirestore.instance.collection('members').doc(userId).set({
-      'userId': userId,
-      'fullName': fullName,
-      'fName': fname,
-      'lName': lname,
-      'mobile': mobile,
-      'password': password,
-      'role': role,
-    });
-    provider.addSingleList({
-      'userId': userId,
-      'fullName': fullName,
-      'fName': fname,
-      'lName': lname,
-      'mobile': mobile,
-      'password': password,
-      'role': role,
-    });
-  }
 
   Future<void> getWorks() async {
     QuerySnapshot querySnapshot =

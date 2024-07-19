@@ -26,6 +26,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   List<dynamic> ticketList = [];
+  List<dynamic> allDateList = [];
   String todayTicket = '';
   List<String> oneToSevenTicket = [];
   List<String> eightToFourteenTicket = [];
@@ -43,13 +44,8 @@ class _DashboardState extends State<Dashboard> {
     'Between\n 22 to 28',
     'For More Than\n 28 Days',
   ];
-  List<dynamic> rowData = [
-    // ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'],
-    // ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'],
-    // ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'],
-    // ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'],
-    // ['N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A', 'N/A'],
-  ];
+  List<dynamic> rowData = [];
+  List<dynamic> allRowData = [];
   String asset = '';
   String floor = '';
   String building = '';
@@ -61,6 +57,9 @@ class _DashboardState extends State<Dashboard> {
   String remark = '';
   String currentDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
   List<dynamic> ticketDataList = [];
+  List<dynamic> openTicketList = [];
+  List<dynamic> openTicketSP = [];
+  List<dynamic> openTicketBySP = [];
   DateTime today = DateTime.now();
   //DateTime targetDate = today.add(Duration(days: 1));
   String day = '';
@@ -71,7 +70,7 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Center(
-          child:  Text(
+          child: Text(
             'Dashboard',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
@@ -105,7 +104,7 @@ class _DashboardState extends State<Dashboard> {
                             fixedWidth:
                                 columnName[index] == 'Service Provider \n Name'
                                     ? 260
-                                    : 100,
+                                    : 110,
                             label: Container(
                               alignment: Alignment.center,
                               child: Text(
@@ -120,12 +119,12 @@ class _DashboardState extends State<Dashboard> {
                         }),
                         rows: List.generate(
                           growable: true,
-                          rowData.length,
+                          allRowData.length,
                           (index1) => DataRow2(
                             cells: List.generate(growable: true, 8, (index2) {
                               return DataCell(Padding(
                                 padding: const EdgeInsets.only(bottom: 2.0),
-                                child: Text(rowData[index1].toString()),
+                                child: Text(allRowData[index1].toString()),
                               ));
                             }),
                           ),
@@ -514,11 +513,12 @@ class _DashboardState extends State<Dashboard> {
               .collection('date')
               .doc(dateList[j])
               .collection('tickets')
+              // .where('serviceProvider', isEqualTo: null )
+              .where('status', isEqualTo: 'Open')
               .get();
           temp = ticketQuery.docs.map((e) => e.id).toList();
           ticketList = ticketList + temp;
-          // rowData.add(ticketList.length);
-
+          openTicketList = ticketDataList;
           for (int k = 0; k < temp.length; k++) {
             DocumentSnapshot ticketDataQuery = await FirebaseFirestore.instance
                 .collection("raisedTickets")
@@ -533,20 +533,72 @@ class _DashboardState extends State<Dashboard> {
             if (ticketDataQuery.exists) {
               Map<String, dynamic> mapData =
                   ticketDataQuery.data() as Map<String, dynamic>;
-              asset = mapData['asset'] ?? "N/A";
-              building = mapData['building'] ?? "N/A";
-              floor = mapData['floor'] ?? "N/A";
-              remark = mapData['remark'] ?? "N/A";
-              room = mapData['room'] ?? "N/A";
-              work = mapData['work'] ?? "N/A";
+
               serviceProvider = mapData['serviceProvider'] ?? "";
-              ticketDataList.add(mapData);
-              // print('$mapData abc');
             }
           }
+          openTicketSP.add(serviceProvider);
 
-          rowData.add(temp.length);
+          // openTicketBySP.add(ticketList.length);
         }
+
+        print('ticketListLength ${ticketList.length}');
+        print('serviceListLength ${openTicketBySP.length}');
+
+        rowData.add(openTicketSP);
+        rowData.add(openTicketBySP.length);
+        rowData.add(openTicketList.length);
+        allRowData.add(rowData);
+
+        print('ticketListLength ${ticketList.length}');
+
+        // if ((i == 1) && (i < 7)) {
+        //   for (int i = 1; i < 7; i++) {
+        //     DateTime newdate = today.add(Duration(days: i));
+        //     DateTime sevendays = newdate.add(const Duration(days: 6));
+        //     DateFormat formatter = DateFormat('dd-MM-yyyy');
+
+        //     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
+        //       allDateList.add(formatter.format(newdate));
+        //       for (int j = 0; j < allDateList.length; j++) {
+        //         // print('sevenday - ${newdate.isBefore(sevendays)}');
+        //         // print(datelist[j]);
+        //         newdate.add(const Duration(days: 1));
+        //         // ignore: unrelated_type_equality_checks
+        //         if (newdate.isBefore(sevendays) == allDateList[j]) {
+        //           oneToSevenTicket.add(ticketList[j].toString());
+        //         }
+        //         print('oneToSevenTicket - $oneToSevenTicket');
+        //       }
+        //     } else {
+        //       oneToSevenTicket.add('0');
+        //     }
+        //     oneToSevenTicket.add(ticketList.length.toString());
+        //   }
+        //   break;
+        // } else if ((i == 7) && (i < 15)) {
+        //   for (int i = 7; i < 15; i++) {
+        //     DateTime newdate = today.add(Duration(days: i));
+        //     DateTime fifteendays = newdate.add(const Duration(days: 15));
+        //     DateFormat formatter = DateFormat('dd-MM-yyyy');
+        //     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
+        //       allDateList.add(formatter.format(newdate));
+        //       for (int j = 0; j < allDateList.length; j++) {
+        //         // print('sevenday - ${newdate.isBefore(sevendays)}');
+        //         // print(datelist[j]);
+        //         newdate.add(const Duration(days: 1));
+        //         // ignore: unrelated_type_equality_checks
+        //         if (newdate.isBefore(fifteendays) == allDateList[j]) {
+        //           eightToFourteenTicket.add(ticketList[j].toString());
+        //         }
+        //       }
+        //     } else {
+        //       eightToFourteenTicket.add('0');
+        //     }
+        //     eightToFourteenTicket.add(ticketList.length.toString());
+        //   }
+        //   break;
+        // }
       }
     } catch (e) {
       if (kDebugMode) {
