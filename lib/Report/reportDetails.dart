@@ -8,8 +8,30 @@ import 'package:ticket_management_system/utils/colors.dart';
 
 // ignore: must_be_immutable
 class ReportDetails extends StatefulWidget {
-  ReportDetails({super.key, required this.data});
-  List<dynamic> data;
+  ReportDetails(
+      {super.key,
+      this.serviceProvider,
+      this.workFilter,
+      this.userFilter,
+      this.assetFilter,
+      this.floorFilter,
+      this.roomFilter,
+      this.buildingFilter,
+      this.dateFilter,
+      this.ticketFilter,
+      this.statusFilter,
+      this.dateRange});
+  String? workFilter;
+  String? userFilter;
+  String? assetFilter;
+  String? floorFilter;
+  String? roomFilter;
+  String? buildingFilter;
+  String? dateFilter;
+  String? ticketFilter;
+  String? statusFilter;
+  String? serviceProvider;
+  String? dateRange;
   @override
   State<ReportDetails> createState() => _ReportDetailsState();
 }
@@ -73,6 +95,8 @@ class _ReportDetailsState extends State<ReportDetails> {
           isLoading = false;
         }));
     super.initState();
+    print(widget.statusFilter);
+    print(widget.workFilter);
   }
 
   @override
@@ -502,8 +526,26 @@ class _ReportDetailsState extends State<ReportDetails> {
   // }
 
   Future<void> getdata() async {
-    List<dynamic> filteredWorkValues =
-        widget.data.where((value) => value != null).toList();
+    // List<String> filteredWorkValues =
+    //     widget.workFilter!.where((value) => value != null).toList();
+    // List<String> filteredStatusValues =
+    //     widget.statusFilter!.where((value) => value != null).toList();
+    // List<String> filteredAssetValues =
+    //     widget.assetFilter!.where((value) => value != null).toList();
+    // List<String> filteredBuildingValues =
+    //     widget.buildingFilter!.where((value) => value != null).toList();
+    // List<String> filteredFloorValues =
+    //     widget.floorFilter!.where((value) => value != null).toList();
+    // List<String> filteredRoomValues =
+    //     widget.roomFilter!.where((value) => value != null).toList();
+    // String filteredServiceProviderValues =
+    //     widget.serviceProvider!.where((value) => value != null).toList();
+    // List<dynamic> filteredTicketNumValues =
+    //     widget.ticketFilter!.where((value) => value != null).toList();
+    // List<dynamic> filteredUserValues =
+    //     widget.userFilter!.where((value) => value != null).toList();
+    // List<dynamic> filteredDateValues =
+    // widget.dateFilter!.where((value) => value != null).toList();
 
     try {
       ticketList.clear();
@@ -534,14 +576,17 @@ class _ReportDetailsState extends State<ReportDetails> {
               .collection('date')
               .doc(dateList[j])
               .collection('tickets')
-              .where('work', whereIn: filteredWorkValues) // Filter by work
-              // .where('status', isEqualTo: filteredWorkValues) // Filter by work
-              // .where('serviceProvider',
-              //     whereIn: filteredWorkValues) // Filter by work
-              // .where('building', whereIn: filteredWorkValues) // Filter by work
-              // .where('floor', whereIn: filteredWorkValues) // Filter by work
-              // .where('room', whereIn: filteredWorkValues) // Filter by work
-              // .where('asset', whereIn: filteredWorkValues) // Filter by work
+              .where('work', isEqualTo: widget.workFilter) // Filter by work
+              .where('status', isEqualTo: widget.statusFilter) // Filter by work
+              .where('serviceProvider',
+                  isEqualTo: widget.serviceProvider) // Filter by work
+              .where('building',
+                  isEqualTo: widget.buildingFilter) // Filter by work
+              .where('floor', isEqualTo: widget.floorFilter) // Filter by work
+              .where('room', isEqualTo: widget.roomFilter) // Filter by work
+              .where('asset', isEqualTo: widget.statusFilter) // Filter by work
+              .where('tickets',
+                  isEqualTo: widget.ticketFilter) // Filter by work
               .get();
 
           temp = ticketQuery.docs.map((e) => e.id).toList();

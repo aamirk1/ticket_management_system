@@ -598,7 +598,18 @@ class _TicketTableReportState extends State<TicketTableReport> {
         selectedTicket = null;
         selectedDate = '';
 
-        return ReportDetails(data: allData);
+        return ReportDetails(
+          dateFilter: allData[0],
+          ticketFilter: allData[1],
+          buildingFilter: allData[2],
+          floorFilter: allData[3],
+          roomFilter: allData[4],
+          userFilter: allData[5],
+          assetFilter: allData[6],
+          serviceProvider: allData[7],
+          statusFilter: allData[8],
+          workFilter: allData[9],
+        );
       }),
     );
   }
