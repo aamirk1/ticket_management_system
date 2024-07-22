@@ -57,7 +57,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
   List<String> allFloorData = [];
   List<String> allWorkData = [];
   List<String> allRoomData = [];
-  List<String> allStatusData = ['All', 'Open', 'Closed'];
+  List<String> allStatusData = ['All', 'Open', 'Close'];
 
   List<String> ticketList = [];
 
@@ -146,26 +146,44 @@ class _TicketTableReportState extends State<TicketTableReport> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: const StadiumBorder(
-                                    side: BorderSide(style: BorderStyle.none)),
-                                minimumSize: const Size(250, 50)),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                'select Date: $selectedDate',
-                                style: const TextStyle(
-                                    color: Colors.black, fontSize: 16),
-                              ),
-                            ),
-                            onPressed: () {
-                              pickDateRange();
-                              setState(() {});
-                            },
-                          ),
-                        ),
+                            padding: EdgeInsets.all(8.0),
+                            child: Card(
+                                elevation: 5,
+                                child: SizedBox(
+                                  width: 250,
+                                  height: 50,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      pickDateRange();
+                                      setState(() {});
+                                    },
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        // Text(
+                                        //   textAlign: TextAlign.justify,
+                                        //   'Search Date: \n $selectedDate',
+                                        //   style: const TextStyle(
+                                        //       color: Colors.black,
+                                        //       fontSize: 16),
+                                        // ),
+                                        child: RichText(
+                                            text: TextSpan(
+                                                text: 'Search Date: \n',
+                                                style: const TextStyle(
+                                                    color: Colors.black),
+                                                children: [
+                                              TextSpan(
+                                                  text: selectedDate,
+                                                  style: const TextStyle(
+                                                      backgroundColor: purple,
+                                                      color: Colors.white)),
+                                            ])),
+                                      ),
+                                    ),
+                                  ),
+                                ))),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: customDropDown(

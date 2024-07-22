@@ -15,7 +15,20 @@ class ReportDetails extends StatefulWidget {
 }
 
 class _ReportDetailsState extends State<ReportDetails> {
+  List<dynamic> keys = [
+    'date',
+    'tickets',
+    'building',
+    'floor',
+    'room',
+    'user',
+    'asset',
+    'serviceProvider',
+    'status',
+    'work',
+  ];
   List<List<String>> rowData = [];
+
   List<String> assetList = [];
   List<String> floorList = [];
   List<String> buildingList = [];
@@ -53,6 +66,7 @@ class _ReportDetailsState extends State<ReportDetails> {
   String work = '';
   String serviceprovider = '';
   List<dynamic> ticketListData = [];
+
   @override
   void initState() {
     getdata().whenComplete(() => setState(() {
@@ -488,6 +502,9 @@ class _ReportDetailsState extends State<ReportDetails> {
   // }
 
   Future<void> getdata() async {
+    List<dynamic> filteredWorkValues =
+        widget.data.where((value) => value != null).toList();
+
     try {
       ticketList.clear();
       int currentYear = DateTime.now().year;
@@ -517,33 +534,46 @@ class _ReportDetailsState extends State<ReportDetails> {
               .collection('date')
               .doc(dateList[j])
               .collection('tickets')
+              .where('work', whereIn: filteredWorkValues) // Filter by work
+              // .where('status', isEqualTo: filteredWorkValues) // Filter by work
+              // .where('serviceProvider',
+              //     whereIn: filteredWorkValues) // Filter by work
+              // .where('building', whereIn: filteredWorkValues) // Filter by work
+              // .where('floor', whereIn: filteredWorkValues) // Filter by work
+              // .where('room', whereIn: filteredWorkValues) // Filter by work
+              // .where('asset', whereIn: filteredWorkValues) // Filter by work
               .get();
-          temp = ticketQuery.docs.map((e) => e.id).toList();
-          ticketList = ticketList + temp;
 
-          for (int k = 0; k < temp.length; k++) {
-            DocumentSnapshot ticketDataQuery = await FirebaseFirestore.instance
-                .collection("raisedTickets")
-                .doc(currentYear.toString())
-                .collection('months')
-                .doc(months[i])
-                .collection('date')
-                .doc(dateList[j])
-                .collection('tickets')
-                .doc(temp[k])
-                .get();
-            if (ticketDataQuery.exists) {
-              Map<String, dynamic> mapData =
-                  ticketDataQuery.data() as Map<String, dynamic>;
-              asset = mapData['asset'] ?? "N/A";
-              building = mapData['building'] ?? "N/A";
-              floor = mapData['floor'] ?? "N/A";
-              remark = mapData['remark'] ?? "N/A";
-              room = mapData['room'] ?? "N/A";
-              work = mapData['work'] ?? "N/A";
-              serviceprovider = mapData['serviceProvider'] ?? "";
-              ticketListData.add(mapData);
-              // print('$mapData abc');
+          temp = ticketQuery.docs.map((e) => e.id).toList();
+          // ticketList = ticketList + temp;
+
+          if (temp.isNotEmpty) {
+            ticketList.addAll(temp);
+            for (int k = 0; k < temp.length; k++) {
+              DocumentSnapshot ticketDataQuery = await FirebaseFirestore
+                  .instance
+                  .collection("raisedTickets")
+                  .doc(currentYear.toString())
+                  .collection('months')
+                  .doc(months[i])
+                  .collection('date')
+                  .doc(dateList[j])
+                  .collection('tickets')
+                  .doc(temp[k])
+                  .get();
+              if (ticketDataQuery.exists) {
+                Map<String, dynamic> mapData =
+                    ticketDataQuery.data() as Map<String, dynamic>;
+                asset = mapData['asset'] ?? "N/A";
+                building = mapData['building'] ?? "N/A";
+                floor = mapData['floor'] ?? "N/A";
+                remark = mapData['remark'] ?? "N/A";
+                room = mapData['room'] ?? "N/A";
+                work = mapData['work'] ?? "N/A";
+                serviceprovider = mapData['serviceProvider'] ?? "";
+                ticketListData.add(mapData);
+                // print('$mapData abc');
+              }
             }
           }
         }
@@ -551,6 +581,8 @@ class _ReportDetailsState extends State<ReportDetails> {
     } catch (e) {
       print("Error Fetching tickets: $e");
     }
+
+    setState(() {});
   }
 
   Widget ticketCard(
@@ -560,7 +592,7 @@ class _ReportDetailsState extends State<ReportDetails> {
       children: [
         // Icon(icons, color: Colors.deepPurple),
         // const SizedBox(width: 20),
-        Container(
+        SizedBox(
           // height: MediaQuery.of(context).size.height,
           width: 110,
           child: Text(title,
@@ -570,7 +602,7 @@ class _ReportDetailsState extends State<ReportDetails> {
         const SizedBox(width: 20),
         Padding(
           padding: const EdgeInsets.only(left: 18.0),
-          child: Container(
+          child: SizedBox(
             // height: MediaQuery.of(context).size.height,
             width: 200,
             child: Text(
@@ -597,10 +629,11 @@ class _ReportDetailsState extends State<ReportDetails> {
         .update({'status': 'Open'}).whenComplete(() {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            backgroundColor: Colors.green,
-            content: Center(
-              child: Text('Ticket Revived'),
-            )),
+          backgroundColor: Colors.green,
+          content: Center(
+            child: Text('Ticket Revived'),
+          ),
+        ),
       );
     });
   }
