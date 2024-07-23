@@ -81,6 +81,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
     getBuilding();
 
     fetchServiceProvider();
+    fetchUser();
     setState(() {
       isLoading = false;
     });
@@ -247,7 +248,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
     );
   }
 
-  Future<void> fetchServiceProvider() async {
+  Future<void> fetchUser() async {
     List<String> tempData = [];
     QuerySnapshot querySnapshot =
         await FirebaseFirestore.instance.collection('members').get();
@@ -263,8 +264,35 @@ class _TicketTableReportState extends State<TicketTableReport> {
       if (documentSnapshot.data() != null) {
         Map<String, dynamic> data =
             documentSnapshot.data() as Map<String, dynamic>;
+
+        String fullName = data['fullName'] + " " + data['userId'];
+        print(fullName);
+        userList.add(fullName);
+      }
+    }
+
+    setState(() {});
+  }
+
+  Future<void> fetchServiceProvider() async {
+    List<String> tempData = [];
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('members')
+        .where('role', isEqualTo: true)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      tempData = querySnapshot.docs.map((e) => e.id).toList();
+    }
+    for (var i = 0; i < tempData.length; i++) {
+      DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+          .collection('members')
+          .doc(tempData[i])
+          .get();
+      if (documentSnapshot.data() != null) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
         serviceProvider.add(data['fullName']);
-        userList.add(data['fullName']);
       }
     }
 
@@ -577,7 +605,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
     allData.add(selectedbuilding);
     allData.add(selectedFloor);
     allData.add(selectedRoom);
-    allData.add(selectedUser);
+    allData.add(selectedUser.toString().split(' ')[2]);
     allData.add(selectedAsset);
     allData.add(selectedServiceProvider);
     allData.add(selectedStatus);
@@ -586,7 +614,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) {
-        print(selectedWork);
+        print(selectedUser);
         selectedWork = null;
         selectedServiceProvider = null;
         selectedStatus = null;

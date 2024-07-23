@@ -585,6 +585,7 @@ class _ReportDetailsState extends State<ReportDetails> {
               .where('floor', isEqualTo: widget.floorFilter) // Filter by work
               .where('room', isEqualTo: widget.roomFilter) // Filter by work
               .where('asset', isEqualTo: widget.statusFilter) // Filter by work
+              .where('user', isEqualTo: widget.userFilter) // Filter by work
               .where('tickets',
                   isEqualTo: widget.ticketFilter) // Filter by work
               .get();
