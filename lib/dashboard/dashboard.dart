@@ -617,6 +617,7 @@ class _DashboardState extends State<Dashboard> {
 
           // serviceProviderList[j];
         }
+        if (currentticketList.isNotEmpty) {}
 
         //add all data in row list
         print(allServiceProviderList);

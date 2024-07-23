@@ -160,7 +160,7 @@ class Home extends StatelessWidget {
                       width: 30,
                     ),
                     Card(
-                      shadowColor: Color.fromARGB(255, 58, 2, 156),
+                      shadowColor: const Color.fromARGB(255, 58, 2, 156),
                       elevation: 30,
                       child: Container(
                         height: 80,
@@ -302,7 +302,7 @@ class Home extends StatelessWidget {
                       width: 30,
                     ),
                     Card(
-                      shadowColor: Color.fromARGB(255, 58, 2, 156),
+                      shadowColor: const Color.fromARGB(255, 58, 2, 156),
                       elevation: 30,
                       child: Container(
                         height: 80,
@@ -373,6 +373,8 @@ class Home extends StatelessWidget {
 }
 
 class MasterScreen extends StatelessWidget {
+  const MasterScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

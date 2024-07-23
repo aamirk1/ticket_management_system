@@ -79,7 +79,6 @@ class _TicketTableReportState extends State<TicketTableReport> {
     getTicketList();
     getWorkList();
     getBuilding();
-
     fetchServiceProvider();
     fetchUser();
     setState(() {
@@ -278,7 +277,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
     List<String> tempData = [];
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('members')
-        .where('role', isEqualTo: true)
+        .where('role', isNotEqualTo: null)
         .get();
 
     if (querySnapshot.docs.isNotEmpty) {
@@ -295,7 +294,6 @@ class _TicketTableReportState extends State<TicketTableReport> {
         serviceProvider.add(data['fullName']);
       }
     }
-
     setState(() {});
   }
 

@@ -41,13 +41,13 @@ class _LoginPageState extends State<LoginPage> {
                           bottomLeft: Radius.circular(20),
                           bottomRight: Radius.circular(20))),
                   child: const CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.white,
                     child: Icon(
                       Icons.home,
                       color: Colors.blue,
                       size: 40,
                     ),
-                    radius: 50,
-                    backgroundColor: Colors.white,
                   ),
                 ),
                 Container(

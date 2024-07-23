@@ -2,9 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ticket_management_system/Report/upDateServiceProvider.dart';
-import 'package:ticket_management_system/utils/colors.dart';
-
 class ReportDetails extends StatefulWidget {
   const ReportDetails({super.key});
 
