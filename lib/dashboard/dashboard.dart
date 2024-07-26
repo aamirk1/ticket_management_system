@@ -15,11 +15,43 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  List<dynamic> data = [];
   @override
   void initState() {
     super.initState();
     fetchServiceProvider().whenComplete(() {
       getdata().whenComplete(() {
+        for (var x = 0; x < serviceProviderList.length; x++) {
+          allServiceProviderList.clear();
+          rowData.add(serviceProviderList[x]);
+          print(serviceProviderList);
+          rowData.add(ticketList.length);
+          rowData.add(allCurrentticketList.length);
+          rowData.add(16);
+          rowData.add(5);
+          rowData.add(6);
+          rowData.add(4);
+          rowData.add(2);
+        }
+        allServiceProviderList.add(rowData);
+        int k = 0;
+        int l = 8;
+        for (var m = 0; m < allServiceProviderList[0].length; m++) {
+          var data = [];
+
+          for (var j = k; j < l; j++) {
+            data.add(allServiceProviderList[0][j]);
+          }
+          allRowData.add(data);
+          k = l;
+          l = l + 8;
+          if (allServiceProviderList[0].length < l) {
+            break;
+          }
+          print('latest dataq $allRowData');
+          print('ticketListLength ${ticketList.length}');
+        }
+
         setState(() {
           isLoading = false;
         });
@@ -32,6 +64,7 @@ class _DashboardState extends State<Dashboard> {
   String todayTicket = '';
   List<dynamic> serviceProviderList = [];
   List<dynamic> allServiceProviderList = [];
+  List<dynamic> allServiceProviderDataList = [];
   List<String> oneToSevenTicket = [];
   List<String> eightToFourteenTicket = [];
   List<String> fifteenToTwentyOneTicket = [];
@@ -546,8 +579,24 @@ class _DashboardState extends State<Dashboard> {
               .doc(dateList[j])
               .collection('tickets')
               .where('status', isEqualTo: 'Open')
-              .where('serviceProvider', isEqualTo: serviceProviderList[j])
+              // .where('serviceProvider', isEqualTo: serviceProviderList[j])
               .get();
+
+          for (DocumentSnapshot ticketDoc in ticketQuery.docs) {
+            String? serviceProviderId = ticketDoc
+                .get('serviceProvider'); // Use String? for nullable type
+
+            // Handle null or empty serviceProviderId
+            if (serviceProviderId != null && serviceProviderId.isNotEmpty) {
+              if (!allServiceProviderList.contains(serviceProviderId)) {
+                allServiceProviderList.add(serviceProviderId);
+              }
+            } else {
+              print(
+                  'Warning: Ticket ${ticketDoc.id} has a missing or empty serviceProvider field.');
+            }
+          }
+
           temp = ticketQuery.docs.map((e) => e.id).toList();
           ticketList = ticketList + temp;
           for (int k = 0; k < temp.length; k++) {
@@ -566,35 +615,14 @@ class _DashboardState extends State<Dashboard> {
                   ticketDataQuery.data() as Map<String, dynamic>;
               serviceProvider = mapData['serviceProvider'] ?? "";
             }
+
+            allServiceProviderList.add(serviceProvider);
+
+            print('all ServicepROVIDER $allServiceProviderList');
           }
-          openTicketSP.add(serviceProvider);
+          // openTicketSP.add(serviceProvider);
           // openTicketBySP.add(ticketList.length);
         }
-
-        //ticket length by service provider
-        // for (var m = 0; m < serviceProviderList.length; m++) {
-        //   List<dynamic> ticketLists = [];
-        //   for (int l = 0; l < dateList.length; l++) {
-        //     QuerySnapshot ticketQuery = await FirebaseFirestore.instance
-        //         .collection("raisedTickets")
-        //         .doc(currentYear.toString())
-        //         .collection('months')
-        //         .doc(months[i])
-        //         .collection('date')
-        //         .doc(dateList[l])
-        //         .collection('tickets')
-        //         .where('status', isEqualTo: 'Open')
-        //         .where('serviceProvider', isEqualTo: serviceProviderList[m])
-        //         // .where('status', isEqualTo: 'Open')
-        //         .get();
-        //     temp = ticketQuery.docs.map((e) => e.id).toList();
-        //     ticketLists = temp;
-        //   }
-        //   openTicketBySP.add(ticketLists.length);
-        //   print(openTicketBySP);
-        // }
-
-        // getCurrentDay(); Ticket
 
         List<dynamic> currentticketList = [];
 
@@ -608,7 +636,7 @@ class _DashboardState extends State<Dashboard> {
               .collection('date')
               .doc(currentDate)
               .collection('tickets')
-              .where('serviceProvider', isEqualTo: serviceProviderList[j])
+              // .where('serviceProvider', isEqualTo: serviceProviderList[j])
               .where('status', isEqualTo: 'Open')
               .get();
           temp = ticketQuery.docs.map((e) => e.id).toList();
@@ -618,20 +646,6 @@ class _DashboardState extends State<Dashboard> {
           // serviceProviderList[j];
         }
         if (currentticketList.isNotEmpty) {}
-
-        //add all data in row list
-        print(allServiceProviderList);
-        rowData.add(allServiceProviderList[i]);
-        rowData.add(ticketList.length);
-        rowData.add(allCurrentticketList.length);
-        rowData.add(16);
-        rowData.add(5);
-        rowData.add(6);
-        rowData.add(4);
-        rowData.add(2);
-        allRowData.add(rowData);
-
-        // print('ticketListLength ${ticketList.length}');
       }
     } catch (e) {
       if (kDebugMode) {

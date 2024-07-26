@@ -265,7 +265,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
             documentSnapshot.data() as Map<String, dynamic>;
 
         String fullName = data['fullName'] + " " + data['userId'];
-        print(fullName);
+        // print(fullName);
         userList.add(fullName);
       }
     }
@@ -612,7 +612,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) {
-        print(selectedUser);
+        // print(selectedUser);
         selectedWork = null;
         selectedServiceProvider = null;
         selectedStatus = null;
