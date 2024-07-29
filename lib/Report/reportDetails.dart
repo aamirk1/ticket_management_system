@@ -9,29 +9,10 @@ import 'package:ticket_management_system/utils/colors.dart';
 // ignore: must_be_immutable
 class ReportDetails extends StatefulWidget {
   ReportDetails(
-      {super.key,
-      this.serviceProvider,
-      this.workFilter,
-      this.userFilter,
-      this.assetFilter,
-      this.floorFilter,
-      this.roomFilter,
-      this.buildingFilter,
-      this.dateFilter,
-      this.ticketFilter,
-      this.statusFilter,
-      this.dateRange});
-  String? workFilter;
-  String? userFilter;
-  String? assetFilter;
-  String? floorFilter;
-  String? roomFilter;
-  String? buildingFilter;
-  String? dateFilter;
-  String? ticketFilter;
-  String? statusFilter;
-  String? serviceProvider;
-  String? dateRange;
+      {super.key, required this.ticketList, required this.ticketData});
+
+  List<dynamic> ticketList = [];
+  List<dynamic> ticketData = [];
   @override
   State<ReportDetails> createState() => _ReportDetailsState();
 }
@@ -95,8 +76,10 @@ class _ReportDetailsState extends State<ReportDetails> {
           isLoading = false;
         }));
     super.initState();
-    print(widget.statusFilter);
-    print(widget.workFilter);
+    print('mdklsalk');
+    print(widget.ticketList);
+    print(widget.ticketData);
+    // print(widget.workFilter);
   }
 
   @override
@@ -118,324 +101,355 @@ class _ReportDetailsState extends State<ReportDetails> {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-              SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.95,
-                  width: MediaQuery.of(context).size.width * 0.99,
-                  child: GridView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: ticketList.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisSpacing: 5,
-                              mainAxisSpacing: 5,
-                              childAspectRatio: 0.8,
-                              crossAxisCount: 3),
-                      itemBuilder: (
-                        context,
-                        index,
-                      ) {
-                        List<String> imageFilePaths = List<String>.from(
-                            ticketListData[index]['imageFilePaths'] ?? []);
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Card(
-                            elevation: 5,
-                            child: Padding(
+              widget.ticketList.isNotEmpty
+                  ? SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.95,
+                      width: MediaQuery.of(context).size.width * 0.99,
+                      child: GridView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          itemCount: widget.ticketList.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisSpacing: 5,
+                                  mainAxisSpacing: 5,
+                                  childAspectRatio: 0.8,
+                                  crossAxisCount: 3),
+                          itemBuilder: (BuildContext context, int index) {
+                            List<String> imageFilePaths = List<String>.from(
+                                widget.ticketData[index]['imageFilePaths'] ??
+                                    []);
+                            return Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: [
-                                  Row(
+                              child: Card(
+                                elevation: 5,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
                                     children: [
-                                      ticketCard(
-                                          Icons.work,
-                                          "Status: ",
-                                          ticketListData[index]['status'] ??
-                                              "N/A",
-                                          index)
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      ticketCard(Icons.work, "Ticket No.: ",
-                                          ticketList[index] ?? "N/A", index)
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      ticketCard(
-                                          Icons.work,
-                                          "Date (Opened): ",
-                                          ticketListData[index]['date'] ??
-                                              "N/A",
-                                          index)
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      ticketCard(
-                                          Icons.work,
-                                          "Date (Closed): ",
-                                          ticketListData[index]['dateClosed'] ??
-                                              "N/A",
-                                          index)
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      ticketCard(
-                                          Icons.business,
-                                          'Tat: ',
-                                          ticketListData[index]['tat'] ?? "N/A",
-                                          index)
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      ticketCard(
-                                          Icons.business,
-                                          'Work: ',
-                                          ticketListData[index]['work'] ??
-                                              "N/A",
-                                          index)
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      ticketCard(
-                                          Icons.layers,
-                                          "Building: ",
-                                          ticketListData[index]['building']
-                                              .toString(),
-                                          index)
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      ticketCard(
-                                          Icons.layers,
-                                          "Floor: ",
-                                          ticketListData[index]['floor']
-                                              .toString(),
-                                          index)
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 2,
-                                  ),
-                                  Row(
-                                    children: [
-                                      ticketCard(
-                                          Icons.room,
-                                          'Room: ',
-                                          ticketListData[index]['room'] ??
-                                              "N/A",
-                                          index)
-                                    ],
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Row(
-                                    children: [
-                                      ticketCard(
-                                          Icons.account_balance,
-                                          "Asset: ",
-                                          ticketListData[index]['asset'] ??
-                                              "N/A",
-                                          index)
-                                    ],
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Row(
-                                    children: [
-                                      ticketCard(
-                                          Icons.build,
-                                          'User: ',
-                                          ticketListData[index]['user'] ??
-                                              "N/A",
-                                          index)
-                                    ],
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Row(
-                                    children: [
-                                      ticketCard(
-                                          Icons.build,
-                                          'ServiceProvider: ',
-                                          ticketListData[index]
-                                                  ['serviceProvider'] ??
-                                              "N/A",
-                                          index)
-                                    ],
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Row(children: [
-                                    ticketCard(
-                                        Icons.comment,
-                                        'Remark: ',
-                                        ticketListData[index]['remark'] ??
-                                            "N/A",
-                                        index)
-                                  ]),
-                                  const SizedBox(height: 2),
-                                  SizedBox(
-                                    height: 50,
-                                    child: ListView.builder(
-                                      itemCount: imageFilePaths.length,
-                                      scrollDirection: Axis.horizontal,
-                                      itemBuilder: (context, index2) =>
-                                          SizedBox(
-                                        height: 50,
-                                        width: 50,
-                                        child: isLoading
-                                            ? const CircularProgressIndicator()
-                                            : kIsWeb
-                                                ? Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: ImageNetwork(
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        ImageScreen(
-                                                                          pageTitle:
-                                                                              'Report Page',
-                                                                          imageFiles:
-                                                                              imageFilePaths,
-                                                                          initialIndex:
-                                                                              index2,
-                                                                          imageFile:
-                                                                              imageFilePaths[index2],
-                                                                          ticketId:
-                                                                              ticketList[index],
-                                                                        )));
-                                                      },
-                                                      image: imageFilePaths[
-                                                          index2],
-                                                      // put a height and width because they are required
-                                                      height: 50,
-                                                      width: 50,
-                                                      curve: Curves.easeIn,
-                                                      fitWeb: BoxFitWeb.cover,
-                                                      onLoading:
-                                                          const CircularProgressIndicator(
-                                                        color:
-                                                            Colors.indigoAccent,
-                                                      ),
-                                                      onError: const Icon(
-                                                        Icons.error,
-                                                        color: Colors.red,
-                                                      ),
-                                                    ),
-                                                  )
-                                                // Padding(
-                                                //     padding:
-                                                //         const EdgeInsets
-                                                //             .all(8.0),
-                                                //     child: Image.network(
-                                                //       height: 50,
-                                                //       fit: BoxFit.cover,
-                                                //       imageFilePaths[
-                                                //           index2],
-                                                //     ),
-                                                //   )
-                                                : const Icon(
-                                                    Icons.image,
-                                                    color: black,
-                                                    size: 50,
-                                                  ),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.work,
+                                              "Status: ",
+                                              widget.ticketData[index]
+                                                      ['status'] ??
+                                                  "N/A",
+                                              index)
+                                        ],
                                       ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Row(children: [
-                                    const Text('Revive: ',
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    const SizedBox(width: 100),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(
-                                            builder: (context) {
-                                              return UpdateServiceProvider(
-                                                  year: ticketListData[index]
-                                                          ['year']
-                                                      .toString(),
-                                                  month: ticketListData[index]
-                                                          ['month']
-                                                      .toString(),
-                                                  day: ticketListData[index]
-                                                          ['date']
-                                                      .toString(),
-                                                  ticketId: ticketList[index]);
+                                      const SizedBox(
+                                        height: 2,
+                                      ),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.work,
+                                              "Ticket No.: ",
+                                              widget.ticketList[index] ?? "N/A",
+                                              index)
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 2,
+                                      ),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.work,
+                                              "Date (Opened): ",
+                                              widget.ticketData[index]
+                                                      ['date'] ??
+                                                  "N/A",
+                                              index)
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 2,
+                                      ),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.work,
+                                              "Date (Closed): ",
+                                              widget.ticketData[index]
+                                                      ['dateClosed'] ??
+                                                  "N/A",
+                                              index)
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 2,
+                                      ),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.business,
+                                              'Tat: ',
+                                              widget.ticketData[index]['tat'] ??
+                                                  "N/A",
+                                              index)
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 2,
+                                      ),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.business,
+                                              'Work: ',
+                                              widget.ticketData[index]
+                                                      ['work'] ??
+                                                  "N/A",
+                                              index)
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 2,
+                                      ),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.layers,
+                                              "Building: ",
+                                              widget.ticketData[index]
+                                                      ['building']
+                                                  .toString(),
+                                              index)
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 2,
+                                      ),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.layers,
+                                              "Floor: ",
+                                              widget.ticketData[index]['floor']
+                                                  .toString(),
+                                              index)
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 2,
+                                      ),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.room,
+                                              'Room: ',
+                                              widget.ticketData[index]
+                                                      ['room'] ??
+                                                  "N/A",
+                                              index)
+                                        ],
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.account_balance,
+                                              "Asset: ",
+                                              widget.ticketData[index]
+                                                      ['asset'] ??
+                                                  "N/A",
+                                              index)
+                                        ],
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.build,
+                                              'User: ',
+                                              widget.ticketData[index]
+                                                      ['user'] ??
+                                                  "N/A",
+                                              index)
+                                        ],
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Row(
+                                        children: [
+                                          ticketCard(
+                                              Icons.build,
+                                              'ServiceProvider: ',
+                                              widget.ticketData[index]
+                                                          ['serviceProvider']
+                                                      .toString() ??
+                                                  "N/A",
+                                              index)
+                                        ],
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Row(children: [
+                                        ticketCard(
+                                            Icons.comment,
+                                            'Remark: ',
+                                            widget.ticketData[index]['remark']
+                                                    .toString() ??
+                                                "N/A",
+                                            index)
+                                      ]),
+                                      const SizedBox(height: 2),
+                                      SizedBox(
+                                        height: 50,
+                                        child: ListView.builder(
+                                          itemCount: imageFilePaths.length,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, index2) =>
+                                              SizedBox(
+                                            height: 50,
+                                            width: 50,
+                                            child: isLoading
+                                                ? const CircularProgressIndicator()
+                                                : kIsWeb
+                                                    ? Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: ImageNetwork(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            ImageScreen(
+                                                                              pageTitle: 'Report Page',
+                                                                              imageFiles: imageFilePaths,
+                                                                              initialIndex: index2,
+                                                                              imageFile: imageFilePaths[index2],
+                                                                              ticketId: ticketList[index],
+                                                                            )));
+                                                          },
+                                                          image: imageFilePaths[
+                                                              index2],
+                                                          // put a height and width because they are required
+                                                          height: 50,
+                                                          width: 50,
+                                                          curve: Curves.easeIn,
+                                                          fitWeb:
+                                                              BoxFitWeb.cover,
+                                                          onLoading:
+                                                              const CircularProgressIndicator(
+                                                            color: Colors
+                                                                .indigoAccent,
+                                                          ),
+                                                          onError: const Icon(
+                                                            Icons.error,
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    // Padding(
+                                                    //     padding:
+                                                    //         const EdgeInsets
+                                                    //             .all(8.0),
+                                                    //     child: Image.network(
+                                                    //       height: 50,
+                                                    //       fit: BoxFit.cover,
+                                                    //       imageFilePaths[
+                                                    //           index2],
+                                                    //     ),
+                                                    //   )
+                                                    : const Icon(
+                                                        Icons.image,
+                                                        color: black,
+                                                        size: 50,
+                                                      ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Row(children: [
+                                        const Text('Re Assign: ',
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        const SizedBox(width: 100),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.push(context,
+                                                  MaterialPageRoute(
+                                                builder: (context) {
+                                                  return UpdateServiceProvider(
+                                                      year: widget
+                                                          .ticketData[index]
+                                                              ['year']
+                                                          .toString(),
+                                                      month: widget
+                                                          .ticketData[index]
+                                                              ['month']
+                                                          .toString(),
+                                                      day: widget
+                                                          .ticketData[index]
+                                                              ['date']
+                                                          .toString(),
+                                                      ticketId: widget
+                                                          .ticketList[index]);
+                                                },
+                                              ));
                                             },
-                                          ));
-                                        },
-                                        child: const Text('Re Assign'))
-                                  ]),
-                                  const SizedBox(height: 2),
-                                  Row(children: [
-                                    const Text('Revive: ',
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    const SizedBox(width: 100),
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          if (ticketListData[index]['status'] ==
-                                              'Close') {
-                                            updateTicketStatus(
-                                                ticketListData[index]['year']
-                                                    .toString(),
-                                                ticketListData[index]['month'],
-                                                ticketListData[index]['date'],
-                                                ticketList[index]);
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                  backgroundColor: Colors.red,
-                                                  content: Center(
-                                                    child: Text(
-                                                        'Ticket Already Open'),
-                                                  )),
-                                            );
-                                          }
-                                        },
-                                        child: const Text('Revive'))
-                                  ]),
-                                ],
+                                            child: const Text('Re Assign'))
+                                      ]),
+                                      const SizedBox(height: 2),
+                                      Row(children: [
+                                        const Text('Revive: ',
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        const SizedBox(width: 100),
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              if (widget.ticketData[index]
+                                                      ['status'] ==
+                                                  'Close') {
+                                                updateTicketStatus(
+                                                    widget.ticketData[index]
+                                                            ['year']
+                                                        .toString(),
+                                                    widget.ticketData[index]
+                                                        ['month'],
+                                                    widget.ticketData[index]
+                                                        ['date'],
+                                                    widget.ticketList[index]);
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                      content: Center(
+                                                        child: Text(
+                                                            'Ticket Already Open'),
+                                                      )),
+                                                );
+                                              }
+                                            },
+                                            child: const Text('Revive'))
+                                      ]),
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
+                            );
+                          }))
+                  : SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.5,
+                      width: MediaQuery.of(context).size.width * 0.55,
+                      child: Card(
+                        elevation: 5,
+                        child: const Center(
+                          child: Text(
+                            'No Tickets Found!',
+                            style: TextStyle(color: Colors.red),
                           ),
-                        );
-                      }))
+                        ),
+                      ),
+                    )
             ]),
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {
@@ -576,18 +590,18 @@ class _ReportDetailsState extends State<ReportDetails> {
               .collection('date')
               .doc(dateList[j])
               .collection('tickets')
-              .where('work', isEqualTo: widget.workFilter) // Filter by work
-              .where('status', isEqualTo: widget.statusFilter) // Filter by work
-              .where('serviceProvider',
-                  isEqualTo: widget.serviceProvider) // Filter by work
-              .where('building',
-                  isEqualTo: widget.buildingFilter) // Filter by work
-              .where('floor', isEqualTo: widget.floorFilter) // Filter by work
-              .where('room', isEqualTo: widget.roomFilter) // Filter by work
-              .where('asset', isEqualTo: widget.statusFilter) // Filter by work
-              .where('user', isEqualTo: widget.userFilter) // Filter by work
-              .where('tickets',
-                  isEqualTo: widget.ticketFilter) // Filter by work
+              // .where('work', isEqualTo: widget.workFilter) // Filter by work
+              // .where('status', isEqualTo: widget.statusFilter) // Filter by work
+              // .where('serviceProvider',
+              //     isEqualTo: widget.serviceProvider) // Filter by work
+              // .where('building',
+              //     isEqualTo: widget.buildingFilter) // Filter by work
+              // .where('floor', isEqualTo: widget.floorFilter) // Filter by work
+              // .where('room', isEqualTo: widget.roomFilter) // Filter by work
+              // .where('asset', isEqualTo: widget.statusFilter) // Filter by work
+              // .where('user', isEqualTo: widget.userFilter) // Filter by work
+              // .where('tickets',
+              //     isEqualTo: widget.ticketFilter) // Filter by work
               .get();
 
           temp = ticketQuery.docs.map((e) => e.id).toList();
@@ -617,7 +631,7 @@ class _ReportDetailsState extends State<ReportDetails> {
                 room = mapData['room'] ?? "N/A";
                 work = mapData['work'] ?? "N/A";
                 serviceprovider = mapData['serviceProvider'] ?? "";
-                ticketListData.add(mapData);
+                widget.ticketData.add(mapData);
                 // print('$mapData abc');
               }
             }

@@ -133,20 +133,25 @@ class _UserDetailsState extends State<UserDetails> {
                                                   itemBuilder:
                                                       (context, index) {
                                                     return SingleChildScrollView(
-                                                      child: SizedBox(
-                                                        height: 25,
-                                                        child: ListTile(
-                                                          title: RichText(
-                                                              text: TextSpan(
-                                                                  children: [
-                                                                TextSpan(
-                                                                  text:
-                                                                      '${index + 1}. ${roleList[index]}',
-                                                                  style: const TextStyle(
-                                                                      color:
-                                                                          black),
-                                                                ),
-                                                              ])),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(2.0),
+                                                        child: SizedBox(
+                                                          height: 28,
+                                                          child: ListTile(
+                                                            title: RichText(
+                                                                text: TextSpan(
+                                                                    children: [
+                                                                  TextSpan(
+                                                                    text:
+                                                                        '${index + 1}. ${roleList[index]}',
+                                                                    style: const TextStyle(
+                                                                        color:
+                                                                            black),
+                                                                  ),
+                                                                ])),
+                                                          ),
                                                         ),
                                                       ),
                                                     );

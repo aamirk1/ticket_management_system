@@ -3,7 +3,6 @@ import 'package:ticket_management_system/Master/master.dart';
 import 'package:ticket_management_system/Report/ticketTableReport.dart';
 import 'package:ticket_management_system/changePassword/changePassword.dart';
 import 'package:ticket_management_system/profile/profile.dart';
-import 'package:ticket_management_system/utils/colors.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key, required this.adminId}) : super(key: key);
@@ -29,18 +28,18 @@ class Home extends StatelessWidget {
               gradient:
                   LinearGradient(colors: [Colors.purple, Colors.deepPurple])),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.power_settings_new_outlined,
-                  size: 30,
-                  color: white,
-                )),
-          )
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 20),
+        //     child: IconButton(
+        //         onPressed: () {},
+        //         icon: const Icon(
+        //           Icons.power_settings_new_outlined,
+        //           size: 30,
+        //           color: white,
+        //         )),
+        //   )
+        // ],
       ),
       body: Container(
         decoration: BoxDecoration(

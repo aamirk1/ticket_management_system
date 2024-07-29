@@ -30,6 +30,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
   TextEditingController userController = TextEditingController();
   TextEditingController statusController = TextEditingController();
   List<String> buildingList = [];
+  List<dynamic> filterData = [];
   List<String> floorList = [];
   List<String> roomList = [];
   List<String> assetList = [];
@@ -45,6 +46,15 @@ class _TicketTableReportState extends State<TicketTableReport> {
   String? selectedbuilding;
   String? selectedWork;
   String? selectedStatus;
+
+  String asset = '';
+  String building = '';
+  String floor = '';
+  String remark = '';
+  String room = '';
+  String work = '';
+  String serviceprovider = '';
+
   List<String> floorNumberList = [];
   List<dynamic> allData = [];
   List<dynamic> serviceProviderList = [];
@@ -59,10 +69,11 @@ class _TicketTableReportState extends State<TicketTableReport> {
   List<String> allRoomData = [];
   List<String> allStatusData = ['All', 'Open', 'Close'];
 
-  List<String> ticketList = [];
+  List<dynamic> ticketList = [];
 
   List<String> serviceProvider = [];
 
+  String? _selectDate;
   String? selectedServiceProvider;
   List<String> roomNumberList = [];
   List<String> ticketNumberList = [];
@@ -140,7 +151,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
                           padding: const EdgeInsets.all(8.0),
                           child: customDropDown(
                             'Select Ticket Number',
-                            ticketList,
+                            ticketList.map((e) => e.toString()).toList(),
                             "Search Ticket Number",
                             1,
                           ),
@@ -233,8 +244,30 @@ class _TicketTableReportState extends State<TicketTableReport> {
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         onPressed: () {
-                          allFilterData().whenComplete(() {
-                            setState(() {});
+                          filterTickets().whenComplete(() {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                return ReportDetails(
+                                  ticketList: ticketList,
+                                  ticketData: filterData,
+                                );
+                              }),
+                            ).whenComplete(() {
+                              selectedWork = null;
+                              selectedServiceProvider = null;
+                              selectedStatus = null;
+                              selectedAsset = null;
+                              selectedUser = null;
+                              selectedRoom = null;
+                              selectedFloor = null;
+                              selectedbuilding = null;
+                              selectedTicket = null;
+                              selectedDate = '';
+                              ticketList.clear();
+                              filterData.clear();
+                              setState(() {});
+                            });
                           });
                         },
                         child: const Text('Get Report'),
@@ -337,7 +370,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
     } catch (e) {
       print(e);
     }
-    provider.setBuilderList(ticketList);
+    // provider.setBuilderList(ticketList);
     setState(() {});
   }
 
@@ -596,47 +629,270 @@ class _TicketTableReportState extends State<TicketTableReport> {
     });
   }
 
-  Future<void> allFilterData() async {
-    List<dynamic> allData = [];
-    allData.add(selectedDate);
-    allData.add(selectedTicket);
-    allData.add(selectedbuilding);
-    allData.add(selectedFloor);
-    allData.add(selectedRoom);
-    allData.add(selectedUser.toString().split(' ')[2]);
-    allData.add(selectedAsset);
-    allData.add(selectedServiceProvider);
-    allData.add(selectedStatus);
-    allData.add(selectedWork);
+  // Future<void> allFilterData() async {
+  //   List<dynamic> allData = [];
+  //   allData.add(selectedDate);
+  //   allData.add(selectedTicket);
+  //   allData.add(selectedbuilding);
+  //   allData.add(selectedFloor);
+  //   allData.add(selectedRoom);
+  //   allData.add(selectedUser.toString().split(' ')[2]);
+  //   allData.add(selectedAsset);
+  //   allData.add(selectedServiceProvider);
+  //   allData.add(selectedStatus);
+  //   allData.add(selectedWork);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) {
-        // print(selectedUser);
-        selectedWork = null;
-        selectedServiceProvider = null;
-        selectedStatus = null;
-        selectedAsset = null;
-        selectedUser = null;
-        selectedRoom = null;
-        selectedFloor = null;
-        selectedbuilding = null;
-        selectedTicket = null;
-        selectedDate = '';
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) {
+  //       // print(selectedUser);
+  //       selectedWork = null;
+  //       selectedServiceProvider = null;
+  //       selectedStatus = null;
+  //       selectedAsset = null;
+  //       selectedUser = null;
+  //       selectedRoom = null;
+  //       selectedFloor = null;
+  //       selectedbuilding = null;
+  //       selectedTicket = null;
+  //       selectedDate = '';
 
-        return ReportDetails(
-          dateFilter: allData[0],
-          ticketFilter: allData[1],
-          buildingFilter: allData[2],
-          floorFilter: allData[3],
-          roomFilter: allData[4],
-          userFilter: allData[5],
-          assetFilter: allData[6],
-          serviceProvider: allData[7],
-          statusFilter: allData[8],
-          workFilter: allData[9],
-        );
-      }),
-    );
+  //       return ReportDetails(
+  //         dateFilter: allData[0],
+  //         ticketFilter: allData[1],
+  //         buildingFilter: allData[2],
+  //         floorFilter: allData[3],
+  //         roomFilter: allData[4],
+  //         userFilter: allData[5],
+  //         assetFilter: allData[6],
+  //         serviceProvider: allData[7],
+  //         statusFilter: allData[8],
+  //         workFilter: allData[9],
+  //       );
+  //     }),
+  //   );
+  // }
+
+  // Future<void> allFilterData() async {
+  //   List<dynamic> allData = [];
+  //   allData.add(selectedDate);
+  //   allData.add(selectedTicket);
+  //   allData.add(selectedbuilding);
+  //   allData.add(selectedFloor);
+  //   allData.add(selectedRoom);
+  //   allData.add(selectedUser.toString().split(' ')[2]);
+  //   allData.add(selectedAsset);
+  //   allData.add(selectedServiceProvider);
+  //   allData.add(selectedStatus);
+  //   allData.add(selectedWork);
+  //   List<dynamic> data = allData;
+  //   print(data);
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) {
+  //       print(selectedUser);
+  //       selectedWork = '';
+  //       selectedServiceProvider = '';
+  //       selectedStatus = '';
+  //       selectedAsset = '';
+  //       selectedUser = '';
+  //       selectedRoom = '';
+  //       selectedFloor = '';
+  //       selectedbuilding = '';
+  //       selectedTicket = '';
+  //       selectedDate = '';
+  //       return ReportDetails(
+  //         dateFilter: allData[0],
+  //         ticketFilter: allData[1],
+  //         buildingFilter: allData[2],
+  //         floorFilter: allData[3],
+  //         roomFilter: allData[4],
+  //         userFilter: allData[5],
+  //         assetFilter: allData[6],
+  //         serviceProvider: allData[7],
+  //         statusFilter: allData[8],
+  //         workFilter: allData[9],
+  //       );
+  //     }),
+  //   );
+  // }
+
+  Future<void> filterTickets() async {
+    try {
+      filterData.clear();
+      ticketList.clear();
+      int currentYear = DateTime.now().year;
+
+      QuerySnapshot monthQuery = await FirebaseFirestore.instance
+          .collection("raisedTickets")
+          .doc(currentYear.toString())
+          .collection('months')
+          .get();
+      List<dynamic> months = monthQuery.docs.map((e) => e.id).toList();
+      for (int i = 0; i < months.length; i++) {
+        QuerySnapshot dateQuery = await FirebaseFirestore.instance
+            .collection("raisedTickets")
+            .doc(currentYear.toString())
+            .collection('months')
+            .doc(months[i])
+            .collection('date')
+            .get();
+        List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
+        for (int j = 0; j < dateList.length; j++) {
+          List<dynamic> temp = [];
+          QuerySnapshot ticketQuery = await FirebaseFirestore.instance
+              .collection("raisedTickets")
+              .doc(currentYear.toString())
+              .collection('months')
+              .doc(months[i])
+              .collection('date')
+              .doc(dateList[j])
+              .collection('tickets')
+              .where('work', isEqualTo: selectedWork) // Filter by work
+              .where('status', isEqualTo: selectedStatus) // Filter by work
+              .where('serviceProvider',
+                  isEqualTo: selectedServiceProvider) // Filter by work
+              .where('building', isEqualTo: selectedbuilding) // Filter by work
+              .where('floor', isEqualTo: selectedFloor) // Filter by work
+              .where('room', isEqualTo: selectedRoom) // Filter by work
+              .where('asset', isEqualTo: selectedAsset) // Filter by work
+              .where('user', isEqualTo: selectedUser) // Filter by work
+              .where('tickets', isEqualTo: selectedTicket) // Filter by work
+              .get();
+
+          temp = ticketQuery.docs.map((e) => e.id).toList();
+          // ticketList = ticketList + temp;
+
+          if (temp.isNotEmpty) {
+            ticketList.addAll(temp);
+            for (int k = 0; k < temp.length; k++) {
+              DocumentSnapshot ticketDataQuery = await FirebaseFirestore
+                  .instance
+                  .collection("raisedTickets")
+                  .doc(currentYear.toString())
+                  .collection('months')
+                  .doc(months[i])
+                  .collection('date')
+                  .doc(dateList[j])
+                  .collection('tickets')
+                  .doc(temp[k])
+                  .get();
+              if (ticketDataQuery.exists) {
+                Map<String, dynamic> mapData =
+                    ticketDataQuery.data() as Map<String, dynamic>;
+                asset = mapData['asset'].toString() ?? "N/A";
+                building = mapData['building'].toString() ?? "N/A";
+                floor = mapData['floor'].toString() ?? "N/A";
+                remark = mapData['remark'].toString() ?? "N/A";
+                room = mapData['room'].toString() ?? "N/A";
+                work = mapData['work'].toString() ?? "N/A";
+                serviceprovider = mapData['serviceProvider'].toString() ?? "";
+                filterData.add(mapData);
+                // print('$mapData abc');
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print("Error Fetching tickets: $e");
+    }
+
+    // setState(() {});
+
+    // try {
+    // String year = selectedDate.split('-')[2];
+    // String month = selectedDate.split('-')[1];
+    // String selectedMonth = DateFormat.MMM().format(
+    //   DateTime(
+    //     0,
+    //     int.parse(month),
+    //   ),
+    // );
+    // print("year - $year month - $month");
+
+    // int currentYear = DateTime.now().year;
+
+    // QuerySnapshot monthQuery = await FirebaseFirestore.instance
+    //     .collection("raisedTickets")
+    //     .doc(currentYear.toString())
+    //     .collection('months')
+    //     .get();
+    // List<dynamic> months = monthQuery.docs.map((e) => e.id).toList();
+    // for (int i = 0; i < months.length; i++) {
+    //   QuerySnapshot dateQuery = await FirebaseFirestore.instance
+    //       .collection("raisedTickets")
+    //       .doc(currentYear.toString())
+    //       .collection('months')
+    //       .doc(months[i])
+    //       .collection('date')
+    //       .get();
+    //   List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
+    //   for (int j = 0; j < dateList.length; j++) {
+    //     List<dynamic> temp = [];
+    //     Query query = await FirebaseFirestore.instance
+    //         .collection("raisedTickets")
+    //         .doc(currentYear.toString())
+    //         .collection('months')
+    //         .doc(months[i])
+    //         .collection('date')
+    //         .doc(dateList[j])
+    //         .collection('tickets');
+
+    // if (selectedbuilding != null) {
+    //   query = query.where('building', isEqualTo: selectedbuilding!);
+    // }
+    // if (selectedAsset != null) {
+    //   query = query.where('asset', isEqualTo: selectedAsset!);
+    // }
+    // if (selectedFloor != null) {
+    //   query = query.where('floor', isEqualTo: selectedAsset!);
+    // }
+    // if (selectedServiceProvider != null) {
+    //   query = query.where('serviceProvider',
+    //       isEqualTo: selectedServiceProvider!);
+    // }
+    // if (selectedRoom != null) {
+    //   query = query.where('room', isEqualTo: selectedRoom!);
+    // }
+    // if (selectedStatus != null) {
+    //   query.where('status', isEqualTo: selectedStatus!);
+    // }
+    // if (selectedWork != null) {
+    //   query.where('work', isEqualTo: selectedWork!);
+    // }
+    // else {
+    //   print('nothing selected');
+    //   QuerySnapshot filterQuery = await query.get();
+    //   ticketList = filterQuery.docs.map((e) => e.id).toList();
+
+    //   filterData = filterQuery.docs.map((e) => e.data()).toList();
+
+    // }
+
+    // QuerySnapshot filterQuery = await query.get();
+    // ticketList = filterQuery.docs.map((e) => e.id).toList();
+
+    // filterData = filterQuery.docs.map((e) => e.data()).toList();
+    // print("FilterData : $filterData");
+    // print(ticketList);
+    // }
+    // }
+    // } catch (e) {
+    //   print("Error Occured While Filtering Data");
+    // }
   }
+
+  // Future<void> getCalendar() async {
+  //   DateTime? selectedDate = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now(),
+  //     firstDate: DateTime(2000),
+  //     lastDate: DateTime(2100),
+  //   );
+  //   if (selectedDate != null) {
+  //     String date = DateFormat("dd-MM-yyyy").format(selectedDate);
+  //     _selectDate = date;
+  //   }
+  // }
 }

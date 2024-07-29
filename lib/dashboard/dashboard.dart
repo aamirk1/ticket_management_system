@@ -21,40 +21,13 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     fetchServiceProvider().whenComplete(() {
       getdata().whenComplete(() {
-        for (var x = 0; x < serviceProviderList.length; x++) {
-          allServiceProviderList.clear();
-          rowData.add(serviceProviderList[x]);
-          print(serviceProviderList);
-          rowData.add(ticketList.length);
-          rowData.add(allCurrentticketList.length);
-          rowData.add(16);
-          rowData.add(5);
-          rowData.add(6);
-          rowData.add(4);
-          rowData.add(2);
-        }
-        allServiceProviderList.add(rowData);
-        int k = 0;
-        int l = 8;
-        for (var m = 0; m < allServiceProviderList[0].length; m++) {
-          var data = [];
-
-          for (var j = k; j < l; j++) {
-            data.add(allServiceProviderList[0][j]);
-          }
-          allRowData.add(data);
-          k = l;
-          l = l + 8;
-          if (allServiceProviderList[0].length < l) {
-            break;
-          }
-          print('latest dataq $allRowData');
-          print('ticketListLength ${ticketList.length}');
-        }
-
-        setState(() {
-          isLoading = false;
+        serviceProviderData().whenComplete(() {
+          setState(() {
+            isLoading = false;
+          });
         });
+
+        // onetose();
       });
     });
   }
@@ -541,7 +514,6 @@ class _DashboardState extends State<Dashboard> {
       if (documentSnapshot.data() != null) {
         Map<String, dynamic> data =
             documentSnapshot.data() as Map<String, dynamic>;
-        // serviceProviderList.add(data['fullName']);
         serviceProviderList.add(data['fullName']);
       }
     }
@@ -582,21 +554,6 @@ class _DashboardState extends State<Dashboard> {
               // .where('serviceProvider', isEqualTo: serviceProviderList[j])
               .get();
 
-          for (DocumentSnapshot ticketDoc in ticketQuery.docs) {
-            String? serviceProviderId = ticketDoc
-                .get('serviceProvider'); // Use String? for nullable type
-
-            // Handle null or empty serviceProviderId
-            if (serviceProviderId != null && serviceProviderId.isNotEmpty) {
-              if (!allServiceProviderList.contains(serviceProviderId)) {
-                allServiceProviderList.add(serviceProviderId);
-              }
-            } else {
-              print(
-                  'Warning: Ticket ${ticketDoc.id} has a missing or empty serviceProvider field.');
-            }
-          }
-
           temp = ticketQuery.docs.map((e) => e.id).toList();
           ticketList = ticketList + temp;
           for (int k = 0; k < temp.length; k++) {
@@ -617,35 +574,15 @@ class _DashboardState extends State<Dashboard> {
             }
 
             allServiceProviderList.add(serviceProvider);
+            allServiceProviderDataList = allServiceProviderList;
 
-            print('all ServicepROVIDER $allServiceProviderList');
+            print('all Service Provider $allServiceProviderList');
           }
           // openTicketSP.add(serviceProvider);
           // openTicketBySP.add(ticketList.length);
         }
 
-        List<dynamic> currentticketList = [];
-
-        String currentDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
-        for (int j = 0; j < dateList.length; j++) {
-          QuerySnapshot ticketQuery = await FirebaseFirestore.instance
-              .collection("raisedTickets")
-              .doc(currentYear.toString())
-              .collection('months')
-              .doc(months[i])
-              .collection('date')
-              .doc(currentDate)
-              .collection('tickets')
-              // .where('serviceProvider', isEqualTo: serviceProviderList[j])
-              .where('status', isEqualTo: 'Open')
-              .get();
-          temp = ticketQuery.docs.map((e) => e.id).toList();
-          currentticketList = currentticketList + temp;
-          allCurrentticketList = currentticketList;
-
-          // serviceProviderList[j];
-        }
-        if (currentticketList.isNotEmpty) {}
+        // if (currentticketList.isNotEmpty) {}
       }
     } catch (e) {
       if (kDebugMode) {
@@ -767,142 +704,108 @@ class _DashboardState extends State<Dashboard> {
     // }
   }
 
-  // void getdate() async {
-  //   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Future<void> serviceProviderData() async {
+    for (var x = 0; x < serviceProviderList.length; x++) {
+      allServiceProviderList.clear();
+      rowData.add(serviceProviderList[x]);
 
-  //   try {
-  //     // Fetch all documents from 'raisedTickets' collection
+//start
 
-  //     QuerySnapshot querySnapshot =
-  //         await _firestore.collection('raisedTickets').get();
+      if (allServiceProviderList.isNotEmpty) {
+        Map<String, int> providerCounts = {};
 
-  //     // Categorize documents based on date ranges
-  //     List<String> list1to7 = [];
-  //     List<String> list8to15 = [];
+        // Iterate through the list and count occurrences
+        for (String provider in allServiceProviderList) {
+          if (providerCounts.containsKey(provider)) {
+            providerCounts[provider] = providerCounts[provider]! + 1;
+          } else {
+            providerCounts[provider] = 1;
+          }
 
-  //     DateTime now = DateTime.now();
-  //     DateTime today = DateTime(now.year, now.month, now.day);
+          // Print the counts
+          print(
+              providerCounts); // Output: {Sushil Bagve: 3, Sanket Raut: 1, Krishna Murthy: 2, Vinayak Pashte: 1, : 1}
 
-  //     if (querySnapshot.docs.isNotEmpty) {
-  //       List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-  //       ticketList = tempData;
-  //     }
+          // Get the count for a specific provider
+          int sushilBagveCount = providerCounts["Sushil Bagve"] ?? 0;
+          print(
+              "Sushil Bagve count: $sushilBagveCount"); // Output: Sushil Bagve count: 3
+        }
+      }
 
-  //     for (var i = 0; i < ticketList.length; i++) {
-  //       DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
-  //           .collection('raisedTickets')
-  //           .doc(ticketList[i])
-  //           .get();
+//end
 
-  // if (documentSnapshot.data() != null) {
-  //   Timestamp timestamp =
-  //       documentSnapshot['date']; // Assuming 'date' is the field name
-  //   DateTime docDate = timestamp.toDate();
+      rowData.add(ticketList.length);
+      rowData.add(allCurrentticketList.length);
+      rowData.add(16);
+      rowData.add(5);
+      rowData.add(6);
+      rowData.add(4);
+      rowData.add(2);
+    }
+    allServiceProviderList.add(rowData);
+    int k = 0;
+    int l = 8;
+    for (var m = 0; m < allServiceProviderList[0].length; m++) {
+      var data = [];
 
-  //   if (docDate.isAfter(today) &&
-  //       docDate.isBefore(today.add(Duration(days: 8)))) {
-  //     list1to7.add(timestamp.toString());
-  //   } else if (docDate.isAfter(today.add(Duration(days: 7))) &&
-  //       docDate.isBefore(today.add(Duration(days: 16)))) {
-  //     list8to15.add(timestamp.toString());
-  //   }
-  // }
-
-  // querySnapshot.docs.forEach((doc) {
-
-  // });
-
-  // Print or use the categorized lists as needed
-  // print('Documents from 1 to 7 days: ${list1to7.length}');
-  // print('Documents from 8 to 15 days: ${list8to15.length}');
-
-  // Example of using the lists:
-  // list1to7.forEach((doc) {
-  //   print('Document ID: ${doc.id}, Date: ${doc['date'].toDate()}');
-  // });
-  // list8to15.forEach((doc) {
-  //   print('Document ID: ${doc.id}, Date: ${doc['date'].toDate()}');
-  // });
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching documents: $e');
-  //   }
-  // }
+      for (var j = k; j < l; j++) {
+        data.add(allServiceProviderList[0][j]);
+      }
+      allRowData.add(data);
+      k = l;
+      l = l + 8;
+      if (allServiceProviderList[0].length < l) {
+        break;
+      }
+    }
+  }
 }
 
+// if ((i == 1) && (i < 7)) {
+//   for (int i = 1; i < 7; i++) {
+//     DateTime newdate = today.add(Duration(days: i));
+//     DateTime sevendays = newdate.add(const Duration(days: 6));
+//     DateFormat formatter = DateFormat('dd-MM-yyyy');
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // if ((i == 1) && (i < 7)) {
-        //   for (int i = 1; i < 7; i++) {
-        //     DateTime newdate = today.add(Duration(days: i));
-        //     DateTime sevendays = newdate.add(const Duration(days: 6));
-        //     DateFormat formatter = DateFormat('dd-MM-yyyy');
-
-        //     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
-        //       allDateList.add(formatter.format(newdate));
-        //       for (int j = 0; j < allDateList.length; j++) {
-        //         // print('sevenday - ${newdate.isBefore(sevendays)}');
-        //         // print(datelist[j]);
-        //         newdate.add(const Duration(days: 1));
-        //         // ignore: unrelated_type_equality_checks
-        //         if (newdate.isBefore(sevendays) == allDateList[j]) {
-        //           oneToSevenTicket.add(ticketList[j].toString());
-        //         }
-        //         print('oneToSevenTicket - $oneToSevenTicket');
-        //       }
-        //     } else {
-        //       oneToSevenTicket.add('0');
-        //     }
-        //     oneToSevenTicket.add(ticketList.length.toString());
-        //   }
-        //   break;
-        // } else if ((i == 7) && (i < 15)) {
-        //   for (int i = 7; i < 15; i++) {
-        //     DateTime newdate = today.add(Duration(days: i));
-        //     DateTime fifteendays = newdate.add(const Duration(days: 15));
-        //     DateFormat formatter = DateFormat('dd-MM-yyyy');
-        //     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
-        //       allDateList.add(formatter.format(newdate));
-        //       for (int j = 0; j < allDateList.length; j++) {
-        //         // print('sevenday - ${newdate.isBefore(sevendays)}');
-        //         // print(datelist[j]);
-        //         newdate.add(const Duration(days: 1));
-        //         // ignore: unrelated_type_equality_checks
-        //         if (newdate.isBefore(fifteendays) == allDateList[j]) {
-        //           eightToFourteenTicket.add(ticketList[j].toString());
-        //         }
-        //       }
-        //     } else {
-        //       eightToFourteenTicket.add('0');
-        //     }
-        //     eightToFourteenTicket.add(ticketList.length.toString());
-        //   }
-        //   break;
-        // }
+//     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
+//       allDateList.add(formatter.format(newdate));
+//       for (int j = 0; j < allDateList.length; j++) {
+//         // print('sevenday - ${newdate.isBefore(sevendays)}');
+//         // print(datelist[j]);
+//         newdate.add(const Duration(days: 1));
+//         // ignore: unrelated_type_equality_checks
+//         if (newdate.isBefore(sevendays) == allDateList[j]) {
+//           oneToSevenTicket.add(ticketList[j].toString());
+//         }
+//         print('oneToSevenTicket - $oneToSevenTicket');
+//       }
+//     } else {
+//       oneToSevenTicket.add('0');
+//     }
+//     oneToSevenTicket.add(ticketList.length.toString());
+//   }
+//   break;
+// } else if ((i == 7) && (i < 15)) {
+//   for (int i = 7; i < 15; i++) {
+//     DateTime newdate = today.add(Duration(days: i));
+//     DateTime fifteendays = newdate.add(const Duration(days: 15));
+//     DateFormat formatter = DateFormat('dd-MM-yyyy');
+//     if (newdate.isAfter(DateTime.parse(convertedDate)) == true) {
+//       allDateList.add(formatter.format(newdate));
+//       for (int j = 0; j < allDateList.length; j++) {
+//         // print('sevenday - ${newdate.isBefore(sevendays)}');
+//         // print(datelist[j]);
+//         newdate.add(const Duration(days: 1));
+//         // ignore: unrelated_type_equality_checks
+//         if (newdate.isBefore(fifteendays) == allDateList[j]) {
+//           eightToFourteenTicket.add(ticketList[j].toString());
+//         }
+//       }
+//     } else {
+//       eightToFourteenTicket.add('0');
+//     }
+//     eightToFourteenTicket.add(ticketList.length.toString());
+//   }
+//   break;
+// }

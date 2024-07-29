@@ -65,7 +65,7 @@ class _ListOfAssetState extends State<ListOfAsset> {
                             height: MediaQuery.of(context).size.height * 0.7,
                             child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: assetList.length,
+                                itemCount: value.assetList.length,
                                 itemBuilder: (item, index) {
                                   return Column(
                                     children: [
@@ -84,7 +84,7 @@ class _ListOfAssetState extends State<ListOfAsset> {
                                         //   );
                                         // },
                                         title: Text(
-                                          assetList[index],
+                                          value.assetList[index],
                                           style: const TextStyle(
                                               color: Colors.black),
                                         ),
@@ -124,7 +124,7 @@ class _ListOfAssetState extends State<ListOfAsset> {
                                                   widget.buildingNumber,
                                                   widget.floorNumber,
                                                   widget.roomNumber,
-                                                  assetList[index],
+                                                  value.assetList[index],
                                                 );
                                               },
                                             ),
@@ -175,13 +175,12 @@ class _ListOfAssetState extends State<ListOfAsset> {
     if (querySnapshot.docs.isNotEmpty) {
       List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
       assetList = tempData;
-      print(assetList);
+      provider.setBuilderList(assetList);
     }
-    provider.setBuilderList(assetList);
   }
 
-  Future<void> deleteAsset(String roomNumber, String buildingNumber,
-      String floorNumber, String asset) async {
+  Future<void> deleteAsset(String buildingNumber, String floorNumber,
+      String roomNumber, String asset) async {
     final provider = Provider.of<AllAssetProvider>(context, listen: false);
     await FirebaseFirestore.instance
         .collection('buildingNumbers')
@@ -193,8 +192,11 @@ class _ListOfAssetState extends State<ListOfAsset> {
         .collection('assets')
         .doc(asset)
         .delete();
+    print('successfully deleted');
 
+    // provider.removeData(assetList.indexOf(asset));
     provider.removeData(assetList.indexOf(asset));
+    print('successfully deletedw');
   }
 
   void addAsset() {

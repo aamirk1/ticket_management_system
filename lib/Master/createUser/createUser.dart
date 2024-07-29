@@ -173,15 +173,14 @@ class _CreateUserState extends State<CreateUser> {
   Future<void> deleteUser(String userId) async {
     final provider = Provider.of<AllUserProvider>(context, listen: false);
     await FirebaseFirestore.instance.collection('members').doc(userId).delete();
-    provider.removeData(userList.indexOf(userId));
+    provider.removeData(provider.userList.indexOf(userId));
   }
 
   Future<void> editUser(String userId) async {
     final provider = Provider.of<AllUserProvider>(context, listen: false);
     await FirebaseFirestore.instance.collection('members').doc(userId).delete();
-    provider.removeData(userList.indexOf(userId));
+    provider.setBuilderList(userList);
   }
-
 
   Future<void> getWorks() async {
     QuerySnapshot querySnapshot =

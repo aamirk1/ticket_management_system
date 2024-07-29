@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ticket_management_system/Master/createUser/createUser.dart';
 import 'package:ticket_management_system/Master/itemMaster/buildingList.dart';
 import 'package:ticket_management_system/Master/work/listOfWork.dart';
-import 'package:ticket_management_system/utils/colors.dart';
 
 // ignore: must_be_immutable
 class MasterHomeScreen extends StatefulWidget {
@@ -29,18 +28,18 @@ class _MasterHomeScreenState extends State<MasterHomeScreen> {
               gradient:
                   LinearGradient(colors: [Colors.purple, Colors.deepPurple])),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.power_settings_new_outlined,
-                  size: 30,
-                  color: white,
-                )),
-          )
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 20),
+        //     child: IconButton(
+        //         onPressed: () {},
+        //         icon: const Icon(
+        //           Icons.power_settings_new_outlined,
+        //           size: 30,
+        //           color: white,
+        //         )),
+        //   )
+        // ],
       ),
       body: Center(
         child: Column(

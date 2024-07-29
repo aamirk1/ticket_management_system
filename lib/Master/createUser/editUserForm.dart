@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ticket_management_system/Master/createUser/userDetails.dart';
 import 'package:ticket_management_system/providers/userProvider.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
@@ -280,7 +281,15 @@ class _EditUserFormState extends State<EditUserForm> {
                       fetchData(widget.userId).whenComplete(() {
                         Navigator.pop(context);
                         Navigator.pop(context);
-                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserDetails(
+                              adminId: 'KM1737',
+                              userId: widget.userId,
+                            ),
+                          ),
+                        );
                         fnameController.clear();
                         lnameController.clear();
                         mobileController.clear();

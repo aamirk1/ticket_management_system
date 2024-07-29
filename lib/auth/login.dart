@@ -78,21 +78,23 @@ class _LoginPageState extends State<LoginPage> {
                         height: 20,
                       ),
                       TextFormField(
+                        textInputAction: TextInputAction.next,
                         controller: userIdController,
                         decoration: const InputDecoration(
                           labelText: 'Username',
-                          hintText: 'Enter you username',
+                          // hintText: 'Enter your username',
                         ),
                       ),
                       const SizedBox(
                         height: 30,
                       ),
                       TextFormField(
+                        textInputAction: TextInputAction.done,
                         controller: passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
                           labelText: 'Password',
-                          hintText: 'Enter you password',
+                          // hintText: 'Enter your password',
                         ),
                       ),
                     ],
@@ -131,11 +133,11 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'FORGOT PASSWORD?',
-                          )),
+                      // TextButton(
+                      //     onPressed: () {},
+                      //     child: const Text(
+                      //       'FORGOT PASSWORD?',
+                      //     )),
                       const SizedBox(
                         width: 110,
                       ),
@@ -184,7 +186,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           );
-          // ignore: use_build_context_synchronously
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -193,17 +194,13 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               (route) => false);
-
-          // Navigate to the home screen or perform any other necessary actions
         } else {
           // Incorrect password
           SnackBar snackBar = const SnackBar(
             backgroundColor: Colors.red,
             content: Center(child: Text('Incorrect password')),
           );
-          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          // print('Incorrect password');
         }
       } else {
         // User does not exist
@@ -211,9 +208,7 @@ class _LoginPageState extends State<LoginPage> {
           backgroundColor: Colors.red,
           content: Center(child: Center(child: Text('User does not exist'))),
         );
-        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        // print('User does not exist');
       }
     } catch (e) {
       // Error occurred
