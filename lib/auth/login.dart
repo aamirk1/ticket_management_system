@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_management_system/Homescreen.dart';
+import 'package:ticket_management_system/profile/forgot.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -133,11 +134,17 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      // TextButton(
-                      //     onPressed: () {},
-                      //     child: const Text(
-                      //       'FORGOT PASSWORD?',
-                      //     )),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ForgetPasswordScreen()));
+                          },
+                          child: const Text(
+                            'FORGOT PASSWORD?',
+                          )),
                       const SizedBox(
                         width: 110,
                       ),

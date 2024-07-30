@@ -92,6 +92,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
     getBuilding();
     fetchServiceProvider();
     fetchUser();
+
     setState(() {
       isLoading = false;
     });
