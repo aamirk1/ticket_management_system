@@ -103,9 +103,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                   TextButton(
                       onPressed: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
                       },
                       child: const Text("Back to Login"))
                 ],

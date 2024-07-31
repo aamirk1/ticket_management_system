@@ -173,12 +173,12 @@ class _ReportDetailsState extends State<ReportDetails> {
                                               Icons.work,
                                               "Date (Closed): ",
                                               widget.ticketData[index]
-                                                      ['dateClosed'] ??
+                                                      ['closedDate'] ??
                                                   "N/A",
                                               index)
                                         ],
                                       ),
-                                      const SizedBox(
+                                      const SizedBox( 
                                         height: 2,
                                       ),
                                       Row(

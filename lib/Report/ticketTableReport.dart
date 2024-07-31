@@ -37,6 +37,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
   List<String> userList = [];
   List<String> allTicketList = [];
   List<String> workList = [];
+  List<String> uniqueFloorList = [];
   String? selectedAsset;
   String? selectedFloor;
   String? selectedRoom;
@@ -89,7 +90,15 @@ class _TicketTableReportState extends State<TicketTableReport> {
   void initState() {
     getTicketList();
     getWorkList();
-    getBuilding();
+    getBuilding().whenComplete(() {
+      getFloor().whenComplete(() {
+        getRoom().whenComplete(() {
+          getAsset().whenComplete(() {
+            setState(() {});
+          });
+        });
+      });
+    });
     fetchServiceProvider();
     fetchUser();
 
@@ -388,57 +397,80 @@ class _TicketTableReportState extends State<TicketTableReport> {
     setState(() {});
   }
 
-  Future<void> getFloor(String buildingNumber) async {
+  Future<void> getFloor() async {
     final provider = Provider.of<AllFloorProvider>(context, listen: false);
     provider.setBuilderList([]);
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('buildingNumbers')
-        .doc(buildingNumber)
-        .collection('floorNumbers')
-        .get();
-    if (querySnapshot.docs.isNotEmpty) {
-      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-      floorNumberList = tempData;
-      provider.setBuilderList(floorNumberList);
+    for (var i = 0; i < buildingNumberList.length; i++) {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('buildingNumbers')
+          .doc(buildingNumberList[i])
+          .collection('floorNumbers')
+          .get();
+      if (querySnapshot.docs.isNotEmpty) {
+        List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+
+        uniqueFloorList.addAll(tempData);
+        Set<String> set = uniqueFloorList.toSet();
+        floorNumberList = set.toList();
+        provider.setBuilderList(floorNumberList);
+      }
     }
+    print(floorNumberList);
     setState(() {});
   }
 
-  Future<void> getRoom(String buildingNumber, String floorNumber) async {
+  Future<void> getRoom() async {
+    List<String> uniqueRoomList = [];
     final provider = Provider.of<AllRoomProvider>(context, listen: false);
     provider.setBuilderList([]);
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('buildingNumbers')
-        .doc(buildingNumber)
-        .collection('floorNumbers')
-        .doc(floorNumber)
-        .collection('roomNumbers')
-        .get();
-    if (querySnapshot.docs.isNotEmpty) {
-      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-      roomNumberList = tempData;
-      provider.setBuilderList(roomNumberList);
+    for (var i = 0; i < buildingNumberList.length; i++) {
+      for (var j = 0; j < floorNumberList.length; j++) {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection('buildingNumbers')
+            .doc(buildingNumberList[i])
+            .collection('floorNumbers')
+            .doc(floorNumberList[j])
+            .collection('roomNumbers')
+            .get();
+        if (querySnapshot.docs.isNotEmpty) {
+          List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
+          uniqueRoomList.addAll(tempData);
+          Set<String> set = uniqueRoomList.toSet();
+          roomNumberList = set.toList();
+          provider.setBuilderList(roomNumberList);
+        }
+      }
     }
+    print(roomNumberList);
     setState(() {});
   }
 
-  Future<void> getAsset(
-      String buildingNumber, String floorNumber, String roomNumber) async {
+  Future<void> getAsset() async {
+    List<String> uniqueAssetsList = [];
     final provider = Provider.of<AllAssetProvider>(context, listen: false);
     provider.setBuilderList([]);
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('buildingNumbers')
-        .doc(buildingNumber)
-        .collection('floorNumbers')
-        .doc(floorNumber)
-        .collection('roomNumbers')
-        .doc(roomNumber)
-        .collection('assets')
-        .get();
-    if (querySnapshot.docs.isNotEmpty) {
-      List<String> tempData = querySnapshot.docs.map((e) => e.id).toList();
-      assetList = tempData;
-      provider.setBuilderList(assetList);
+    for (var i = 0; i < buildingNumberList.length; i++) {
+      for (var j = 0; j < floorNumberList.length; j++) {
+        for (var k = 0; k < roomNumberList.length; k++) {
+          QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+              .collection('buildingNumbers')
+              .doc(buildingNumberList[i])
+              .collection('floorNumbers')
+              .doc(floorNumberList[j])
+              .collection('roomNumbers')
+              .doc(roomNumberList[k])
+              .collection('assets')
+              .get();
+          if (querySnapshot.docs.isNotEmpty) {
+            List<String> tempData =
+                querySnapshot.docs.map((e) => e.id).toList();
+            uniqueAssetsList.addAll(tempData);
+            Set<String> set = uniqueAssetsList.toSet();
+            assetList = set.toList();
+            provider.setBuilderList(assetList);
+          }
+        }
+      }
     }
     setState(() {});
   }
@@ -520,15 +552,15 @@ class _TicketTableReportState extends State<TicketTableReport> {
                                                   ? selectedStatus = value
                                                   : selectedWork = value;
             });
-            await getFloor(selectedbuilding!).whenComplete(() {
-              setState(() {
-                getRoom(selectedbuilding!, selectedFloor!).whenComplete(() {
-                  setState(() {
-                    getAsset(selectedbuilding!, selectedFloor!, selectedRoom!);
-                  });
-                });
-              });
-            });
+            // await getFloor(selectedbuilding!).whenComplete(() {
+            //   setState(() {
+            //     getRoom(selectedbuilding!, selectedFloor!).whenComplete(() {
+            //       setState(() {
+            //         getAsset(selectedbuilding!, selectedFloor!, selectedRoom!);
+            //       });
+            //     });
+            //   });
+            // });
           },
           buttonStyleData: const ButtonStyleData(
             decoration: BoxDecoration(),
