@@ -41,7 +41,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
   String? selectedAsset;
   String? selectedFloor;
   String? selectedRoom;
-  String selectedDate = '';
+  String selectedStartDate = '';
+  String selectedEndDate = '';
   String? selectedUser;
   String? selectedTicket;
   String? selectedbuilding;
@@ -196,7 +197,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
                                                     color: Colors.black),
                                                 children: [
                                               TextSpan(
-                                                  text: selectedDate,
+                                                  text:
+                                                      "$selectedStartDate TO $selectedEndDate",
                                                   style: const TextStyle(
                                                       backgroundColor: purple,
                                                       color: Colors.white)),
@@ -273,7 +275,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
                               selectedFloor = null;
                               selectedbuilding = null;
                               selectedTicket = null;
-                              selectedDate = '';
+                              selectedStartDate = '';
+                              selectedEndDate = '';
                               ticketList.clear();
                               filterData.clear();
                               setState(() {});
@@ -512,7 +515,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
                   ))
               .toList(),
           value: index == 0
-              ? selectedDate
+              ? selectedStartDate
               : index == 1
                   ? selectedTicket
                   : index == 2
@@ -533,7 +536,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
           onChanged: (value) async {
             setState(() {
               index == 0
-                  ? selectedDate = value!
+                  ? selectedStartDate = value!
                   : index == 1
                       ? selectedTicket = value
                       : index == 2
@@ -657,8 +660,10 @@ class _TicketTableReportState extends State<TicketTableReport> {
       rangeStartDate = dateRange.start;
       rangeEndDate = dateRange.end;
 
-      selectedDate =
-          "${rangeStartDate.day}/${rangeStartDate.month}/${rangeStartDate.year} TO ${rangeEndDate!.day}/${rangeEndDate!.month}/${rangeEndDate!.year}";
+      selectedStartDate =
+          "${rangeStartDate.day.toString().padLeft(2, '0')}-${rangeStartDate.month.toString().padLeft(2, '0')}-${rangeStartDate.year.toString()}";
+      selectedEndDate =
+          "${rangeEndDate!.day.toString().padLeft(2, '0')}-${rangeEndDate!.month.toString().padLeft(2, '0')}-${rangeEndDate!.year.toString()}";
     });
   }
 
@@ -751,6 +756,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
   // }
 
   Future<void> filterTickets() async {
+    print('selectedStartDate ${selectedStartDate}');
+    print('selectedEndDate ${selectedEndDate}');
     try {
       filterData.clear();
       ticketList.clear();
@@ -771,57 +778,109 @@ class _TicketTableReportState extends State<TicketTableReport> {
             .collection('date')
             .get();
         List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
-        for (int j = 0; j < dateList.length; j++) {
-          List<dynamic> temp = [];
-          QuerySnapshot ticketQuery = await FirebaseFirestore.instance
-              .collection("raisedTickets")
-              .doc(currentYear.toString())
-              .collection('months')
-              .doc(months[i])
-              .collection('date')
-              .doc(dateList[j])
-              .collection('tickets')
-              .where('work', isEqualTo: selectedWork) // Filter by work
-              .where('status', isEqualTo: selectedStatus) // Filter by work
-              .where('serviceProvider',
-                  isEqualTo: selectedServiceProvider) // Filter by work
-              .where('building', isEqualTo: selectedbuilding) // Filter by work
-              .where('floor', isEqualTo: selectedFloor) // Filter by work
-              .where('room', isEqualTo: selectedRoom) // Filter by work
-              .where('asset', isEqualTo: selectedAsset) // Filter by work
-              .where('user', isEqualTo: selectedUser) // Filter by work
-              .where('tickets', isEqualTo: selectedTicket) // Filter by work
-              .get();
+        print('dateList ${dateList}');
+        if (selectedStartDate.isNotEmpty && selectedEndDate.isNotEmpty) {
+          for (int j = 0; j < dateList.length; j++) {
+            List<dynamic> temp = [];
+            QuerySnapshot ticketQuery = await FirebaseFirestore.instance
+                .collection("raisedTickets")
+                .doc(currentYear.toString())
+                .collection('months')
+                .doc(months[i])
+                .collection('date')
+                .doc(dateList[j])
+                .collection('tickets')
+                .where('date', isGreaterThanOrEqualTo: selectedStartDate)
+                .where('date', isLessThanOrEqualTo: selectedEndDate)
+                .get();
 
-          temp = ticketQuery.docs.map((e) => e.id).toList();
-          // ticketList = ticketList + temp;
+            temp = ticketQuery.docs.map((e) => e.id).toList();
+            // ticketList = ticketList + temp;
 
-          if (temp.isNotEmpty) {
-            ticketList.addAll(temp);
-            for (int k = 0; k < temp.length; k++) {
-              DocumentSnapshot ticketDataQuery = await FirebaseFirestore
-                  .instance
-                  .collection("raisedTickets")
-                  .doc(currentYear.toString())
-                  .collection('months')
-                  .doc(months[i])
-                  .collection('date')
-                  .doc(dateList[j])
-                  .collection('tickets')
-                  .doc(temp[k])
-                  .get();
-              if (ticketDataQuery.exists) {
-                Map<String, dynamic> mapData =
-                    ticketDataQuery.data() as Map<String, dynamic>;
-                asset = mapData['asset'].toString() ?? "N/A";
-                building = mapData['building'].toString() ?? "N/A";
-                floor = mapData['floor'].toString() ?? "N/A";
-                remark = mapData['remark'].toString() ?? "N/A";
-                room = mapData['room'].toString() ?? "N/A";
-                work = mapData['work'].toString() ?? "N/A";
-                serviceprovider = mapData['serviceProvider'].toString() ?? "";
-                filterData.add(mapData);
-                // print('$mapData abc');
+            if (temp.isNotEmpty) {
+              ticketList.addAll(temp);
+              for (int k = 0; k < temp.length; k++) {
+                DocumentSnapshot ticketDataQuery = await FirebaseFirestore
+                    .instance
+                    .collection("raisedTickets")
+                    .doc(currentYear.toString())
+                    .collection('months')
+                    .doc(months[i])
+                    .collection('date')
+                    .doc(dateList[j])
+                    .collection('tickets')
+                    .doc(temp[k])
+                    .get();
+                if (ticketDataQuery.exists) {
+                  Map<String, dynamic> mapData =
+                      ticketDataQuery.data() as Map<String, dynamic>;
+                  asset = mapData['asset'].toString() ?? "N/A";
+                  building = mapData['building'].toString() ?? "N/A";
+                  floor = mapData['floor'].toString() ?? "N/A";
+                  remark = mapData['remark'].toString() ?? "N/A";
+                  room = mapData['room'].toString() ?? "N/A";
+                  work = mapData['work'].toString() ?? "N/A";
+                  serviceprovider = mapData['serviceProvider'].toString() ?? "";
+                  filterData.add(mapData);
+                  // print('$mapData abc');
+                }
+              }
+            }
+          }
+        } else {
+          for (int j = 0; j < dateList.length; j++) {
+            List<dynamic> temp = [];
+            QuerySnapshot ticketQuery = await FirebaseFirestore.instance
+                .collection("raisedTickets")
+                .doc(currentYear.toString())
+                .collection('months')
+                .doc(months[i])
+                .collection('date')
+                .doc(dateList[j])
+                .collection('tickets')
+                .where('work', isEqualTo: selectedWork) // Filter by work
+                .where('status', isEqualTo: selectedStatus) // Filter by work
+                .where('serviceProvider',
+                    isEqualTo: selectedServiceProvider) // Filter by work
+                .where('building',
+                    isEqualTo: selectedbuilding) // Filter by work
+                .where('floor', isEqualTo: selectedFloor) // Filter by work
+                .where('room', isEqualTo: selectedRoom) // Filter by work
+                .where('asset', isEqualTo: selectedAsset) // Filter by work
+                .where('user', isEqualTo: selectedUser) // Filter by work
+                .where('tickets', isEqualTo: selectedTicket) // Filter by work
+                .get();
+
+            temp = ticketQuery.docs.map((e) => e.id).toList();
+            // ticketList = ticketList + temp;
+
+            if (temp.isNotEmpty) {
+              ticketList.addAll(temp);
+              for (int k = 0; k < temp.length; k++) {
+                DocumentSnapshot ticketDataQuery = await FirebaseFirestore
+                    .instance
+                    .collection("raisedTickets")
+                    .doc(currentYear.toString())
+                    .collection('months')
+                    .doc(months[i])
+                    .collection('date')
+                    .doc(dateList[j])
+                    .collection('tickets')
+                    .doc(temp[k])
+                    .get();
+                if (ticketDataQuery.exists) {
+                  Map<String, dynamic> mapData =
+                      ticketDataQuery.data() as Map<String, dynamic>;
+                  asset = mapData['asset'].toString() ?? "N/A";
+                  building = mapData['building'].toString() ?? "N/A";
+                  floor = mapData['floor'].toString() ?? "N/A";
+                  remark = mapData['remark'].toString() ?? "N/A";
+                  room = mapData['room'].toString() ?? "N/A";
+                  work = mapData['work'].toString() ?? "N/A";
+                  serviceprovider = mapData['serviceProvider'].toString() ?? "";
+                  filterData.add(mapData);
+                  // print('$mapData abc');
+                }
               }
             }
           }
