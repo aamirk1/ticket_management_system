@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ticket_management_system/Report/ticketTableReport.dart';
 import 'package:ticket_management_system/auth/login.dart';
 import 'package:ticket_management_system/providers/assetsProvider.dart';
 import 'package:ticket_management_system/providers/buildingProvider.dart';
@@ -65,10 +64,10 @@ class MyApp extends StatelessWidget {
         ),
         home: const
             //Home(adminId: 'ST8032'),
-            TicketTableReport(),
+            // TicketTableReport(),
             // CreateUser(adminId: 'ST8032')
             // Dashboard(adminId: 'ST8032'),
-            // LoginPage(),
+            LoginPage(),
         // LoginPage(),
       ),
     );
