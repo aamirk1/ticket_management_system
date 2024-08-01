@@ -197,8 +197,10 @@ class _TicketTableReportState extends State<TicketTableReport> {
                                                     color: Colors.black),
                                                 children: [
                                               TextSpan(
-                                                  text:
-                                                      "$selectedStartDate TO $selectedEndDate",
+                                                  text: selectedStartDate
+                                                          .isNotEmpty
+                                                      ? " $selectedStartDate TO $selectedEndDate  "
+                                                      : '',
                                                   style: const TextStyle(
                                                       backgroundColor: purple,
                                                       color: Colors.white)),
@@ -661,9 +663,9 @@ class _TicketTableReportState extends State<TicketTableReport> {
       rangeEndDate = dateRange.end;
 
       selectedStartDate =
-          "${rangeStartDate.day.toString().padLeft(2, '0')}-${rangeStartDate.month.toString().padLeft(2, '0')}-${rangeStartDate.year.toString()}";
+          "${rangeStartDate.day.toString().padLeft(2, '0')}-${rangeStartDate.month.toString().padLeft(2, '0')}-${rangeStartDate.year.toString()} ";
       selectedEndDate =
-          "${rangeEndDate!.day.toString().padLeft(2, '0')}-${rangeEndDate!.month.toString().padLeft(2, '0')}-${rangeEndDate!.year.toString()}";
+          "${rangeEndDate!.day.toString().padLeft(2, '0')}-${rangeEndDate!.month.toString().padLeft(2, '0')}-${rangeEndDate!.year.toString()} ";
     });
   }
 
@@ -756,8 +758,6 @@ class _TicketTableReportState extends State<TicketTableReport> {
   // }
 
   Future<void> filterTickets() async {
-    print('selectedStartDate ${selectedStartDate}');
-    print('selectedEndDate ${selectedEndDate}');
     try {
       filterData.clear();
       ticketList.clear();
