@@ -75,7 +75,6 @@ class _TicketTableReportState extends State<TicketTableReport> {
 
   List<String> serviceProvider = [];
 
-  String? _selectDate;
   String? selectedServiceProvider;
   List<String> roomNumberList = [];
   List<String> ticketNumberList = [];
@@ -133,7 +132,9 @@ class _TicketTableReportState extends State<TicketTableReport> {
           Padding(
             padding: const EdgeInsets.only(right: 20),
             child: IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  signOut(context);
+                },
                 icon: const Icon(
                   Icons.power_settings_new_outlined,
                   size: 30,
@@ -259,30 +260,49 @@ class _TicketTableReportState extends State<TicketTableReport> {
                       child: ElevatedButton(
                         onPressed: () {
                           filterTickets().whenComplete(() {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) {
-                                return ReportDetails(
-                                  ticketList: ticketList,
-                                  ticketData: filterData,
-                                );
-                              }),
-                            ).whenComplete(() {
-                              selectedWork = null;
-                              selectedServiceProvider = null;
-                              selectedStatus = null;
-                              selectedAsset = null;
-                              selectedUser = null;
-                              selectedRoom = null;
-                              selectedFloor = null;
-                              selectedbuilding = null;
-                              selectedTicket = null;
-                              selectedStartDate = '';
-                              selectedEndDate = '';
-                              ticketList.clear();
-                              filterData.clear();
-                              setState(() {});
-                            });
+                            if (selectedStatus == 'All') {
+                              popupAlertmessage(
+                                  'Please specify one more filter');
+                            } else {
+                              if (selectedStatus != null ||
+                                  selectedTicket != null ||
+                                  selectedWork != null ||
+                                  selectedbuilding != null ||
+                                  selectedFloor != null ||
+                                  selectedRoom != null ||
+                                  selectedAsset != null ||
+                                  selectedUser != null ||
+                                  selectedServiceProvider != null ||
+                                  selectedStartDate.isNotEmpty ||
+                                  selectedEndDate.isNotEmpty) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) {
+                                    return ReportDetails(
+                                      ticketList: ticketList,
+                                      ticketData: filterData,
+                                    );
+                                  }),
+                                ).whenComplete(() {
+                                  selectedWork = null;
+                                  selectedServiceProvider = null;
+                                  selectedStatus = null;
+                                  selectedAsset = null;
+                                  selectedUser = null;
+                                  selectedRoom = null;
+                                  selectedFloor = null;
+                                  selectedbuilding = null;
+                                  selectedTicket = null;
+                                  selectedStartDate = '';
+                                  selectedEndDate = '';
+                                  ticketList.clear();
+                                  filterData.clear();
+                                  setState(() {});
+                                });
+                              } else {
+                                popupAlertmessage('Please select any filter');
+                              }
+                            }
                           });
                         },
                         child: const Text('Get Report'),
@@ -293,6 +313,31 @@ class _TicketTableReportState extends State<TicketTableReport> {
               ),
             ),
     );
+  }
+
+  void popupAlertmessage(String msg) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Center(
+            child: AlertDialog(
+              content: Text(
+                msg,
+                style: const TextStyle(fontSize: 14, color: Colors.red),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'OK',
+                      style: TextStyle(color: Colors.black),
+                    ))
+              ],
+            ),
+          );
+        });
   }
 
   Future<void> fetchUser() async {
@@ -814,13 +859,13 @@ class _TicketTableReportState extends State<TicketTableReport> {
                 if (ticketDataQuery.exists) {
                   Map<String, dynamic> mapData =
                       ticketDataQuery.data() as Map<String, dynamic>;
-                  asset = mapData['asset'].toString() ?? "N/A";
-                  building = mapData['building'].toString() ?? "N/A";
-                  floor = mapData['floor'].toString() ?? "N/A";
-                  remark = mapData['remark'].toString() ?? "N/A";
-                  room = mapData['room'].toString() ?? "N/A";
-                  work = mapData['work'].toString() ?? "N/A";
-                  serviceprovider = mapData['serviceProvider'].toString() ?? "";
+                  asset = mapData['asset'].toString();
+                  building = mapData['building'].toString();
+                  floor = mapData['floor'].toString();
+                  remark = mapData['remark'].toString();
+                  room = mapData['room'].toString();
+                  work = mapData['work'].toString();
+                  serviceprovider = mapData['serviceProvider'].toString();
                   filterData.add(mapData);
                   // print('$mapData abc');
                 }
@@ -871,13 +916,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
                 if (ticketDataQuery.exists) {
                   Map<String, dynamic> mapData =
                       ticketDataQuery.data() as Map<String, dynamic>;
-                  asset = mapData['asset'].toString() ?? "N/A";
-                  building = mapData['building'].toString() ?? "N/A";
-                  floor = mapData['floor'].toString() ?? "N/A";
-                  remark = mapData['remark'].toString() ?? "N/A";
-                  room = mapData['room'].toString() ?? "N/A";
-                  work = mapData['work'].toString() ?? "N/A";
-                  serviceprovider = mapData['serviceProvider'].toString() ?? "";
+
                   filterData.add(mapData);
                   // print('$mapData abc');
                 }
@@ -974,17 +1013,4 @@ class _TicketTableReportState extends State<TicketTableReport> {
     //   print("Error Occured While Filtering Data");
     // }
   }
-
-  // Future<void> getCalendar() async {
-  //   DateTime? selectedDate = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime(2000),
-  //     lastDate: DateTime(2100),
-  //   );
-  //   if (selectedDate != null) {
-  //     String date = DateFormat("dd-MM-yyyy").format(selectedDate);
-  //     _selectDate = date;
-  //   }
-  // }
 }

@@ -49,6 +49,7 @@ dependencies:
   carousel_slider: ^4.2.1
   photo_view: ^0.15.0
   image_network: ^2.5.6
+  fluttertoast: ^8.2.6
 
 dev_dependencies:
   flutter_test:
