@@ -18,6 +18,7 @@ class ReportDetails extends StatefulWidget {
 }
 
 class _ReportDetailsState extends State<ReportDetails> {
+  final pattern = RegExp(r',\s*');
   List<dynamic> keys = [
     'date',
     'tickets',
@@ -178,7 +179,7 @@ class _ReportDetailsState extends State<ReportDetails> {
                                               index)
                                         ],
                                       ),
-                                      const SizedBox( 
+                                      const SizedBox(
                                         height: 2,
                                       ),
                                       Row(
@@ -277,9 +278,10 @@ class _ReportDetailsState extends State<ReportDetails> {
                                               Icons.build,
                                               'ServiceProvider: ',
                                               widget.ticketData[index]
-                                                          ['serviceProvider']
-                                                      .toString() ??
-                                                  "N/A",
+                                                      ['serviceProvider']
+                                                  .toString()
+                                                  .replaceAll(
+                                                      RegExp(r'\[|\]'), ' '),
                                               index)
                                         ],
                                       ),
@@ -289,8 +291,7 @@ class _ReportDetailsState extends State<ReportDetails> {
                                             Icons.comment,
                                             'Remark: ',
                                             widget.ticketData[index]['remark']
-                                                    .toString() ??
-                                                "N/A",
+                                                .toString(),
                                             index)
                                       ]),
                                       const SizedBox(height: 2),
@@ -510,34 +511,6 @@ class _ReportDetailsState extends State<ReportDetails> {
       setState(() {});
     }
   }
-
-  // Future<void> getTicketList() async {
-  //   // final provider = Provider.of<AllRoomProvider>(context, listen: false);
-  //   // provider.setBuilderList([]);
-  //   for (var i = 0; i < yearList.length; i++) {
-  //     for (var j = 0; j < monthList.length; j++) {
-  //       for (var k = 0; k < dayList.length; k++) {
-  //         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-  //             .collection('raisedTickets')
-  //             .doc(yearList[i])
-  //             .collection('months')
-  //             .doc(monthList[j])
-  //             .collection('date')
-  //             .doc(dayList[k])
-  //             .collection('tickets')
-  //             .get();
-  //         if (querySnapshot.docs.isNotEmpty) {
-  //           List<String> tempData =
-  //               querySnapshot.docs.map((e) => e.id).toList();
-  //           ticketList = tempData;
-  //         }
-  //         ticketNumList.add(ticketList.toString());
-  //         setState(() {});
-  //         print('ticketList: $ticketList');
-  //       }
-  //     }
-  //   }
-  // }
 
   Future<void> getdata() async {
     // List<String> filteredWorkValues =

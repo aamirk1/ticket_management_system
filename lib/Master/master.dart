@@ -55,7 +55,7 @@ class _MasterHomeScreenState extends State<MasterHomeScreen> {
                     shadowColor: Colors.deepPurple,
                     elevation: 30,
                     child: Container(
-                      height: 80,
+                      height: 100,
                       width: 150,
                       decoration: BoxDecoration(
                           border: Border.all(

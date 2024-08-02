@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ticket_management_system/Report/refreshScreen.dart';
 import 'package:ticket_management_system/Report/reportDetails.dart';
 import 'package:ticket_management_system/providers/assetsProvider.dart';
 import 'package:ticket_management_system/providers/buildingProvider.dart';
@@ -74,6 +75,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
   List<dynamic> ticketList = [];
 
   List<String> serviceProvider = [];
+  List<String>? selectedSPList = [];
 
   String? selectedServiceProvider;
   List<String> roomNumberList = [];
@@ -257,33 +259,75 @@ class _TicketTableReportState extends State<TicketTableReport> {
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          filterTickets().whenComplete(() {
-                            if (selectedStatus == 'All') {
-                              popupAlertmessage(
-                                  'Please specify one more filter');
-                            } else {
-                              if (selectedStatus != null ||
-                                  selectedTicket != null ||
-                                  selectedWork != null ||
-                                  selectedbuilding != null ||
-                                  selectedFloor != null ||
-                                  selectedRoom != null ||
-                                  selectedAsset != null ||
-                                  selectedUser != null ||
-                                  selectedServiceProvider != null ||
-                                  selectedStartDate.isNotEmpty ||
-                                  selectedEndDate.isNotEmpty) {
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.20,
+                        height: MediaQuery.of(context).size.height * 0.08,
+                        child: Row(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                filterTickets().whenComplete(() {
+                                  print(
+                                      'selectedServiceProvider: $selectedServiceProvider');
+                                  if (selectedStatus == 'All') {
+                                    popupAlertmessage(
+                                        'Please specify one more filter');
+                                  } else {
+                                    if (selectedStatus != null ||
+                                        selectedTicket != null ||
+                                        selectedWork != null ||
+                                        selectedbuilding != null ||
+                                        selectedFloor != null ||
+                                        selectedRoom != null ||
+                                        selectedAsset != null ||
+                                        selectedUser != null ||
+                                        selectedServiceProvider != null ||
+                                        selectedStartDate.isNotEmpty ||
+                                        selectedEndDate.isNotEmpty) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) {
+                                          return ReportDetails(
+                                            ticketList: ticketList,
+                                            ticketData: filterData,
+                                          );
+                                        }),
+                                      ).whenComplete(() {
+                                        selectedWork = null;
+                                        selectedServiceProvider = null;
+                                        selectedStatus = null;
+                                        selectedAsset = null;
+                                        selectedUser = null;
+                                        selectedRoom = null;
+                                        selectedFloor = null;
+                                        selectedbuilding = null;
+                                        selectedTicket = null;
+                                        selectedStartDate = '';
+                                        selectedEndDate = '';
+                                        ticketList.clear();
+                                        filterData.clear();
+                                        setState(() {});
+                                      });
+                                    } else {
+                                      popupAlertmessage(
+                                          'Please select any filter');
+                                    }
+                                  }
+                                });
+                              },
+                              child: const Text('Get Report'),
+                            ),
+                            const SizedBox(
+                              width: 20,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
                                 Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) {
-                                    return ReportDetails(
-                                      ticketList: ticketList,
-                                      ticketData: filterData,
-                                    );
-                                  }),
-                                ).whenComplete(() {
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const Refreshscreen()))
+                                    .whenComplete(() {
                                   selectedWork = null;
                                   selectedServiceProvider = null;
                                   selectedStatus = null;
@@ -299,13 +343,11 @@ class _TicketTableReportState extends State<TicketTableReport> {
                                   filterData.clear();
                                   setState(() {});
                                 });
-                              } else {
-                                popupAlertmessage('Please select any filter');
-                              }
-                            }
-                          });
-                        },
-                        child: const Text('Get Report'),
+                              },
+                              child: const Text('Refresh'),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   )
@@ -357,6 +399,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
         Map<String, dynamic> data =
             documentSnapshot.data() as Map<String, dynamic>;
 
+        // String fullName = data['fullName'] + " " + data['userId'];
         String fullName = data['fullName'] + " " + data['userId'];
         // print(fullName);
         userList.add(fullName);
@@ -700,7 +743,13 @@ class _TicketTableReportState extends State<TicketTableReport> {
 
   Future<void> pickDateRange() async {
     DateTimeRange? newDateRange = await showDateRangePicker(
-        context: context, firstDate: DateTime(2000), lastDate: DateTime(2100));
+      context: context,
+
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now(),
+      saveText: "OK",
+      // initialEntryMode: DatePickerEntryMode.input,
+    );
     if (newDateRange == null) return;
     setState(() {
       dateRange = newDateRange;
@@ -714,95 +763,10 @@ class _TicketTableReportState extends State<TicketTableReport> {
     });
   }
 
-  // Future<void> allFilterData() async {
-  //   List<dynamic> allData = [];
-  //   allData.add(selectedDate);
-  //   allData.add(selectedTicket);
-  //   allData.add(selectedbuilding);
-  //   allData.add(selectedFloor);
-  //   allData.add(selectedRoom);
-  //   allData.add(selectedUser.toString().split(' ')[2]);
-  //   allData.add(selectedAsset);
-  //   allData.add(selectedServiceProvider);
-  //   allData.add(selectedStatus);
-  //   allData.add(selectedWork);
-
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(builder: (context) {
-  //       // print(selectedUser);
-  //       selectedWork = null;
-  //       selectedServiceProvider = null;
-  //       selectedStatus = null;
-  //       selectedAsset = null;
-  //       selectedUser = null;
-  //       selectedRoom = null;
-  //       selectedFloor = null;
-  //       selectedbuilding = null;
-  //       selectedTicket = null;
-  //       selectedDate = '';
-
-  //       return ReportDetails(
-  //         dateFilter: allData[0],
-  //         ticketFilter: allData[1],
-  //         buildingFilter: allData[2],
-  //         floorFilter: allData[3],
-  //         roomFilter: allData[4],
-  //         userFilter: allData[5],
-  //         assetFilter: allData[6],
-  //         serviceProvider: allData[7],
-  //         statusFilter: allData[8],
-  //         workFilter: allData[9],
-  //       );
-  //     }),
-  //   );
-  // }
-
-  // Future<void> allFilterData() async {
-  //   List<dynamic> allData = [];
-  //   allData.add(selectedDate);
-  //   allData.add(selectedTicket);
-  //   allData.add(selectedbuilding);
-  //   allData.add(selectedFloor);
-  //   allData.add(selectedRoom);
-  //   allData.add(selectedUser.toString().split(' ')[2]);
-  //   allData.add(selectedAsset);
-  //   allData.add(selectedServiceProvider);
-  //   allData.add(selectedStatus);
-  //   allData.add(selectedWork);
-  //   List<dynamic> data = allData;
-  //   print(data);
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(builder: (context) {
-  //       print(selectedUser);
-  //       selectedWork = '';
-  //       selectedServiceProvider = '';
-  //       selectedStatus = '';
-  //       selectedAsset = '';
-  //       selectedUser = '';
-  //       selectedRoom = '';
-  //       selectedFloor = '';
-  //       selectedbuilding = '';
-  //       selectedTicket = '';
-  //       selectedDate = '';
-  //       return ReportDetails(
-  //         dateFilter: allData[0],
-  //         ticketFilter: allData[1],
-  //         buildingFilter: allData[2],
-  //         floorFilter: allData[3],
-  //         roomFilter: allData[4],
-  //         userFilter: allData[5],
-  //         assetFilter: allData[6],
-  //         serviceProvider: allData[7],
-  //         statusFilter: allData[8],
-  //         workFilter: allData[9],
-  //       );
-  //     }),
-  //   );
-  // }
-
   Future<void> filterTickets() async {
+    // print('before $selectedUser');
+    // selectedUser = selectedUser.toString().split(' ')[2];
+    // print('selectedUse123r $selectedUser');
     try {
       filterData.clear();
       ticketList.clear();
@@ -928,89 +892,5 @@ class _TicketTableReportState extends State<TicketTableReport> {
     } catch (e) {
       print("Error Fetching tickets: $e");
     }
-
-    // setState(() {});
-
-    // try {
-    // String year = selectedDate.split('-')[2];
-    // String month = selectedDate.split('-')[1];
-    // String selectedMonth = DateFormat.MMM().format(
-    //   DateTime(
-    //     0,
-    //     int.parse(month),
-    //   ),
-    // );
-    // print("year - $year month - $month");
-
-    // int currentYear = DateTime.now().year;
-
-    // QuerySnapshot monthQuery = await FirebaseFirestore.instance
-    //     .collection("raisedTickets")
-    //     .doc(currentYear.toString())
-    //     .collection('months')
-    //     .get();
-    // List<dynamic> months = monthQuery.docs.map((e) => e.id).toList();
-    // for (int i = 0; i < months.length; i++) {
-    //   QuerySnapshot dateQuery = await FirebaseFirestore.instance
-    //       .collection("raisedTickets")
-    //       .doc(currentYear.toString())
-    //       .collection('months')
-    //       .doc(months[i])
-    //       .collection('date')
-    //       .get();
-    //   List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
-    //   for (int j = 0; j < dateList.length; j++) {
-    //     List<dynamic> temp = [];
-    //     Query query = await FirebaseFirestore.instance
-    //         .collection("raisedTickets")
-    //         .doc(currentYear.toString())
-    //         .collection('months')
-    //         .doc(months[i])
-    //         .collection('date')
-    //         .doc(dateList[j])
-    //         .collection('tickets');
-
-    // if (selectedbuilding != null) {
-    //   query = query.where('building', isEqualTo: selectedbuilding!);
-    // }
-    // if (selectedAsset != null) {
-    //   query = query.where('asset', isEqualTo: selectedAsset!);
-    // }
-    // if (selectedFloor != null) {
-    //   query = query.where('floor', isEqualTo: selectedAsset!);
-    // }
-    // if (selectedServiceProvider != null) {
-    //   query = query.where('serviceProvider',
-    //       isEqualTo: selectedServiceProvider!);
-    // }
-    // if (selectedRoom != null) {
-    //   query = query.where('room', isEqualTo: selectedRoom!);
-    // }
-    // if (selectedStatus != null) {
-    //   query.where('status', isEqualTo: selectedStatus!);
-    // }
-    // if (selectedWork != null) {
-    //   query.where('work', isEqualTo: selectedWork!);
-    // }
-    // else {
-    //   print('nothing selected');
-    //   QuerySnapshot filterQuery = await query.get();
-    //   ticketList = filterQuery.docs.map((e) => e.id).toList();
-
-    //   filterData = filterQuery.docs.map((e) => e.data()).toList();
-
-    // }
-
-    // QuerySnapshot filterQuery = await query.get();
-    // ticketList = filterQuery.docs.map((e) => e.id).toList();
-
-    // filterData = filterQuery.docs.map((e) => e.data()).toList();
-    // print("FilterData : $filterData");
-    // print(ticketList);
-    // }
-    // }
-    // } catch (e) {
-    //   print("Error Occured While Filtering Data");
-    // }
   }
 }
