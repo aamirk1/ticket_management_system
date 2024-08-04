@@ -441,9 +441,9 @@ class _ReportDetailsState extends State<ReportDetails> {
                   : SizedBox(
                       height: MediaQuery.of(context).size.height * 0.5,
                       width: MediaQuery.of(context).size.width * 0.55,
-                      child: Card(
+                      child: const Card(
                         elevation: 5,
-                        child: const Center(
+                        child: Center(
                           child: Text(
                             'No Tickets Found!',
                             style: TextStyle(color: Colors.red),

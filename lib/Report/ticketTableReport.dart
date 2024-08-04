@@ -90,6 +90,8 @@ class _TicketTableReportState extends State<TicketTableReport> {
   DateTime? rangeEndDate = DateTime.now();
   @override
   void initState() {
+    fetchServiceProvider();
+    fetchUser();
     getTicketList();
     getWorkList();
     getBuilding().whenComplete(() {
@@ -101,8 +103,6 @@ class _TicketTableReportState extends State<TicketTableReport> {
         });
       });
     });
-    fetchServiceProvider();
-    fetchUser();
 
     setState(() {
       isLoading = false;
@@ -130,20 +130,20 @@ class _TicketTableReportState extends State<TicketTableReport> {
               gradient:
                   LinearGradient(colors: [Colors.purple, Colors.deepPurple])),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: IconButton(
-                onPressed: () {
-                  signOut(context);
-                },
-                icon: const Icon(
-                  Icons.power_settings_new_outlined,
-                  size: 30,
-                  color: white,
-                )),
-          )
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 20),
+        //     child: IconButton(
+        //         onPressed: () {
+        //           signOut(context);
+        //         },
+        //         icon: const Icon(
+        //           Icons.power_settings_new_outlined,
+        //           size: 30,
+        //           color: white,
+        //         )),
+        //   )
+        // ],
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -400,7 +400,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
             documentSnapshot.data() as Map<String, dynamic>;
 
         // String fullName = data['fullName'] + " " + data['userId'];
-        String fullName = data['fullName'] + " " + data['userId'];
+        String fullName = data['userId'];
         // print(fullName);
         userList.add(fullName);
       }

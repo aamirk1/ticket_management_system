@@ -6,9 +6,11 @@ import 'package:ticket_management_system/profile/profile.dart';
 import 'package:ticket_management_system/utils/colors.dart';
 
 class Home extends StatelessWidget {
-  const Home({Key? key, required this.adminId}) : super(key: key);
+  const Home({
+    Key? key,
+  }) : super(key: key);
 
-  final String adminId;
+  final String adminId = 'KM1737';
 
   @override
   Widget build(BuildContext context) {

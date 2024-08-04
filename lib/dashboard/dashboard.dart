@@ -480,8 +480,8 @@ class _DashboardState extends State<Dashboard> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) {
-                            return Home(
-                              adminId: widget.adminId,
+                            return const Home(
+                              // adminId: widget.adminId,
                             );
                           }),
                         );

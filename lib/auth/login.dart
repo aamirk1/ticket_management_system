@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ticket_management_system/Homescreen.dart';
 import 'package:ticket_management_system/profile/forgot.dart';
 
@@ -169,6 +170,13 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void storeLoginData(bool isLogin, String adminId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('adminId');
+    prefs.setBool('isLogin', isLogin);
+    prefs.setString('adminId', adminId);
+  }
+
   Future<void> login(String adminId, String password) async {
     try {
       // Fetch the user document from Firestore based on the provided username
@@ -182,6 +190,7 @@ class _LoginPageState extends State<LoginPage> {
         final storedPassword = userDoc.data()!['password'];
 
         if (password == storedPassword) {
+          storeLoginData(true, adminId);
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -196,9 +205,7 @@ class _LoginPageState extends State<LoginPage> {
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => Home(
-                  adminId: adminId,
-                ),
+                builder: (context) => const Home(),
               ),
               (route) => false);
         } else {
