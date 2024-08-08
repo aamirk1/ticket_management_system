@@ -246,6 +246,7 @@ class _ItemMasterState extends State<ItemMaster> {
 
   Future storeData(String buildingNumber) async {
     final provider = Provider.of<AllBuildingProvider>(context, listen: false);
+    provider.setBuilderList([]);
     try {
       await FirebaseFirestore.instance
           .collection('buildingNumbers')

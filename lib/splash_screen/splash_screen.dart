@@ -44,10 +44,10 @@ class _SplashScreenState extends State<SplashScreen>
     Timer(const Duration(milliseconds: 3000), () async {
       isLogin = await _splashService.checkLoginStatus(context);
       if (isLogin) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) {
-          return const Home();
-        }));
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Home()),
+        );
       } else {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(context,

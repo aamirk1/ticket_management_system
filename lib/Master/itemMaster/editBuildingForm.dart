@@ -30,7 +30,7 @@ class _EditBuildingFormState extends State<EditBuildingForm> {
     buildingController.text = widget.buildingId;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
+          iconTheme: const IconThemeData(color: Colors.white),
           title: const Center(
               child:
                   Text('Building Form', style: TextStyle(color: Colors.white))),
@@ -142,7 +142,7 @@ class _EditBuildingFormState extends State<EditBuildingForm> {
       provider.addSingleList({
         'buildingNumber': newDocumentId,
       });
-      print("Document updated successfully");
+      // print("Document updated successfully");
     } else {
       print("Document does not exist");
     }

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:data_table_2/data_table_2.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 class ReportDetails extends StatefulWidget {
   const ReportDetails({super.key});
@@ -139,9 +139,9 @@ class _ReportDetailsState extends State<ReportDetails> {
 
     for (var i = 0; i < ticketList.length; i++) {
       List<String> allData = [];
-      if (kDebugMode) {
-        print('lll${ticketList[i]}');
-      }
+      // if (kDebugMode) {
+      //   print('lll${ticketList[i]}');
+      // }
       DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
           .collection('raisedTickets')
           .doc(ticketList[i])

@@ -30,7 +30,7 @@ class _EditAssetFormState extends State<EditAssetForm> {
     assetController.text = widget.assetId;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
+          iconTheme: const IconThemeData(color: Colors.white),
           title: const Center(
               child: Text('Asset Form', style: TextStyle(color: Colors.white))),
           flexibleSpace: Container(
@@ -140,7 +140,7 @@ class _EditAssetFormState extends State<EditAssetForm> {
       provider.addSingleList({
         'asset': newDocumentId,
       });
-      print("Document updated successfully");
+      // print("Document updated successfully");
     } else {
       print("Document does not exist");
     }

@@ -70,7 +70,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
   List<String> allFloorData = [];
   List<String> allWorkData = [];
   List<String> allRoomData = [];
-  List<String> allStatusData = ['All', 'Open', 'Close'];
+  List<String> allStatusData = ['Open', 'Close'];
 
   List<dynamic> ticketList = [];
 
@@ -90,9 +90,12 @@ class _TicketTableReportState extends State<TicketTableReport> {
   DateTime? rangeEndDate = DateTime.now();
   @override
   void initState() {
+    getTicketList().whenComplete(() {
+      setState(() {});
+    });
     fetchServiceProvider();
     fetchUser();
-    getTicketList();
+
     getWorkList();
     getBuilding().whenComplete(() {
       getFloor().whenComplete(() {
@@ -171,46 +174,71 @@ class _TicketTableReportState extends State<TicketTableReport> {
                           ),
                         ),
                         Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Card(
                                 elevation: 5,
-                                child: SizedBox(
-                                  width: 250,
-                                  height: 50,
-                                  child: TextButton(
-                                    onPressed: () {
-                                      pickDateRange();
-                                      setState(() {});
-                                    },
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        // Text(
-                                        //   textAlign: TextAlign.justify,
-                                        //   'Search Date: \n $selectedDate',
-                                        //   style: const TextStyle(
-                                        //       color: Colors.black,
-                                        //       fontSize: 16),
-                                        // ),
-                                        child: RichText(
-                                            text: TextSpan(
-                                                text: 'Search Date: \n',
-                                                style: const TextStyle(
-                                                    color: Colors.black),
-                                                children: [
-                                              TextSpan(
-                                                  text: selectedStartDate
-                                                          .isNotEmpty
-                                                      ? " $selectedStartDate TO $selectedEndDate  "
-                                                      : '',
-                                                  style: const TextStyle(
-                                                      backgroundColor: purple,
-                                                      color: Colors.white)),
-                                            ])),
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 245,
+                                      height: 50,
+                                      child: TextButton(
+                                        onPressed: () {
+                                          pickDateRange();
+                                          setState(() {});
+                                        },
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            // Text(
+                                            //   textAlign: TextAlign.justify,
+                                            //   'Search Date: \n $selectedDate',
+                                            //   style: const TextStyle(
+                                            //       color: Colors.black,
+                                            //       fontSize: 16),
+                                            // ),
+                                            child: RichText(
+                                                text: TextSpan(
+                                                    text: 'Search Date: \n',
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
+                                                    children: [
+                                                  TextSpan(
+                                                      text: selectedStartDate
+                                                              .isNotEmpty
+                                                          ? " $selectedStartDate TO $selectedEndDate  "
+                                                          : '',
+                                                      style: const TextStyle(
+                                                          backgroundColor:
+                                                              purple,
+                                                          color: Colors.white)),
+                                                ])),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                    Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: IconButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const Refreshscreen()))
+                                                  .whenComplete(() {
+                                                selectedStartDate = '';
+                                                selectedEndDate = '';
+                                                setState(() {});
+                                              });
+                                            },
+                                            icon: const Icon(
+                                              Icons.clear,
+                                              size: 15,
+                                            )))
+                                  ],
                                 ))),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -259,7 +287,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.20,
                         height: MediaQuery.of(context).size.height * 0.08,
                         child: Row(
@@ -269,49 +297,59 @@ class _TicketTableReportState extends State<TicketTableReport> {
                                 filterTickets().whenComplete(() {
                                   print(
                                       'selectedServiceProvider: $selectedServiceProvider');
-                                  if (selectedStatus == 'All') {
-                                    popupAlertmessage(
-                                        'Please specify one more filter');
-                                  } else {
-                                    if (selectedStatus != null ||
-                                        selectedTicket != null ||
-                                        selectedWork != null ||
-                                        selectedbuilding != null ||
-                                        selectedFloor != null ||
-                                        selectedRoom != null ||
-                                        selectedAsset != null ||
-                                        selectedUser != null ||
-                                        selectedServiceProvider != null ||
-                                        selectedStartDate.isNotEmpty ||
-                                        selectedEndDate.isNotEmpty) {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) {
-                                          return ReportDetails(
-                                            ticketList: ticketList,
-                                            ticketData: filterData,
-                                          );
-                                        }),
-                                      ).whenComplete(() {
-                                        selectedWork = null;
-                                        selectedServiceProvider = null;
-                                        selectedStatus = null;
-                                        selectedAsset = null;
-                                        selectedUser = null;
-                                        selectedRoom = null;
-                                        selectedFloor = null;
-                                        selectedbuilding = null;
-                                        selectedTicket = null;
-                                        selectedStartDate = '';
-                                        selectedEndDate = '';
-                                        ticketList.clear();
-                                        filterData.clear();
+                                  if (selectedStatus != null ||
+                                      selectedTicket != null ||
+                                      selectedWork != null ||
+                                      selectedbuilding != null ||
+                                      selectedFloor != null ||
+                                      selectedRoom != null ||
+                                      selectedAsset != null ||
+                                      selectedUser != null ||
+                                      selectedServiceProvider != null ||
+                                      selectedStartDate.isNotEmpty ||
+                                      selectedEndDate.isNotEmpty) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) {
+                                        return ReportDetails(
+                                          ticketList: ticketList,
+                                          ticketData: filterData,
+                                        );
+                                      }),
+                                    ).whenComplete(() {
+                                      getTicketList().whenComplete(() {
                                         setState(() {});
                                       });
-                                    } else {
-                                      popupAlertmessage(
-                                          'Please select any filter');
-                                    }
+                                      fetchServiceProvider();
+                                      fetchUser();
+
+                                      getBuilding().whenComplete(() {
+                                        getFloor().whenComplete(() {
+                                          getRoom().whenComplete(() {
+                                            getAsset().whenComplete(() {
+                                              setState(() {});
+                                            });
+                                          });
+                                        });
+                                      });
+                                      selectedWork = null;
+                                      selectedServiceProvider = null;
+                                      selectedStatus = null;
+                                      selectedAsset = null;
+                                      selectedUser = null;
+                                      selectedRoom = null;
+                                      selectedFloor = null;
+                                      selectedbuilding = null;
+                                      selectedTicket = null;
+                                      selectedStartDate = '';
+                                      selectedEndDate = '';
+                                      ticketList.clear();
+                                      filterData.clear();
+                                      setState(() {});
+                                    });
+                                  } else {
+                                    popupAlertmessage(
+                                        'Please select any filter');
                                   }
                                 });
                               },
@@ -436,43 +474,41 @@ class _TicketTableReportState extends State<TicketTableReport> {
   Future<void> getTicketList() async {
     final provider = Provider.of<AllRoomProvider>(context, listen: false);
     provider.setBuilderList([]);
-    try {
-      ticketList.clear();
-      int currentYear = DateTime.now().year;
 
-      QuerySnapshot monthQuery = await FirebaseFirestore.instance
+    ticketList.clear();
+    int currentYear = DateTime.now().year;
+
+    QuerySnapshot monthQuery = await FirebaseFirestore.instance
+        .collection("raisedTickets")
+        .doc(currentYear.toString())
+        .collection('months')
+        .get();
+    List<dynamic> months = monthQuery.docs.map((e) => e.id).toList();
+    for (int i = 0; i < months.length; i++) {
+      QuerySnapshot dateQuery = await FirebaseFirestore.instance
           .collection("raisedTickets")
           .doc(currentYear.toString())
           .collection('months')
+          .doc(months[i])
+          .collection('date')
           .get();
-      List<dynamic> months = monthQuery.docs.map((e) => e.id).toList();
-      for (int i = 0; i < months.length; i++) {
-        QuerySnapshot dateQuery = await FirebaseFirestore.instance
+      List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
+      for (int j = 0; j < dateList.length; j++) {
+        List<String> temp = [];
+        QuerySnapshot ticketQuery = await FirebaseFirestore.instance
             .collection("raisedTickets")
             .doc(currentYear.toString())
             .collection('months')
             .doc(months[i])
             .collection('date')
+            .doc(dateList[j])
+            .collection('tickets')
             .get();
-        List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
-        for (int j = 0; j < dateList.length; j++) {
-          List<String> temp = [];
-          QuerySnapshot ticketQuery = await FirebaseFirestore.instance
-              .collection("raisedTickets")
-              .doc(currentYear.toString())
-              .collection('months')
-              .doc(months[i])
-              .collection('date')
-              .doc(dateList[j])
-              .collection('tickets')
-              .get();
-          temp = ticketQuery.docs.map((e) => e.id).toList();
-          ticketList = ticketList + temp;
-        }
+        temp = ticketQuery.docs.map((e) => e.id).toList();
+        ticketList = ticketList + temp;
       }
-    } catch (e) {
-      print(e);
     }
+
     // provider.setBuilderList(ticketList);
     setState(() {});
   }
@@ -508,7 +544,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
         provider.setBuilderList(floorNumberList);
       }
     }
-    print(floorNumberList);
+    // print(floorNumberList);
     setState(() {});
   }
 
@@ -534,7 +570,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
         }
       }
     }
-    print(roomNumberList);
+    // print(roomNumberList);
     setState(() {});
   }
 
@@ -585,121 +621,94 @@ class _TicketTableReportState extends State<TicketTableReport> {
       String hintText, int index) {
     return Card(
       elevation: 5.0,
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton2<String>(
-          isExpanded: true,
-          hint: Text(
-            hintText,
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 14,
-            ),
-          ),
-          items: customDropDownList
-              .map((item) => DropdownMenuItem(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(fontSize: 14, color: Colors.black),
-                    ),
-                  ))
-              .toList(),
-          value: index == 0
-              ? selectedStartDate
-              : index == 1
-                  ? selectedTicket
-                  : index == 2
-                      ? selectedbuilding
-                      : index == 3
-                          ? selectedFloor
-                          : index == 4
-                              ? selectedRoom
-                              : index == 5
-                                  ? selectedUser
-                                  : index == 6
-                                      ? selectedAsset
-                                      : index == 7
-                                          ? selectedServiceProvider
-                                          : index == 8
-                                              ? selectedStatus
-                                              : selectedWork,
-          onChanged: (value) async {
-            setState(() {
-              index == 0
-                  ? selectedStartDate = value!
-                  : index == 1
-                      ? selectedTicket = value
-                      : index == 2
-                          ? selectedbuilding = value
-                          : index == 3
-                              ? selectedFloor = value
-                              : index == 4
-                                  ? selectedRoom = value
-                                  : index == 5
-                                      ? selectedUser = value
-                                      : index == 6
-                                          ? selectedAsset = value
-                                          : index == 7
-                                              ? selectedServiceProvider = value
-                                              : index == 8
-                                                  ? selectedStatus = value
-                                                  : selectedWork = value;
-            });
-            // await getFloor(selectedbuilding!).whenComplete(() {
-            //   setState(() {
-            //     getRoom(selectedbuilding!, selectedFloor!).whenComplete(() {
-            //       setState(() {
-            //         getAsset(selectedbuilding!, selectedFloor!, selectedRoom!);
-            //       });
-            //     });
-            //   });
-            // });
-          },
-          buttonStyleData: const ButtonStyleData(
-            decoration: BoxDecoration(),
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            height: 50,
-            width: 250,
-          ),
-          dropdownStyleData: const DropdownStyleData(
-            maxHeight: 200,
-          ),
-          menuItemStyleData: const MenuItemStyleData(
-            height: 40,
-          ),
-          dropdownSearchData: DropdownSearchData(
-            searchController: index == 0
-                ? dateController
-                : index == 1
-                    ? ticketController
-                    : index == 2
-                        ? buildingController
-                        : index == 3
-                            ? floorController
-                            : index == 4
-                                ? roomController
-                                : index == 5
-                                    ? userController
-                                    : index == 6
-                                        ? assetController
-                                        : index == 7
-                                            ? serviceProviderController
-                                            : index == 8
-                                                ? statusController
-                                                : workController,
-            searchInnerWidgetHeight: 50,
-            searchInnerWidget: Container(
-              height: 50,
-              padding: const EdgeInsets.only(
-                top: 8,
-                bottom: 4,
-                right: 8,
-                left: 8,
+      child: Row(
+        children: [
+          DropdownButtonHideUnderline(
+            child: DropdownButton2<String>(
+              isExpanded: true,
+              hint: Text(
+                hintText,
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                ),
               ),
-              child: TextFormField(
-                expands: true,
-                maxLines: null,
-                controller: index == 0
+              items: customDropDownList
+                  .map((item) => DropdownMenuItem(
+                        value: item,
+                        child: Text(
+                          item,
+                          style: const TextStyle(
+                              fontSize: 14, color: Colors.black),
+                        ),
+                      ))
+                  .toList(),
+              value: index == 0
+                  ? selectedStartDate
+                  : index == 1
+                      ? selectedTicket
+                      : index == 2
+                          ? selectedbuilding
+                          : index == 3
+                              ? selectedFloor
+                              : index == 4
+                                  ? selectedRoom
+                                  : index == 5
+                                      ? selectedUser
+                                      : index == 6
+                                          ? selectedAsset
+                                          : index == 7
+                                              ? selectedServiceProvider
+                                              : index == 8
+                                                  ? selectedStatus
+                                                  : selectedWork,
+              onChanged: (value) async {
+                setState(() {
+                  index == 0
+                      ? selectedStartDate = value!
+                      : index == 1
+                          ? selectedTicket = value
+                          : index == 2
+                              ? selectedbuilding = value
+                              : index == 3
+                                  ? selectedFloor = value
+                                  : index == 4
+                                      ? selectedRoom = value
+                                      : index == 5
+                                          ? selectedUser = value
+                                          : index == 6
+                                              ? selectedAsset = value
+                                              : index == 7
+                                                  ? selectedServiceProvider =
+                                                      value
+                                                  : index == 8
+                                                      ? selectedStatus = value
+                                                      : selectedWork = value;
+                });
+                // await getFloor(selectedbuilding!).whenComplete(() {
+                //   setState(() {
+                //     getRoom(selectedbuilding!, selectedFloor!).whenComplete(() {
+                //       setState(() {
+                //         getAsset(selectedbuilding!, selectedFloor!, selectedRoom!);
+                //       });
+                //     });
+                //   });
+                // });
+              },
+              buttonStyleData: const ButtonStyleData(
+                decoration: BoxDecoration(),
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                height: 50,
+                width: 250,
+              ),
+              dropdownStyleData: const DropdownStyleData(
+                maxHeight: 200,
+              ),
+              menuItemStyleData: const MenuItemStyleData(
+                height: 40,
+              ),
+              dropdownSearchData: DropdownSearchData(
+                searchController: index == 0
                     ? dateController
                     : index == 1
                         ? ticketController
@@ -713,30 +722,97 @@ class _TicketTableReportState extends State<TicketTableReport> {
                                         ? userController
                                         : index == 6
                                             ? assetController
-                                            : serviceProviderController,
-                decoration: InputDecoration(
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 8,
+                                            : index == 7
+                                                ? serviceProviderController
+                                                : index == 8
+                                                    ? statusController
+                                                    : workController,
+                searchInnerWidgetHeight: 50,
+                searchInnerWidget: Container(
+                  height: 50,
+                  padding: const EdgeInsets.only(
+                    top: 8,
+                    bottom: 4,
+                    right: 8,
+                    left: 8,
                   ),
-                  hintText: hintText,
-                  hintStyle: const TextStyle(fontSize: 12),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+                  child: TextFormField(
+                    expands: true,
+                    maxLines: null,
+                    controller: index == 0
+                        ? dateController
+                        : index == 1
+                            ? ticketController
+                            : index == 2
+                                ? buildingController
+                                : index == 3
+                                    ? floorController
+                                    : index == 4
+                                        ? roomController
+                                        : index == 5
+                                            ? userController
+                                            : index == 6
+                                                ? assetController
+                                                : serviceProviderController,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 8,
+                      ),
+                      hintText: hintText,
+                      hintStyle: const TextStyle(fontSize: 12),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
                 ),
+                searchMatchFn: (item, searchValue) {
+                  return item.value.toString().contains(searchValue);
+                },
               ),
+              //This to clear the search value when you close the menu
+              onMenuStateChange: (isOpen) {
+                if (!isOpen) {}
+              },
             ),
-            searchMatchFn: (item, searchValue) {
-              return item.value.toString().contains(searchValue);
-            },
           ),
-          //This to clear the search value when you close the menu
-          onMenuStateChange: (isOpen) {
-            if (!isOpen) {}
-          },
-        ),
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Refreshscreen()))
+                    .whenComplete(() {
+                  index == 0
+                      ? selectedStartDate = ''
+                      : index == 1
+                          ? selectedTicket = null
+                          : index == 2
+                              ? selectedbuilding = null
+                              : index == 3
+                                  ? selectedFloor = null
+                                  : index == 4
+                                      ? selectedRoom = null
+                                      : index == 5
+                                          ? selectedUser = null
+                                          : index == 6
+                                              ? selectedAsset = null
+                                              : index == 7
+                                                  ? selectedServiceProvider =
+                                                      null
+                                                  : index == 8
+                                                      ? selectedStatus = null
+                                                      : selectedWork = null;
+                  setState(() {});
+                });
+              },
+              icon: const Icon(
+                Icons.clear,
+                size: 15,
+              ))
+        ],
       ),
     );
   }
@@ -787,7 +863,7 @@ class _TicketTableReportState extends State<TicketTableReport> {
             .collection('date')
             .get();
         List<dynamic> dateList = dateQuery.docs.map((e) => e.id).toList();
-        print('dateList ${dateList}');
+        // print('dateList ${dateList}');
         if (selectedStartDate.isNotEmpty && selectedEndDate.isNotEmpty) {
           for (int j = 0; j < dateList.length; j++) {
             List<dynamic> temp = [];

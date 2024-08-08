@@ -77,9 +77,9 @@ class _ReportDetailsState extends State<ReportDetails> {
           isLoading = false;
         }));
     super.initState();
-    print('mdklsalk');
-    print(widget.ticketList);
-    print(widget.ticketData);
+    // print('mdklsalk');
+    // print(widget.ticketList);
+    // print(widget.ticketData);
     // print(widget.workFilter);
   }
 

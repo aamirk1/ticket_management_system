@@ -163,6 +163,7 @@ class _ListOfAssetState extends State<ListOfAsset> {
 
   Future<void> fetchData() async {
     final provider = Provider.of<AllAssetProvider>(context, listen: false);
+    provider.setBuilderList([]);
     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
         .collection('buildingNumbers')
         .doc(widget.buildingNumber)
@@ -192,7 +193,7 @@ class _ListOfAssetState extends State<ListOfAsset> {
         .collection('assets')
         .doc(asset)
         .delete();
-    print('successfully deleted');
+    // print('successfully deleted');
 
     // provider.removeData(assetList.indexOf(asset));
     provider.removeData(assetList.indexOf(asset));
